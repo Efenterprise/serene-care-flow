@@ -120,6 +120,16 @@ const AuditTrailReport = () => {
     return <Activity className="w-3 h-3" />;
   };
 
+  const formatLogDetails = (details: unknown): string => {
+    try {
+      return typeof details === 'object' 
+        ? JSON.stringify(details, null, 2)
+        : String(details);
+    } catch {
+      return 'Invalid JSON data';
+    }
+  };
+
   if (isLoading) {
     return <div className="p-6">Loading audit trail...</div>;
   }
@@ -253,15 +263,7 @@ const AuditTrailReport = () => {
                       {log.details && (
                         <div className="text-xs bg-gray-50 p-2 rounded mt-2">
                           <pre className="whitespace-pre-wrap">
-                            {((): string => {
-                              try {
-                                return typeof log.details === 'object' 
-                                  ? JSON.stringify(log.details, null, 2)
-                                  : String(log.details);
-                              } catch {
-                                return 'Invalid JSON data';
-                              }
-                            })()}
+                            {formatLogDetails(log.details)}
                           </pre>
                         </div>
                       )}
