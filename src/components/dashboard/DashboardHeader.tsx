@@ -78,6 +78,7 @@ const DashboardHeader = () => {
       title: "Insights",
       icon: BarChart3,
       items: [
+        { title: "AI Proact", href: "/insights/ai-proact" },
         { title: "Analytics Dashboard", href: "/insights/analytics" },
         { title: "Performance Reports", href: "/insights/performance" },
         { title: "Quality Indicators", href: "/insights/quality" },
