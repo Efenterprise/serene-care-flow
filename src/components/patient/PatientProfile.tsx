@@ -18,8 +18,19 @@ import {
   Clock,
   X,
   Edit,
-  Activity
+  Activity,
+  TrendingUp,
+  ClipboardList,
+  Stethoscope,
+  Target
 } from "lucide-react";
+import PatientOverview from "./components/PatientOverview";
+import PatientProgressNotes from "./components/PatientProgressNotes";
+import PatientOrders from "./components/PatientOrders";
+import PatientVitalsLabs from "./components/PatientVitalsLabs";
+import PatientCarePlans from "./components/PatientCarePlans";
+import PatientMedications from "./components/PatientMedications";
+import PatientAssessments from "./components/PatientAssessments";
 
 interface PatientProfileProps {
   patientId?: string;
@@ -28,7 +39,9 @@ interface PatientProfileProps {
 }
 
 const PatientProfile = ({ patientId, isOpen, onClose }: PatientProfileProps) => {
-  // Mock patient data - this would come from your patient tracking hook
+  const [activeTab, setActiveTab] = useState("overview");
+
+  // Enhanced mock patient data for demo
   const patient = {
     id: patientId || "1",
     name: "Mary Johnson",
@@ -49,32 +62,6 @@ const PatientProfile = ({ patientId, isOpen, onClose }: PatientProfileProps) => 
     diagnosis: "Post-acute rehabilitation following hip replacement",
     acuityLevel: 3,
     allergies: ["Penicillin", "Sulfa drugs"],
-    medications: [
-      { name: "Metformin", dosage: "500mg", frequency: "Twice daily" },
-      { name: "Lisinopril", dosage: "10mg", frequency: "Once daily" },
-      { name: "Warfarin", dosage: "5mg", frequency: "Once daily" }
-    ],
-    vitals: {
-      bloodPressure: "130/85",
-      heartRate: "72",
-      temperature: "98.6°F",
-      oxygen: "98%",
-      lastUpdated: "2024-01-20 08:30"
-    },
-    careNotes: [
-      {
-        date: "2024-01-20",
-        time: "08:30",
-        note: "Patient ambulated 50 feet with walker, no distress noted",
-        staff: "RN Sarah M."
-      },
-      {
-        date: "2024-01-19",
-        time: "14:15",
-        note: "Physical therapy session completed, good progress with mobility",
-        staff: "PT Michael R."
-      }
-    ],
     riskFactors: ["Fall risk", "Medication compliance"],
     functionalStatus: {
       mobility: "Requires assistance",
@@ -102,7 +89,7 @@ const PatientProfile = ({ patientId, isOpen, onClose }: PatientProfileProps) => 
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[95vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-blue-50 to-green-50">
           <div className="flex items-center space-x-4">
@@ -118,13 +105,18 @@ const PatientProfile = ({ patientId, isOpen, onClose }: PatientProfileProps) => 
                 <span>MRN: {patient.mrn}</span>
                 <span>Age: {calculateAge(patient.dateOfBirth)}</span>
                 <span>Room: {patient.room}</span>
+                <Badge className="bg-blue-100 text-blue-800">Acuity Level {patient.acuityLevel}</Badge>
               </div>
             </div>
           </div>
           <div className="flex items-center space-x-2">
             <Button size="sm" variant="outline">
               <Edit className="w-4 h-4 mr-2" />
-              Edit
+              Edit Profile
+            </Button>
+            <Button size="sm" variant="outline">
+              <FileText className="w-4 h-4 mr-2" />
+              Print Summary
             </Button>
             <Button size="sm" variant="ghost" onClick={onClose}>
               <X className="w-4 h-4" />
@@ -133,279 +125,66 @@ const PatientProfile = ({ patientId, isOpen, onClose }: PatientProfileProps) => 
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(90vh-120px)]">
-          <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-5 bg-gray-50 m-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="medical">Medical</TabsTrigger>
-              <TabsTrigger value="care">Care Notes</TabsTrigger>
-              <TabsTrigger value="vitals">Vitals</TabsTrigger>
-              <TabsTrigger value="contacts">Contacts</TabsTrigger>
+        <div className="overflow-y-auto max-h-[calc(95vh-120px)]">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-7 bg-gray-50 m-4">
+              <TabsTrigger value="overview" className="flex items-center space-x-1">
+                <User className="w-4 h-4" />
+                <span>Overview</span>
+              </TabsTrigger>
+              <TabsTrigger value="notes" className="flex items-center space-x-1">
+                <FileText className="w-4 h-4" />
+                <span>Notes</span>
+              </TabsTrigger>
+              <TabsTrigger value="orders" className="flex items-center space-x-1">
+                <ClipboardList className="w-4 h-4" />
+                <span>Orders</span>
+              </TabsTrigger>
+              <TabsTrigger value="vitals" className="flex items-center space-x-1">
+                <Heart className="w-4 h-4" />
+                <span>Vitals & Labs</span>
+              </TabsTrigger>
+              <TabsTrigger value="careplans" className="flex items-center space-x-1">
+                <Target className="w-4 h-4" />
+                <span>Care Plans</span>
+              </TabsTrigger>
+              <TabsTrigger value="medications" className="flex items-center space-x-1">
+                <Pill className="w-4 h-4" />
+                <span>Medications</span>
+              </TabsTrigger>
+              <TabsTrigger value="assessments" className="flex items-center space-x-1">
+                <Stethoscope className="w-4 h-4" />
+                <span>Assessments</span>
+              </TabsTrigger>
             </TabsList>
 
             <div className="p-6">
-              <TabsContent value="overview" className="space-y-6">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {/* Demographics */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-lg">
-                        <User className="w-5 h-5 mr-2" />
-                        Demographics
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div>
-                        <span className="text-sm text-gray-600">Date of Birth</span>
-                        <p className="font-medium">{new Date(patient.dateOfBirth).toLocaleDateString()}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-gray-600">Gender</span>
-                        <p className="font-medium">{patient.gender}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-gray-600">Address</span>
-                        <p className="font-medium text-sm">{patient.address}</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Admission Info */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-lg">
-                        <Calendar className="w-5 h-5 mr-2" />
-                        Admission
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div>
-                        <span className="text-sm text-gray-600">Admission Date</span>
-                        <p className="font-medium">{new Date(patient.admissionDate).toLocaleDateString()}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-gray-600">Attending Physician</span>
-                        <p className="font-medium">{patient.physician}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-gray-600">Acuity Level</span>
-                        <Badge className="bg-orange-100 text-orange-800">Level {patient.acuityLevel}</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Risk Factors */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-lg">
-                        <AlertTriangle className="w-5 h-5 mr-2 text-orange-600" />
-                        Risk Factors
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        {patient.riskFactors.map((risk, index) => (
-                          <Badge key={index} variant="outline" className="mr-2">
-                            {risk}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Diagnosis */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center text-lg">
-                      <FileText className="w-5 h-5 mr-2" />
-                      Primary Diagnosis
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-900">{patient.diagnosis}</p>
-                  </CardContent>
-                </Card>
+              <TabsContent value="overview">
+                <PatientOverview patient={patient} />
               </TabsContent>
 
-              <TabsContent value="medical" className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Medications */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-lg">
-                        <Pill className="w-5 h-5 mr-2" />
-                        Current Medications
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {patient.medications.map((med, index) => (
-                          <div key={index} className="border-b pb-2 last:border-b-0">
-                            <p className="font-medium">{med.name}</p>
-                            <p className="text-sm text-gray-600">{med.dosage} - {med.frequency}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Allergies */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-lg">
-                        <AlertTriangle className="w-5 h-5 mr-2 text-red-600" />
-                        Allergies
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        {patient.allergies.map((allergy, index) => (
-                          <Badge key={index} className="bg-red-100 text-red-800 mr-2">
-                            {allergy}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Functional Status */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center text-lg">
-                      <Activity className="w-5 h-5 mr-2" />
-                      Functional Status
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <div>
-                        <span className="text-sm text-gray-600">Mobility</span>
-                        <p className="font-medium">{patient.functionalStatus.mobility}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-gray-600">Self Care</span>
-                        <p className="font-medium">{patient.functionalStatus.selfCare}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-gray-600">Cognition</span>
-                        <p className="font-medium">{patient.functionalStatus.cognition}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              <TabsContent value="notes">
+                <PatientProgressNotes patientId={patient.id} />
               </TabsContent>
 
-              <TabsContent value="care" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center text-lg">
-                      <FileText className="w-5 h-5 mr-2" />
-                      Recent Care Notes
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {patient.careNotes.map((note, index) => (
-                        <div key={index} className="border-l-4 border-blue-200 pl-4 py-2">
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-sm font-medium text-gray-900">{note.staff}</span>
-                            <span className="text-sm text-gray-500">{note.date} at {note.time}</span>
-                          </div>
-                          <p className="text-gray-700">{note.note}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+              <TabsContent value="orders">
+                <PatientOrders patientId={patient.id} />
               </TabsContent>
 
-              <TabsContent value="vitals" className="space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center text-lg">
-                      <Heart className="w-5 h-5 mr-2 text-red-600" />
-                      Latest Vitals
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                      <div className="text-center p-4 bg-blue-50 rounded-lg">
-                        <p className="text-sm text-gray-600">Blood Pressure</p>
-                        <p className="text-xl font-bold text-blue-600">{patient.vitals.bloodPressure}</p>
-                      </div>
-                      <div className="text-center p-4 bg-green-50 rounded-lg">
-                        <p className="text-sm text-gray-600">Heart Rate</p>
-                        <p className="text-xl font-bold text-green-600">{patient.vitals.heartRate} bpm</p>
-                      </div>
-                      <div className="text-center p-4 bg-orange-50 rounded-lg">
-                        <p className="text-sm text-gray-600">Temperature</p>
-                        <p className="text-xl font-bold text-orange-600">{patient.vitals.temperature}</p>
-                      </div>
-                      <div className="text-center p-4 bg-purple-50 rounded-lg">
-                        <p className="text-sm text-gray-600">Oxygen Sat</p>
-                        <p className="text-xl font-bold text-purple-600">{patient.vitals.oxygen}</p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600 flex items-center">
-                      <Clock className="w-4 h-4 mr-1" />
-                      Last updated: {patient.vitals.lastUpdated}
-                    </p>
-                  </CardContent>
-                </Card>
+              <TabsContent value="vitals">
+                <PatientVitalsLabs patientId={patient.id} />
               </TabsContent>
 
-              <TabsContent value="contacts" className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Patient Contact */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-lg">
-                        <User className="w-5 h-5 mr-2" />
-                        Patient Contact
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div className="flex items-center space-x-2">
-                        <Phone className="w-4 h-4 text-gray-500" />
-                        <span>{patient.phone}</span>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Mail className="w-4 h-4 text-gray-500" />
-                        <span>{patient.email}</span>
-                      </div>
-                      <div className="flex items-start space-x-2">
-                        <MapPin className="w-4 h-4 text-gray-500 mt-1" />
-                        <span className="text-sm">{patient.address}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
+              <TabsContent value="careplans">
+                <PatientCarePlans patientId={patient.id} />
+              </TabsContent>
 
-                  {/* Emergency Contact */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center text-lg">
-                        <AlertTriangle className="w-5 h-5 mr-2 text-red-600" />
-                        Emergency Contact
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <div>
-                        <span className="text-sm text-gray-600">Name</span>
-                        <p className="font-medium">{patient.emergencyContact.name}</p>
-                      </div>
-                      <div>
-                        <span className="text-sm text-gray-600">Relationship</span>
-                        <p className="font-medium">{patient.emergencyContact.relationship}</p>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Phone className="w-4 h-4 text-gray-500" />
-                        <span>{patient.emergencyContact.phone}</span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+              <TabsContent value="medications">
+                <PatientMedications patientId={patient.id} />
+              </TabsContent>
+
+              <TabsContent value="assessments">
+                <PatientAssessments patientId={patient.id} />
               </TabsContent>
             </div>
           </Tabs>

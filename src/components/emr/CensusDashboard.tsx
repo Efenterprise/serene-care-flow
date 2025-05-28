@@ -15,8 +15,12 @@ import {
   Building
 } from "lucide-react";
 import CensusMetrics from "@/components/bedboard/CensusMetrics";
+import PatientProfile from "@/components/patient/PatientProfile";
 
 const CensusDashboard = () => {
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
   // Mock census data
   const censusData = {
     totalBeds: 120,
@@ -42,6 +46,7 @@ const CensusDashboard = () => {
       id: "1",
       type: "admission",
       patient: "John Smith",
+      patientId: "pt-001",
       room: "101A",
       time: "08:30 AM",
       status: "completed"
@@ -50,6 +55,7 @@ const CensusDashboard = () => {
       id: "2",
       type: "discharge",
       patient: "Mary Johnson",
+      patientId: "pt-002", 
       room: "203B",
       time: "11:15 AM",
       status: "pending"
@@ -58,6 +64,7 @@ const CensusDashboard = () => {
       id: "3",
       type: "transfer",
       patient: "Robert Davis",
+      patientId: "pt-003",
       room: "ICU-5 → 105A",
       time: "02:45 PM",
       status: "in_progress"
@@ -66,6 +73,7 @@ const CensusDashboard = () => {
       id: "4",
       type: "admission",
       patient: "Susan Brown",
+      patientId: "pt-004",
       room: "207A",
       time: "04:20 PM",
       status: "scheduled"
@@ -98,6 +106,16 @@ const CensusDashboard = () => {
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  const handlePatientNameClick = (patientId: string) => {
+    setSelectedPatientId(patientId);
+    setIsProfileOpen(true);
+  };
+
+  const handleCloseProfile = () => {
+    setIsProfileOpen(false);
+    setSelectedPatientId(null);
   };
 
   return (
@@ -166,7 +184,12 @@ const CensusDashboard = () => {
                 <div className="flex items-center space-x-3">
                   {getMovementIcon(movement.type)}
                   <div>
-                    <p className="font-medium text-gray-900">{movement.patient}</p>
+                    <button 
+                      onClick={() => handlePatientNameClick(movement.patientId)}
+                      className="font-medium text-blue-600 hover:text-blue-800 underline text-left"
+                    >
+                      {movement.patient}
+                    </button>
                     <p className="text-sm text-gray-600">
                       {movement.type === 'transfer' ? movement.room : `Room ${movement.room}`}
                     </p>
@@ -207,6 +230,13 @@ const CensusDashboard = () => {
           <p className="text-sm text-gray-600">View and assign beds</p>
         </Card>
       </div>
+
+      {/* Patient Profile Modal */}
+      <PatientProfile 
+        patientId={selectedPatientId || undefined}
+        isOpen={isProfileOpen}
+        onClose={handleCloseProfile}
+      />
     </div>
   );
 };
