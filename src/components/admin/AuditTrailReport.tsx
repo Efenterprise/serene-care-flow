@@ -122,9 +122,9 @@ const AuditTrailReport = () => {
 
   const formatLogDetails = (details: unknown): string => {
     try {
-      return typeof details === 'object' 
+      return typeof details === 'object' && details !== null
         ? JSON.stringify(details, null, 2)
-        : String(details);
+        : String(details || '');
     } catch {
       return 'Invalid JSON data';
     }
@@ -263,7 +263,7 @@ const AuditTrailReport = () => {
                       {log.details && (
                         <div className="text-xs bg-gray-50 p-2 rounded mt-2">
                           <pre className="whitespace-pre-wrap">
-                            {formatLogDetails(log.details)}
+                            {formatLogDetails(log.details) as string}
                           </pre>
                         </div>
                       )}
