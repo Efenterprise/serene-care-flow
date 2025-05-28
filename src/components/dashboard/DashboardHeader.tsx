@@ -3,14 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -137,33 +129,34 @@ const DashboardHeader = () => {
           </div>
 
           {/* Main Navigation Menu */}
-          <NavigationMenu>
-            <NavigationMenuList className="space-x-1">
-              {navigationItems.map((item) => (
-                <NavigationMenuItem key={item.title}>
-                  <NavigationMenuTrigger className="bg-transparent hover:bg-blue-50 data-[state=open]:bg-blue-50">
+          <div className="flex items-center space-x-1">
+            {navigationItems.map((item) => (
+              <DropdownMenu key={item.title}>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="bg-transparent hover:bg-blue-50 data-[state=open]:bg-blue-50">
                     <item.icon className="w-4 h-4 mr-2" />
                     {item.title}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent className="bg-white border border-gray-200 shadow-lg z-50">
-                    <div className="w-80 p-4">
-                      <div className="grid gap-2">
-                        {item.items.map((subItem) => (
-                          <NavigationMenuLink
-                            key={subItem.title}
-                            href={subItem.href}
-                            className="block px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-md transition-colors"
-                          >
-                            {subItem.title}
-                          </NavigationMenuLink>
-                        ))}
-                      </div>
+                    <ChevronDown className="w-4 h-4 ml-2" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-80 bg-white border border-gray-200 shadow-lg z-50">
+                  <div className="p-4">
+                    <div className="grid gap-2">
+                      {item.items.map((subItem) => (
+                        <DropdownMenuItem
+                          key={subItem.title}
+                          className="px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-md transition-colors cursor-pointer"
+                          onClick={() => navigate(subItem.href)}
+                        >
+                          {subItem.title}
+                        </DropdownMenuItem>
+                      ))}
                     </div>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              ))}
-            </NavigationMenuList>
-          </NavigationMenu>
+                  </div>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ))}
+          </div>
         </div>
 
         {/* Right side - Facility Selector, User Profile, and Controls */}
