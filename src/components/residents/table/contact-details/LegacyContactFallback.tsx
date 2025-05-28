@@ -10,13 +10,31 @@ import {
   User
 } from "lucide-react";
 import { Resident } from "@/hooks/useResidents";
+import { useSMS } from "@/hooks/useSMS";
 
 interface LegacyContactFallbackProps {
   resident: Resident;
 }
 
 const LegacyContactFallback = ({ resident }: LegacyContactFallbackProps) => {
+  const { sendSMS, isLoading } = useSMS();
   const hasEmergencyContact = resident.emergency_contact_name && resident.emergency_contact_phone;
+
+  const handleSendSMS = () => {
+    if (resident.emergency_contact_phone) {
+      sendSMS({
+        to: resident.emergency_contact_phone,
+        message: `Hello, this is regarding ${resident.first_name} ${resident.last_name} at our facility. Please contact us when you receive this message.`,
+        residentName: `${resident.first_name} ${resident.last_name}`,
+      });
+    }
+  };
+
+  const handleCall = () => {
+    if (resident.emergency_contact_phone) {
+      window.open(`tel:${resident.emergency_contact_phone}`, '_self');
+    }
+  };
 
   if (!hasEmergencyContact) {
     return (
@@ -88,14 +106,25 @@ const LegacyContactFallback = ({ resident }: LegacyContactFallbackProps) => {
             </div>
 
             <div className="flex space-x-2">
-              <Button size="sm" variant="outline" className="flex-1 h-8">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="flex-1 h-8"
+                onClick={handleCall}
+              >
                 <Phone className="w-3 h-3 mr-1" />
                 Call
               </Button>
               
-              <Button size="sm" variant="outline" className="flex-1 h-8">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="flex-1 h-8"
+                onClick={handleSendSMS}
+                disabled={isLoading}
+              >
                 <MessageSquare className="w-3 h-3 mr-1" />
-                Text
+                {isLoading ? 'Sending...' : 'Text'}
               </Button>
             </div>
           </CardContent>
