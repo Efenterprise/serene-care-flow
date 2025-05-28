@@ -73,7 +73,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const isAllowed = allowedIPs?.some(({ ip_address }) => {
           // Simple IP range check - in production, use proper CIDR matching
-          return ip.startsWith(ip_address.split('/')[0].substring(0, ip_address.indexOf('.')));
+          const ipAddressStr = String(ip_address);
+          return ip.startsWith(ipAddressStr.split('/')[0].substring(0, ipAddressStr.indexOf('.')));
         });
 
         if (!isAllowed) {
