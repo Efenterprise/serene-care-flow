@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth.tsx";
 import { LogIn, LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
