@@ -67,8 +67,6 @@ export function AppSidebar() {
   const collapsed = state === "collapsed";
 
   const isActive = (path: string) => currentPath === path;
-  const isExpanded = navigationItems.some((item) => isActive(item.url)) || 
-                    adminItems.some((item) => isActive(item.url));
 
   const getNavClassName = (path: string) => {
     const baseClasses = "flex items-center w-full";
@@ -78,7 +76,7 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible>
+    <Sidebar className={collapsed ? "w-16" : "w-64"} collapsible="offcanvas">
       <SidebarContent className="bg-white border-r">
         {/* Header */}
         <div className="p-4 border-b">
@@ -92,7 +90,7 @@ export function AppSidebar() {
         </div>
 
         {/* Main Navigation */}
-        <SidebarGroup defaultOpen={isExpanded}>
+        <SidebarGroup>
           <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
             Main Navigation
           </SidebarGroupLabel>
@@ -113,7 +111,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Admin Section */}
-        <SidebarGroup defaultOpen={adminItems.some((item) => isActive(item.url))}>
+        <SidebarGroup>
           <SidebarGroupLabel className={collapsed ? "sr-only" : ""}>
             Administration
           </SidebarGroupLabel>
