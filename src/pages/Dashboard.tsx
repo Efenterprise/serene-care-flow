@@ -3,18 +3,13 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Plus } from "lucide-react";
-import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import WelcomeSection from "@/components/dashboard/WelcomeSection";
 import QuickStatsGrid from "@/components/dashboard/QuickStatsGrid";
 import AlertsPanel from "@/components/dashboard/AlertsPanel";
 import RecentActivityPanel from "@/components/dashboard/RecentActivityPanel";
-import BedBoard from "@/components/BedBoard";
-import ClinicalDashboard from "@/components/emr/ClinicalDashboard";
-import MdsManagement from "@/components/emr/MdsManagement";
-import CensusDashboard from "@/components/emr/CensusDashboard";
-import RevenueCycleDashboard from "@/components/emr/RevenueCycleDashboard";
 import ManualAdmissionForm from "@/components/admissions/ManualAdmissionForm";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import MainLayout from "@/components/layout/MainLayout";
 
 const Dashboard = () => {
   const [currentTime] = useState(new Date().toLocaleString());
@@ -42,9 +37,7 @@ const Dashboard = () => {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-        <DashboardHeader />
-
+      <MainLayout>
         <div className="container mx-auto px-6 py-8">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -61,7 +54,7 @@ const Dashboard = () => {
           
           <QuickStatsGrid censusData={censusData} />
 
-          {/* Main Dashboard Content - Now without tabs, showing overview by default */}
+          {/* Main Dashboard Content */}
           <div className="space-y-6">
             {/* Overview Content */}
             <div className="grid lg:grid-cols-3 gap-6">
@@ -146,7 +139,7 @@ const Dashboard = () => {
             onClose={() => setIsAdmissionFormOpen(false)}
           />
         </div>
-      </div>
+      </MainLayout>
     </ProtectedRoute>
   );
 };
