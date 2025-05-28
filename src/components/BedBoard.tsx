@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,40 +21,50 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/componen
 import AdmissionsQueue from "./admissions/AdmissionsQueue";
 import BedGrid from "./bedboard/BedGrid";
 import CensusMetrics from "./bedboard/CensusMetrics";
+import { useBeds } from "@/hooks/useBeds";
+import { useReferrals } from "@/hooks/useReferrals";
 
 const BedBoard = () => {
   const [selectedUnit, setSelectedUnit] = useState("all");
+  const { data: beds } = useBeds();
+  const { data: referrals } = useReferrals();
   
+  // Calculate real metrics from Supabase data
+  const totalBeds = beds?.length || 0;
+  const occupiedBeds = beds?.filter(bed => !bed.is_available).length || 0;
+  const availableBeds = totalBeds - occupiedBeds;
+  
+  // Mock units for now - in a real implementation, you'd have a units table
   const units = [
-    { id: "all", name: "All Units", beds: 120, occupied: 95 },
-    { id: "unit-a", name: "Unit A", beds: 30, occupied: 24 },
-    { id: "unit-b", name: "Unit B", beds: 30, occupied: 28 },
-    { id: "unit-c", name: "Unit C", beds: 30, occupied: 22 },
-    { id: "unit-d", name: "Unit D", beds: 30, occupied: 21 }
-  ];
-
-  const pendingAdmissions = [
-    {
-      id: 1,
-      name: "Margaret Johnson",
-      hospital: "St. Mary's Hospital",
-      diagnosis: "Hip Fracture",
-      insurance: "Medicare A",
-      estimatedLOS: "14 days",
-      priority: "high" as const,
-      readyDate: "Today",
-      aiScore: 92
+    { 
+      id: "all", 
+      name: "All Units", 
+      beds: totalBeds, 
+      occupied: occupiedBeds 
     },
-    {
-      id: 2,
-      name: "Robert Chen", 
-      hospital: "General Hospital",
-      diagnosis: "Stroke Recovery",
-      insurance: "Medicare A + Humana",
-      estimatedLOS: "21 days", 
-      priority: "medium" as const,
-      readyDate: "Tomorrow",
-      aiScore: 87
+    { 
+      id: "unit-a", 
+      name: "Unit A", 
+      beds: Math.floor(totalBeds / 4), 
+      occupied: Math.floor(occupiedBeds / 4) 
+    },
+    { 
+      id: "unit-b", 
+      name: "Unit B", 
+      beds: Math.floor(totalBeds / 4), 
+      occupied: Math.floor(occupiedBeds / 4) 
+    },
+    { 
+      id: "unit-c", 
+      name: "Unit C", 
+      beds: Math.floor(totalBeds / 4), 
+      occupied: Math.floor(occupiedBeds / 4) 
+    },
+    { 
+      id: "unit-d", 
+      name: "Unit D", 
+      beds: Math.floor(totalBeds / 4), 
+      occupied: Math.floor(occupiedBeds / 4) 
     }
   ];
 
@@ -86,7 +97,7 @@ const BedBoard = () => {
           {/* Admissions Queue */}
           <ResizablePanel defaultSize={30} minSize={25}>
             <div className="p-4 h-full">
-              <AdmissionsQueue pendingAdmissions={pendingAdmissions} />
+              <AdmissionsQueue />
             </div>
           </ResizablePanel>
 

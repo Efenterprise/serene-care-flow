@@ -11,9 +11,10 @@ import {
   AlertTriangle, 
   CheckCircle,
   Clock,
-  Hospital,
-  Phone
+  Loader2
 } from "lucide-react";
+import { useBeds, useUpdateBedAvailability } from "@/hooks/useBeds";
+import { useToast } from "@/hooks/use-toast";
 
 interface Unit {
   id: string;
@@ -29,41 +30,70 @@ interface BedGridProps {
 }
 
 const BedGrid = ({ selectedUnit, onUnitChange, units }: BedGridProps) => {
-  // Mock bed data
-  const beds = Array.from({ length: 30 }, (_, i) => {
-    const bedNumber = i + 1;
-    const isOccupied = Math.random() > 0.2; // 80% occupancy rate
-    
-    return {
-      id: bedNumber,
-      number: `${bedNumber.toString().padStart(3, '0')}`,
-      status: isOccupied ? 'occupied' : 'available',
-      resident: isOccupied ? {
-        name: ['Mary Johnson', 'Robert Smith', 'Helen Davis', 'Frank Wilson', 'Sarah Brown'][Math.floor(Math.random() * 5)],
-        admitDate: '2024-01-15',
-        diagnosis: ['Hip Fracture', 'Stroke Recovery', 'Pneumonia', 'Post-Surgical', 'CHF'][Math.floor(Math.random() * 5)],
-        payorSource: ['Medicare A', 'Medicare A + Supp', 'Medicaid', 'Private Pay'][Math.floor(Math.random() * 4)],
-        losProjected: Math.floor(Math.random() * 30) + 5,
-        alerts: Math.random() > 0.7 ? ['Fall Risk'] : []
-      } : null,
-      roomType: ['Private', 'Semi-Private', 'Private'][Math.floor(Math.random() * 3)],
-      dischargeScheduled: isOccupied && Math.random() > 0.9 ? '2024-01-25' : null
-    };
-  });
+  const { data: beds, isLoading } = useBeds();
+  const updateBedAvailability = useUpdateBedAvailability();
+  const { toast } = useToast();
+
+  const handleBedAvailabilityToggle = async (bedId: string, currentAvailability: boolean) => {
+    try {
+      await updateBedAvailability.mutateAsync({ 
+        id: bedId, 
+        is_available: !currentAvailability 
+      });
+      toast({
+        title: "Bed Status Updated",
+        description: `Bed is now ${!currentAvailability ? 'available' : 'occupied'}.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update bed status. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const getBedStatusColor = (bed: any) => {
-    if (bed.status === 'available') return 'bg-green-50 border-green-200 hover:bg-green-100';
-    if (bed.dischargeScheduled) return 'bg-orange-50 border-orange-200 hover:bg-orange-100';
-    if (bed.resident?.alerts.length > 0) return 'bg-red-50 border-red-200 hover:bg-red-100';
+    if (bed.is_available) return 'bg-green-50 border-green-200 hover:bg-green-100';
+    if (bed.projected_discharge_date) {
+      const dischargeDate = new Date(bed.projected_discharge_date);
+      const today = new Date();
+      const daysUntilDischarge = Math.ceil((dischargeDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      if (daysUntilDischarge <= 3) return 'bg-orange-50 border-orange-200 hover:bg-orange-100';
+    }
     return 'bg-blue-50 border-blue-200 hover:bg-blue-100';
   };
 
   const getBedIcon = (bed: any) => {
-    if (bed.status === 'available') return <Bed className="w-4 h-4 text-green-600" />;
-    if (bed.dischargeScheduled) return <Calendar className="w-4 h-4 text-orange-600" />;
-    if (bed.resident?.alerts.length > 0) return <AlertTriangle className="w-4 h-4 text-red-600" />;
+    if (bed.is_available) return <Bed className="w-4 h-4 text-green-600" />;
+    if (bed.projected_discharge_date) {
+      const dischargeDate = new Date(bed.projected_discharge_date);
+      const today = new Date();
+      const daysUntilDischarge = Math.ceil((dischargeDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      if (daysUntilDischarge <= 3) return <Calendar className="w-4 h-4 text-orange-600" />;
+    }
     return <User className="w-4 h-4 text-blue-600" />;
   };
+
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return null;
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  const getDaysInBed = (admitDate: string | null) => {
+    if (!admitDate) return 0;
+    const admit = new Date(admitDate);
+    const today = new Date();
+    return Math.ceil((today.getTime() - admit.getTime()) / (1000 * 60 * 60 * 24));
+  };
+
+  if (isLoading) {
+    return (
+      <div className="h-full flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="h-full">
@@ -95,56 +125,60 @@ const BedGrid = ({ selectedUnit, onUnitChange, units }: BedGridProps) => {
               <div className="w-3 h-3 bg-orange-200 rounded"></div>
               <span>Discharge Soon</span>
             </div>
-            <div className="flex items-center space-x-1">
-              <div className="w-3 h-3 bg-red-200 rounded"></div>
-              <span>Alert</span>
-            </div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-5 gap-3 h-full overflow-y-auto">
-        {beds.map((bed) => (
+        {beds?.map((bed) => (
           <Card 
             key={bed.id} 
             className={`${getBedStatusColor(bed)} border cursor-pointer transition-all duration-200 hover:shadow-md`}
+            onClick={() => handleBedAvailabilityToggle(bed.id, bed.is_available || false)}
           >
             <CardContent className="p-3">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center space-x-2">
                   {getBedIcon(bed)}
-                  <span className="font-semibold text-sm">#{bed.number}</span>
+                  <span className="font-semibold text-sm">#{bed.bed_number}</span>
                 </div>
-                {bed.resident?.alerts.length > 0 && (
+                {bed.isolation_required && (
                   <Badge variant="destructive" className="text-xs px-1 py-0">
-                    {bed.resident.alerts.length}
+                    ISO
                   </Badge>
                 )}
               </div>
 
-              {bed.status === 'occupied' && bed.resident ? (
+              {!bed.is_available ? (
                 <div className="space-y-1">
-                  <p className="font-medium text-xs text-gray-900 truncate">
-                    {bed.resident.name}
+                  <p className="font-medium text-xs text-gray-900">
+                    Occupied
                   </p>
-                  <p className="text-xs text-gray-600 truncate">
-                    {bed.resident.diagnosis}
+                  <p className="text-xs text-gray-600">
+                    Room {bed.room_number}
                   </p>
                   <div className="flex justify-between text-xs text-gray-500">
-                    <span>LOS: {bed.resident.losProjected}d</span>
-                    <span>{bed.resident.payorSource}</span>
+                    <span>LOS: {getDaysInBed(bed.admit_date)}d</span>
+                    <span>{bed.bed_type}</span>
                   </div>
-                  {bed.dischargeScheduled && (
+                  {bed.projected_discharge_date && (
                     <div className="flex items-center text-xs text-orange-600 mt-1">
                       <Calendar className="w-3 h-3 mr-1" />
-                      <span>DC Soon</span>
+                      <span>DC {formatDate(bed.projected_discharge_date)}</span>
                     </div>
                   )}
                 </div>
               ) : (
                 <div className="text-center py-2">
                   <p className="text-xs font-medium text-green-700">Available</p>
-                  <p className="text-xs text-gray-600">{bed.roomType}</p>
+                  <p className="text-xs text-gray-600">
+                    {bed.bed_type} - Room {bed.room_number}
+                  </p>
+                  {bed.amenities && bed.amenities.length > 0 && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      {bed.amenities.join(', ')}
+                    </p>
+                  )}
                 </div>
               )}
             </CardContent>
