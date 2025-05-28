@@ -60,6 +60,134 @@ export type Database = {
         }
         Relationships: []
       }
+      emr_connections: {
+        Row: {
+          access_token: string | null
+          authentication_method: string
+          certificate_data: string | null
+          client_id: string | null
+          client_secret: string | null
+          connection_errors: Json | null
+          connection_type: string
+          created_at: string | null
+          current_usage: number | null
+          daily_request_limit: number | null
+          endpoint_url: string
+          id: string
+          is_active: boolean | null
+          last_successful_connection: string | null
+          platform_id: string | null
+          refresh_token: string | null
+          requests_per_minute: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          access_token?: string | null
+          authentication_method: string
+          certificate_data?: string | null
+          client_id?: string | null
+          client_secret?: string | null
+          connection_errors?: Json | null
+          connection_type: string
+          created_at?: string | null
+          current_usage?: number | null
+          daily_request_limit?: number | null
+          endpoint_url: string
+          id?: string
+          is_active?: boolean | null
+          last_successful_connection?: string | null
+          platform_id?: string | null
+          refresh_token?: string | null
+          requests_per_minute?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          access_token?: string | null
+          authentication_method?: string
+          certificate_data?: string | null
+          client_id?: string | null
+          client_secret?: string | null
+          connection_errors?: Json | null
+          connection_type?: string
+          created_at?: string | null
+          current_usage?: number | null
+          daily_request_limit?: number | null
+          endpoint_url?: string
+          id?: string
+          is_active?: boolean | null
+          last_successful_connection?: string | null
+          platform_id?: string | null
+          refresh_token?: string | null
+          requests_per_minute?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emr_connections_platform_id_fkey"
+            columns: ["platform_id"]
+            isOneToOne: false
+            referencedRelation: "referral_platforms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hospital_communications: {
+        Row: {
+          communication_type: string
+          created_at: string | null
+          direction: string
+          error_message: string | null
+          id: string
+          message_content: Json | null
+          patient_tracking_id: string | null
+          platform_id: string | null
+          processed_at: string | null
+          retry_count: number | null
+          status: string | null
+        }
+        Insert: {
+          communication_type: string
+          created_at?: string | null
+          direction: string
+          error_message?: string | null
+          id?: string
+          message_content?: Json | null
+          patient_tracking_id?: string | null
+          platform_id?: string | null
+          processed_at?: string | null
+          retry_count?: number | null
+          status?: string | null
+        }
+        Update: {
+          communication_type?: string
+          created_at?: string | null
+          direction?: string
+          error_message?: string | null
+          id?: string
+          message_content?: Json | null
+          patient_tracking_id?: string | null
+          platform_id?: string | null
+          processed_at?: string | null
+          retry_count?: number | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hospital_communications_patient_tracking_id_fkey"
+            columns: ["patient_tracking_id"]
+            isOneToOne: false
+            referencedRelation: "patient_tracking"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hospital_communications_platform_id_fkey"
+            columns: ["platform_id"]
+            isOneToOne: false
+            referencedRelation: "referral_platforms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       integration_logs: {
         Row: {
           created_at: string | null
@@ -103,6 +231,143 @@ export type Database = {
             columns: ["platform_id"]
             isOneToOne: false
             referencedRelation: "referral_platforms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patient_tracking: {
+        Row: {
+          admission_date: string | null
+          care_plan: Json | null
+          communication_log: Json | null
+          created_at: string | null
+          current_status: string
+          discharge_date: string | null
+          discharge_summary: string | null
+          facility_id: string | null
+          id: string
+          last_hospital_contact: string | null
+          location: string | null
+          medication_list: Json | null
+          patient_mrn: string
+          quality_metrics: Json | null
+          readmission_date: string | null
+          readmission_risk_score: number | null
+          referral_id: string | null
+          risk_factors: string[] | null
+          updated_at: string | null
+        }
+        Insert: {
+          admission_date?: string | null
+          care_plan?: Json | null
+          communication_log?: Json | null
+          created_at?: string | null
+          current_status: string
+          discharge_date?: string | null
+          discharge_summary?: string | null
+          facility_id?: string | null
+          id?: string
+          last_hospital_contact?: string | null
+          location?: string | null
+          medication_list?: Json | null
+          patient_mrn: string
+          quality_metrics?: Json | null
+          readmission_date?: string | null
+          readmission_risk_score?: number | null
+          referral_id?: string | null
+          risk_factors?: string[] | null
+          updated_at?: string | null
+        }
+        Update: {
+          admission_date?: string | null
+          care_plan?: Json | null
+          communication_log?: Json | null
+          created_at?: string | null
+          current_status?: string
+          discharge_date?: string | null
+          discharge_summary?: string | null
+          facility_id?: string | null
+          id?: string
+          last_hospital_contact?: string | null
+          location?: string | null
+          medication_list?: Json | null
+          patient_mrn?: string
+          quality_metrics?: Json | null
+          readmission_date?: string | null
+          readmission_risk_score?: number | null
+          referral_id?: string | null
+          risk_factors?: string[] | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_tracking_facility_id_fkey"
+            columns: ["facility_id"]
+            isOneToOne: false
+            referencedRelation: "referral_platforms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_tracking_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "referrals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quality_metrics: {
+        Row: {
+          care_plan_compliance: number | null
+          cost_per_day: number | null
+          created_at: string | null
+          functional_improvement: Json | null
+          id: string
+          insurance_approval_rate: number | null
+          length_of_stay: number | null
+          medication_adherence_rate: number | null
+          patient_satisfaction_score: number | null
+          readmission_within_30_days: boolean | null
+          referral_id: string | null
+          reporting_period_end: string
+          reporting_period_start: string
+        }
+        Insert: {
+          care_plan_compliance?: number | null
+          cost_per_day?: number | null
+          created_at?: string | null
+          functional_improvement?: Json | null
+          id?: string
+          insurance_approval_rate?: number | null
+          length_of_stay?: number | null
+          medication_adherence_rate?: number | null
+          patient_satisfaction_score?: number | null
+          readmission_within_30_days?: boolean | null
+          referral_id?: string | null
+          reporting_period_end: string
+          reporting_period_start: string
+        }
+        Update: {
+          care_plan_compliance?: number | null
+          cost_per_day?: number | null
+          created_at?: string | null
+          functional_improvement?: Json | null
+          id?: string
+          insurance_approval_rate?: number | null
+          length_of_stay?: number | null
+          medication_adherence_rate?: number | null
+          patient_satisfaction_score?: number | null
+          readmission_within_30_days?: boolean | null
+          referral_id?: string | null
+          reporting_period_end?: string
+          reporting_period_start?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quality_metrics_referral_id_fkey"
+            columns: ["referral_id"]
+            isOneToOne: false
+            referencedRelation: "referrals"
             referencedColumns: ["id"]
           },
         ]
@@ -328,7 +593,17 @@ export type Database = {
         | "commercial"
         | "other"
       priority_level: "low" | "medium" | "high" | "urgent"
-      referral_source: "profility" | "reside" | "census_pro" | "manual"
+      referral_source:
+        | "profility"
+        | "reside"
+        | "census_pro"
+        | "manual"
+        | "epic"
+        | "allscripts"
+        | "cerner"
+        | "meditech"
+        | "nextgen"
+        | "athenahealth"
       referral_status:
         | "pending"
         | "reviewing"
@@ -459,7 +734,18 @@ export const Constants = {
         "other",
       ],
       priority_level: ["low", "medium", "high", "urgent"],
-      referral_source: ["profility", "reside", "census_pro", "manual"],
+      referral_source: [
+        "profility",
+        "reside",
+        "census_pro",
+        "manual",
+        "epic",
+        "allscripts",
+        "cerner",
+        "meditech",
+        "nextgen",
+        "athenahealth",
+      ],
       referral_status: [
         "pending",
         "reviewing",

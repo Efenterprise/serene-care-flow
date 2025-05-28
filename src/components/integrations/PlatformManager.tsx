@@ -9,16 +9,19 @@ import {
   CheckCircle, 
   AlertCircle,
   Clock,
-  Zap
+  Zap,
+  Hospital
 } from "lucide-react";
 import { useReferralPlatforms } from "@/hooks/useReferralPlatforms";
 import { IntegrationService } from "@/services/integrationService";
 import { useToast } from "@/hooks/use-toast";
+import EmrDashboard from "../emr/EmrDashboard";
 
 const PlatformManager = () => {
   const { data: platforms, isLoading, refetch } = useReferralPlatforms();
   const [syncing, setSyncing] = useState<string | null>(null);
   const [syncingAll, setSyncingAll] = useState(false);
+  const [showEmrDashboard, setShowEmrDashboard] = useState(false);
   const { toast } = useToast();
 
   const handleSyncPlatform = async (platformId: string, platformName: string) => {
@@ -65,16 +68,25 @@ const PlatformManager = () => {
   };
 
   const getPlatformIcon = (platformType: string) => {
+    const emrSystems = ['epic', 'allscripts', 'cerner', 'meditech', 'nextgen', 'athenahealth'];
+    if (emrSystems.includes(platformType)) {
+      return "🏥";
+    }
+    
     switch (platformType) {
       case "profility":
         return "🧠";
       case "reside":
-        return "🏥";
+        return "🏠";
       case "census_pro":
         return "📊";
       default:
         return "🔗";
     }
+  };
+
+  const isEmrPlatform = (platformType: string) => {
+    return ['epic', 'allscripts', 'cerner', 'meditech', 'nextgen', 'athenahealth'].includes(platformType);
   };
 
   const formatLastSync = (lastSync: string | null) => {
@@ -90,30 +102,55 @@ const PlatformManager = () => {
     return date.toLocaleDateString();
   };
 
+  if (showEmrDashboard) {
+    return (
+      <div>
+        <Button 
+          onClick={() => setShowEmrDashboard(false)}
+          variant="outline"
+          className="mb-6"
+        >
+          ← Back to Platform Manager
+        </Button>
+        <EmrDashboard />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Integration Platforms</h2>
-          <p className="text-gray-600">Manage connections to referral platforms</p>
+          <p className="text-gray-600">Manage connections to referral platforms and EMR systems</p>
         </div>
-        <Button 
-          onClick={handleSyncAll}
-          disabled={syncingAll || syncing !== null}
-          className="bg-blue-600 hover:bg-blue-700"
-        >
-          {syncingAll ? (
-            <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-          ) : (
-            <Zap className="w-4 h-4 mr-2" />
-          )}
-          Sync All Platforms
-        </Button>
+        <div className="flex space-x-3">
+          <Button 
+            onClick={() => setShowEmrDashboard(true)}
+            variant="outline"
+            className="text-blue-600 hover:text-blue-700"
+          >
+            <Hospital className="w-4 h-4 mr-2" />
+            EMR Dashboard
+          </Button>
+          <Button 
+            onClick={handleSyncAll}
+            disabled={syncingAll || syncing !== null}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            {syncingAll ? (
+              <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Zap className="w-4 h-4 mr-2" />
+            )}
+            Sync All Platforms
+          </Button>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {platforms?.map((platform) => (
-          <Card key={platform.id} className="border-0 shadow-sm hover:shadow-md transition-shadow">
+          <Card key={platform.id} className={`border-0 shadow-sm hover:shadow-md transition-shadow ${isEmrPlatform(platform.platform_type) ? 'ring-2 ring-blue-100' : ''}`}>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -122,6 +159,9 @@ const PlatformManager = () => {
                     <CardTitle className="text-lg">{platform.name}</CardTitle>
                     <p className="text-sm text-gray-600 capitalize">
                       {platform.platform_type.replace('_', ' ')}
+                      {isEmrPlatform(platform.platform_type) && (
+                        <Badge variant="outline" className="ml-2 text-xs">EMR</Badge>
+                      )}
                     </p>
                   </div>
                 </div>
