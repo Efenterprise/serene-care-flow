@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Calendar } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Calendar, Plus } from "lucide-react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import WelcomeSection from "@/components/dashboard/WelcomeSection";
 import QuickStatsGrid from "@/components/dashboard/QuickStatsGrid";
@@ -13,9 +14,11 @@ import ClinicalDashboard from "@/components/emr/ClinicalDashboard";
 import MdsManagement from "@/components/emr/MdsManagement";
 import CensusDashboard from "@/components/emr/CensusDashboard";
 import RevenueCycleDashboard from "@/components/emr/RevenueCycleDashboard";
+import ManualAdmissionForm from "@/components/admissions/ManualAdmissionForm";
 
 const Dashboard = () => {
   const [currentTime] = useState(new Date().toLocaleString());
+  const [isAdmissionFormOpen, setIsAdmissionFormOpen] = useState(false);
 
   const censusData = {
     total: 120,
@@ -42,7 +45,19 @@ const Dashboard = () => {
       <DashboardHeader />
 
       <div className="container mx-auto px-6 py-8">
-        <WelcomeSection currentTime={currentTime} />
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <WelcomeSection currentTime={currentTime} />
+          </div>
+          <Button 
+            onClick={() => setIsAdmissionFormOpen(true)}
+            className="bg-green-600 hover:bg-green-700"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Quick Admit Patient
+          </Button>
+        </div>
+        
         <QuickStatsGrid censusData={censusData} />
 
         {/* Main Content Tabs */}
@@ -97,6 +112,12 @@ const Dashboard = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Manual Admission Form */}
+        <ManualAdmissionForm 
+          isOpen={isAdmissionFormOpen}
+          onClose={() => setIsAdmissionFormOpen(false)}
+        />
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/componen
 import AdmissionsQueue from "./admissions/AdmissionsQueue";
 import BedGrid from "./bedboard/BedGrid";
 import CensusMetrics from "./bedboard/CensusMetrics";
+import ManualAdmissionForm from "./admissions/ManualAdmissionForm";
 import { useBeds } from "@/hooks/useBeds";
 import { useReferrals } from "@/hooks/useReferrals";
 import { useEmrConnections } from "@/hooks/useEmrConnections";
@@ -29,6 +30,7 @@ import { usePatientTracking } from "@/hooks/usePatientTracking";
 
 const BedBoard = () => {
   const [selectedUnit, setSelectedUnit] = useState("all");
+  const [isAdmissionFormOpen, setIsAdmissionFormOpen] = useState(false);
   const { data: beds } = useBeds();
   const { data: referrals } = useReferrals();
   const { data: emrConnections } = useEmrConnections();
@@ -88,7 +90,10 @@ const BedBoard = () => {
             <p className="text-gray-600">Real-time bed board with AI-powered admissions and EMR integration</p>
           </div>
           <div className="flex items-center space-x-3">
-            <Button className="bg-blue-600 hover:bg-blue-700">
+            <Button 
+              className="bg-blue-600 hover:bg-blue-700"
+              onClick={() => setIsAdmissionFormOpen(true)}
+            >
               <Plus className="w-4 h-4 mr-2" />
               Quick Admit
             </Button>
@@ -177,6 +182,12 @@ const BedBoard = () => {
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
+
+        {/* Manual Admission Form */}
+        <ManualAdmissionForm 
+          isOpen={isAdmissionFormOpen}
+          onClose={() => setIsAdmissionFormOpen(false)}
+        />
       </div>
     </div>
   );

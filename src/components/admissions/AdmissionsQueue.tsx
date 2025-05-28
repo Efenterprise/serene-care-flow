@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,13 +12,17 @@ import {
   Hospital,
   CheckCircle,
   Users,
-  Loader2
+  Loader2,
+  Plus,
+  UserPlus
 } from "lucide-react";
 import { useReferrals, useUpdateReferralStatus } from "@/hooks/useReferrals";
 import { useToast } from "@/hooks/use-toast";
+import ManualAdmissionForm from "./ManualAdmissionForm";
 
 const AdmissionsQueue = () => {
   const [selectedTab, setSelectedTab] = useState("pending");
+  const [isManualFormOpen, setIsManualFormOpen] = useState(false);
   const { data: referrals, isLoading } = useReferrals();
   const updateStatus = useUpdateReferralStatus();
   const { toast } = useToast();
@@ -182,7 +185,7 @@ const AdmissionsQueue = () => {
       </div>
 
       <Tabs value={selectedTab} onValueChange={setSelectedTab} className="h-full">
-        <TabsList className="grid grid-cols-3 w-full mb-4">
+        <TabsList className="grid grid-cols-4 w-full mb-4">
           <TabsTrigger value="pending">
             Pending ({pendingReferrals.length})
           </TabsTrigger>
@@ -191,6 +194,9 @@ const AdmissionsQueue = () => {
           </TabsTrigger>
           <TabsTrigger value="approved">
             Approved ({approvedReferrals.length})
+          </TabsTrigger>
+          <TabsTrigger value="manual">
+            Manual Entry
           </TabsTrigger>
         </TabsList>
 
@@ -235,7 +241,30 @@ const AdmissionsQueue = () => {
             ))
           )}
         </TabsContent>
+
+        <TabsContent value="manual" className="space-y-3 h-full overflow-y-auto">
+          <div className="text-center py-8">
+            <UserPlus className="w-16 h-16 mx-auto text-blue-500 mb-4" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Manual Patient Admission</h3>
+            <p className="text-gray-600 mb-6 max-w-sm mx-auto">
+              Quickly admit patients directly without going through the referral process.
+            </p>
+            <Button 
+              onClick={() => setIsManualFormOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Start Manual Admission
+            </Button>
+          </div>
+        </TabsContent>
       </Tabs>
+
+      {/* Manual Admission Form */}
+      <ManualAdmissionForm 
+        isOpen={isManualFormOpen}
+        onClose={() => setIsManualFormOpen(false)}
+      />
     </div>
   );
 };
