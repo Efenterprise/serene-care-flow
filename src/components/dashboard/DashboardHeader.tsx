@@ -56,6 +56,7 @@ const DashboardHeader = () => {
       items: [
         { title: "User Management", href: "/admin/users" },
         { title: "Audit Trails", href: "/admin/audit" },
+        { title: "Integrations", href: "/admin/integrations" },
         { title: "System Settings", href: "/admin/settings" },
         { title: "Facility Configuration", href: "/admin/facility" },
         { title: "Security & Permissions", href: "/admin/security" }
