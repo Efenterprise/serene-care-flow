@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ import {
 } from "lucide-react";
 import { useResidents } from "@/hooks/useResidents";
 import { useResidentContacts, useCommunicationLog } from "@/hooks/useContacts";
-import { format } from "date-fns";
+import { format, startOfDay, endOfDay } from "date-fns";
 
 const CommunicationDashboard = () => {
   const [selectedResidentId, setSelectedResidentId] = useState<string>("");
@@ -26,10 +25,30 @@ const CommunicationDashboard = () => {
 
   const selectedResident = residents?.find(r => r.id === selectedResidentId);
 
-  // Communication stats for today
-  const todayCommunications = communications?.filter(comm => 
-    format(new Date(comm.sent_at), 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
-  ) || [];
+  // Fix timezone issues by using proper date boundaries
+  const today = new Date();
+  const todayStart = startOfDay(today);
+  const todayEnd = endOfDay(today);
+
+  // Filter communications for today with proper timezone handling
+  const todayCommunications = communications?.filter(comm => {
+    const commDate = new Date(comm.sent_at);
+    return commDate >= todayStart && commDate <= todayEnd;
+  }) || [];
+
+  console.log('Dashboard Debug:', {
+    today: today.toISOString(),
+    todayStart: todayStart.toISOString(),
+    todayEnd: todayEnd.toISOString(),
+    totalCommunications: communications?.length || 0,
+    todayCommunications: todayCommunications.length,
+    allCommunications: communications?.map(c => ({
+      id: c.id,
+      type: c.communication_type,
+      sent_at: c.sent_at,
+      status: c.status
+    }))
+  });
 
   const stats = {
     totalToday: todayCommunications.length,
@@ -48,6 +67,9 @@ const CommunicationDashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Today's Communications</p>
                 <p className="text-2xl font-bold text-blue-600">{stats.totalToday}</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Total: {communications?.length || 0}
+                </p>
               </div>
               <MessageSquare className="w-8 h-8 text-blue-600" />
             </div>
@@ -210,7 +232,9 @@ const CommunicationDashboard = () => {
                     <div>
                       <p className="font-medium text-sm">{comm.subject || 'No subject'}</p>
                       <p className="text-xs text-gray-600">
-                        {format(new Date(comm.sent_at), "MMM dd, h:mm a")}
+                        {format(new Date(comm.sent_at), "MMM dd, h:mm a")} •
+                        {comm.metadata?.provider && ` via ${comm.metadata.provider}`}
+                        {comm.metadata?.message_id && ` • ID: ${comm.metadata.message_id.substring(0, 8)}...`}
                       </p>
                     </div>
                   </div>

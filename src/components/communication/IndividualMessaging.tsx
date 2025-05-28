@@ -42,6 +42,20 @@ const IndividualMessaging = () => {
     return true;
   });
 
+  // Helper function to format phone number
+  const formatPhoneNumber = (phone: string) => {
+    // Remove all non-digit characters
+    const cleaned = phone.replace(/\D/g, '');
+    
+    // Add country code if missing
+    if (cleaned.length === 10) {
+      return `+1${cleaned}`;
+    } else if (cleaned.length === 11 && cleaned.startsWith('1')) {
+      return `+${cleaned}`;
+    }
+    return phone; // Return as-is if we can't format it
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -55,11 +69,31 @@ const IndividualMessaging = () => {
       return;
     }
 
+    console.log('Sending message:', {
+      messageType,
+      residentId: selectedResidentId,
+      contactId: selectedContactId,
+      residentName: `${selectedResident.first_name} ${selectedResident.last_name}`,
+      contactName: `${selectedContact.first_name} ${selectedContact.last_name}`,
+      contactPhone: selectedContact.phone_primary,
+      contactEmail: selectedContact.email,
+      subject,
+      content: content.substring(0, 100) + '...'
+    });
+
     try {
       // For SMS, use the SMS hook which now handles logging automatically
       if (messageType === "sms" && selectedContact.phone_primary) {
+        const formattedPhone = formatPhoneNumber(selectedContact.phone_primary);
+        
+        console.log('SMS details:', {
+          originalPhone: selectedContact.phone_primary,
+          formattedPhone,
+          messageLength: content.length
+        });
+
         sendSMS({
-          to: selectedContact.phone_primary,
+          to: formattedPhone,
           message: `${subject}\n\n${content}`,
           residentName: `${selectedResident.first_name} ${selectedResident.last_name}`,
           residentId: selectedResidentId,
@@ -67,11 +101,11 @@ const IndividualMessaging = () => {
         });
       } else {
         // For email and call, log to communication table
-        await createCommunication.mutateAsync({
+        const communicationData = {
           resident_id: selectedResidentId,
           contact_id: selectedContactId,
           communication_type: messageType,
-          direction: "outbound",
+          direction: "outbound" as const,
           subject,
           content,
           status: isScheduled ? "scheduled" : "sent",
@@ -80,9 +114,14 @@ const IndividualMessaging = () => {
             contact_name: `${selectedContact.first_name} ${selectedContact.last_name}`,
             contact_method: messageType === "email" ? selectedContact.email : selectedContact.phone_primary,
             scheduled: isScheduled,
-            scheduled_time: scheduledTime
+            scheduled_time: scheduledTime,
+            message_type: messageType
           }
-        });
+        };
+
+        console.log('Creating communication log:', communicationData);
+
+        await createCommunication.mutateAsync(communicationData);
 
         toast.success(
           isScheduled 
@@ -98,7 +137,7 @@ const IndividualMessaging = () => {
       setScheduledTime("");
     } catch (error) {
       console.error('Message sending error:', error);
-      toast.error(`Failed to send ${messageType}`);
+      toast.error(`Failed to send ${messageType}: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -223,6 +262,11 @@ const IndividualMessaging = () => {
                   {selectedContact.relationship && `${selectedContact.relationship} • `}
                   {messageType === "email" ? selectedContact.email : selectedContact.phone_primary}
                 </p>
+                {messageType === "sms" && selectedContact.phone_primary && (
+                  <p className="text-xs text-blue-600 mt-1">
+                    Formatted: {formatPhoneNumber(selectedContact.phone_primary)}
+                  </p>
+                )}
               </div>
             )}
           </CardContent>
@@ -298,6 +342,7 @@ const IndividualMessaging = () => {
                 {messageType === "sms" && (
                   <p className="text-xs text-gray-500 mt-1">
                     {content.length}/160 characters
+                    {content.length > 160 && " (Message will be sent as multiple parts)"}
                   </p>
                 )}
               </div>

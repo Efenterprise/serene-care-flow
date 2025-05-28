@@ -27,22 +27,55 @@ serve(async (req) => {
   try {
     const { to, message, residentName, residentId, contactId } = await req.json();
     
-    console.log('SMS request received:', { to, message, residentName, residentId, contactId });
+    console.log('SMS Edge Function - Request received:', { 
+      to, 
+      messageLength: message?.length, 
+      residentName, 
+      residentId, 
+      contactId,
+      timestamp: new Date().toISOString()
+    });
 
     if (!to || !message) {
-      throw new Error('Phone number and message are required');
+      const error = 'Phone number and message are required';
+      console.error('SMS Edge Function - Validation error:', error);
+      throw new Error(error);
     }
 
-    // Format phone number
-    const formattedPhone = to.startsWith('+') ? to : `+1${to.replace(/\D/g, '')}`;
+    // Format phone number with more detailed logging
+    const originalPhone = to;
+    const cleanedPhone = to.replace(/\D/g, '');
+    let formattedPhone;
+
+    if (cleanedPhone.length === 10) {
+      formattedPhone = `+1${cleanedPhone}`;
+    } else if (cleanedPhone.length === 11 && cleanedPhone.startsWith('1')) {
+      formattedPhone = `+${cleanedPhone}`;
+    } else {
+      formattedPhone = to.startsWith('+') ? to : `+1${cleanedPhone}`;
+    }
+
+    console.log('SMS Edge Function - Phone formatting:', {
+      original: originalPhone,
+      cleaned: cleanedPhone,
+      formatted: formattedPhone,
+      cleanedLength: cleanedPhone.length
+    });
+
     const formattedMessage = `${message}${residentName ? ` (regarding ${residentName})` : ''}`;
+
+    console.log('SMS Edge Function - Message details:', {
+      originalLength: message.length,
+      formattedLength: formattedMessage.length,
+      hasResidentName: !!residentName
+    });
 
     let smsResult;
     let provider = 'unknown';
 
     // Try Twilio first if configured
     if (twilioAccountSid && twilioAuthToken && twilioPhoneNumber) {
-      console.log('Using Twilio for SMS');
+      console.log('SMS Edge Function - Using Twilio for SMS');
       provider = 'twilio';
       
       const auth = btoa(`${twilioAccountSid}:${twilioAuthToken}`);
@@ -54,6 +87,13 @@ serve(async (req) => {
         Body: formattedMessage,
       });
 
+      console.log('SMS Edge Function - Twilio request details:', {
+        url: twilioUrl,
+        to: formattedPhone,
+        from: twilioPhoneNumber,
+        bodyLength: formattedMessage.length
+      });
+
       const response = await fetch(twilioUrl, {
         method: 'POST',
         headers: {
@@ -63,26 +103,51 @@ serve(async (req) => {
         body: formData,
       });
 
+      const responseText = await response.text();
+      console.log('SMS Edge Function - Twilio response:', {
+        status: response.status,
+        statusText: response.statusText,
+        responseLength: responseText.length
+      });
+
       if (!response.ok) {
-        const errorData = await response.text();
-        console.error('Twilio API error:', errorData);
-        throw new Error(`Twilio API error: ${response.status}`);
+        console.error('SMS Edge Function - Twilio API error:', {
+          status: response.status,
+          statusText: response.statusText,
+          response: responseText
+        });
+        throw new Error(`Twilio API error: ${response.status} - ${responseText}`);
       }
 
-      smsResult = await response.json();
-      console.log('Twilio SMS sent:', smsResult.sid);
+      try {
+        smsResult = JSON.parse(responseText);
+        console.log('SMS Edge Function - Twilio SMS sent successfully:', {
+          sid: smsResult.sid,
+          status: smsResult.status,
+          to: smsResult.to,
+          from: smsResult.from
+        });
+      } catch (parseError) {
+        console.error('SMS Edge Function - Failed to parse Twilio response:', parseError);
+        throw new Error('Invalid response from Twilio API');
+      }
       
     } else if (sendbirdApplicationId && sendbirdApiToken) {
-      console.log('Using SendBird for SMS');
+      console.log('SMS Edge Function - Using SendBird for SMS');
       provider = 'sendbird';
       
-      // Fix SendBird URL format - remove the exclamation mark and use correct format
       const sendbirdUrl = `https://api-${sendbirdApplicationId}.sendbird.com/v3/sms/send`;
       
       const body = JSON.stringify({
         to: [formattedPhone],
         body: formattedMessage,
         from: "ResidentCare Pro",
+      });
+
+      console.log('SMS Edge Function - SendBird request details:', {
+        url: sendbirdUrl,
+        to: formattedPhone,
+        bodyLength: formattedMessage.length
       });
 
       const response = await fetch(sendbirdUrl, {
@@ -94,70 +159,123 @@ serve(async (req) => {
         body: body,
       });
 
+      const responseText = await response.text();
+      console.log('SMS Edge Function - SendBird response:', {
+        status: response.status,
+        statusText: response.statusText,
+        responseLength: responseText.length
+      });
+
       if (!response.ok) {
-        const errorData = await response.text();
-        console.error('SendBird API error:', errorData);
-        throw new Error(`SendBird API error: ${response.status}`);
+        console.error('SMS Edge Function - SendBird API error:', {
+          status: response.status,
+          statusText: response.statusText,
+          response: responseText
+        });
+        throw new Error(`SendBird API error: ${response.status} - ${responseText}`);
       }
 
-      smsResult = await response.json();
-      console.log('SendBird SMS sent:', smsResult.message_id);
+      try {
+        smsResult = JSON.parse(responseText);
+        console.log('SMS Edge Function - SendBird SMS sent successfully:', {
+          messageId: smsResult.message_id,
+          status: smsResult.status
+        });
+      } catch (parseError) {
+        console.error('SMS Edge Function - Failed to parse SendBird response:', parseError);
+        throw new Error('Invalid response from SendBird API');
+      }
       
     } else {
-      throw new Error('No SMS provider configured. Please set up Twilio or SendBird credentials.');
+      const error = 'No SMS provider configured. Please set up Twilio or SendBird credentials.';
+      console.error('SMS Edge Function - Configuration error:', error);
+      throw new Error(error);
     }
 
     // Log the communication to database if Supabase is configured
     if (supabaseUrl && supabaseServiceKey && residentId) {
       try {
+        console.log('SMS Edge Function - Logging to database');
         const supabase = createClient(supabaseUrl, supabaseServiceKey);
         
-        const { error: logError } = await supabase
+        const logData = {
+          resident_id: residentId,
+          contact_id: contactId || null,
+          communication_type: 'sms',
+          direction: 'outbound',
+          subject: 'SMS Message',
+          content: message,
+          status: 'sent',
+          sent_at: new Date().toISOString(),
+          metadata: {
+            phone_number: formattedPhone,
+            provider: provider,
+            message_id: provider === 'twilio' ? smsResult.sid : smsResult.message_id,
+            resident_name: residentName,
+            twilio_status: provider === 'twilio' ? smsResult.status : null,
+            message_length: formattedMessage.length
+          }
+        };
+
+        console.log('SMS Edge Function - Database log data:', logData);
+
+        const { data: logResult, error: logError } = await supabase
           .from('communication_log')
-          .insert({
-            resident_id: residentId,
-            contact_id: contactId || null,
-            communication_type: 'sms',
-            direction: 'outbound',
-            subject: 'SMS Message',
-            content: message,
-            status: 'sent',
-            sent_at: new Date().toISOString(),
-            metadata: {
-              phone_number: formattedPhone,
-              provider: provider,
-              message_id: provider === 'twilio' ? smsResult.sid : smsResult.message_id,
-              resident_name: residentName
-            }
-          });
+          .insert(logData)
+          .select()
+          .single();
 
         if (logError) {
-          console.error('Failed to log communication:', logError);
+          console.error('SMS Edge Function - Failed to log communication:', {
+            error: logError,
+            logData: logData
+          });
         } else {
-          console.log('Communication logged successfully');
+          console.log('SMS Edge Function - Communication logged successfully:', {
+            logId: logResult.id,
+            sentAt: logResult.sent_at
+          });
         }
       } catch (logError) {
-        console.error('Error logging communication:', logError);
+        console.error('SMS Edge Function - Error logging communication:', logError);
       }
+    } else {
+      console.log('SMS Edge Function - Skipping database logging:', {
+        hasSupabaseUrl: !!supabaseUrl,
+        hasServiceKey: !!supabaseServiceKey,
+        hasResidentId: !!residentId
+      });
     }
 
+    const successResponse = { 
+      success: true, 
+      messageSid: provider === 'twilio' ? smsResult.sid : smsResult.message_id,
+      status: 'sent',
+      provider: provider,
+      to: formattedPhone,
+      timestamp: new Date().toISOString()
+    };
+
+    console.log('SMS Edge Function - Success response:', successResponse);
+
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        messageSid: provider === 'twilio' ? smsResult.sid : smsResult.message_id,
-        status: 'sent',
-        provider: provider
-      }), 
+      JSON.stringify(successResponse), 
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
   } catch (error) {
-    console.error('Error in send-sms function:', error);
+    console.error('SMS Edge Function - Error:', {
+      message: error.message,
+      stack: error.stack,
+      timestamp: new Date().toISOString()
+    });
+    
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message 
+        error: error.message,
+        timestamp: new Date().toISOString()
       }), 
       {
         status: 500,
