@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Plus } from "lucide-react";
@@ -60,58 +59,84 @@ const Dashboard = () => {
         
         <QuickStatsGrid censusData={censusData} />
 
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid grid-cols-6 w-full">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="census">Census</TabsTrigger>
-            <TabsTrigger value="clinical">Clinical</TabsTrigger>
-            <TabsTrigger value="mds">MDS</TabsTrigger>
-            <TabsTrigger value="revenue">Revenue Cycle</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid lg:grid-cols-3 gap-6">
-              <AlertsPanel alerts={alerts} />
-              <RecentActivityPanel activities={recentActivities} />
-            </div>
-          </TabsContent>
-
-          <TabsContent value="census">
-            <CensusDashboard />
-          </TabsContent>
-
-          <TabsContent value="clinical">
-            <ClinicalDashboard />
-          </TabsContent>
-
-          <TabsContent value="mds">
-            <MdsManagement />
-          </TabsContent>
-
-          <TabsContent value="revenue">
-            <RevenueCycleDashboard />
-          </TabsContent>
-
-          <TabsContent value="reports">
+        {/* Main Dashboard Content - Now without tabs, showing overview by default */}
+        <div className="space-y-6">
+          {/* Overview Content */}
+          <div className="grid lg:grid-cols-3 gap-6">
+            <AlertsPanel alerts={alerts} />
+            <RecentActivityPanel activities={recentActivities} />
+            
+            {/* Quick Access Card */}
             <Card className="border-0 shadow-sm bg-white/70">
               <CardHeader>
-                <CardTitle>Reports & Analytics</CardTitle>
-                <CardDescription>Performance metrics and quality indicators</CardDescription>
+                <CardTitle>Quick Access</CardTitle>
+                <CardDescription>Frequently used features</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Schedule Assessment
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Care Plan
+                </Button>
+                <Button variant="outline" className="w-full justify-start">
+                  View Census Report
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Additional Dashboard Sections */}
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Bed Management Preview */}
+            <Card className="border-0 shadow-sm bg-white/70">
+              <CardHeader>
+                <CardTitle>Bed Management</CardTitle>
+                <CardDescription>Current bed status and availability</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <Calendar className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Executive Reporting</h3>
-                  <p className="text-gray-600 max-w-md mx-auto">
-                    Comprehensive dashboards for staffing vs acuity, quality trends, and financial performance.
-                  </p>
+                <div className="text-center py-8">
+                  <div className="grid grid-cols-2 gap-4 text-center">
+                    <div>
+                      <div className="text-2xl font-bold text-green-600">25</div>
+                      <div className="text-sm text-gray-600">Available</div>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-bold text-blue-600">95</div>
+                      <div className="text-sm text-gray-600">Occupied</div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+
+            {/* Clinical Overview */}
+            <Card className="border-0 shadow-sm bg-white/70">
+              <CardHeader>
+                <CardTitle>Clinical Overview</CardTitle>
+                <CardDescription>Today's clinical activities</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Assessments Due</span>
+                    <span className="font-semibold">12</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Care Plans Updated</span>
+                    <span className="font-semibold">8</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Medications Scheduled</span>
+                    <span className="font-semibold">156</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
 
         {/* Manual Admission Form */}
         <ManualAdmissionForm 
