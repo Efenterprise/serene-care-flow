@@ -22,7 +22,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
       const hasRequiredRole = requiredRole.includes(profile.role);
       if (!hasRequiredRole) {
         console.log(`Access denied: User role '${profile.role}' not in required roles:`, requiredRole);
-        navigate('/dashboard', { replace: true });
+        navigate('/app', { replace: true });
       }
     }
   }, [user, profile, loading, navigate, location, requiredRole]);
