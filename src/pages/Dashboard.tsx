@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Heart, Bell, User, Calendar, BarChart3, Users, AlertTriangle, CheckCircle, Clock, MessageCircle, Shield } from "lucide-react";
 import { Link } from "react-router-dom";
+import BedBoard from "@/components/BedBoard";
 
 const Dashboard = () => {
   const [currentTime] = useState(new Date().toLocaleString());
@@ -146,7 +146,7 @@ const Dashboard = () => {
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid grid-cols-4 w-full max-w-md">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="residents">Residents</TabsTrigger>
+            <TabsTrigger value="residents">Bed Board</TabsTrigger>
             <TabsTrigger value="clinical">Clinical</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
           </TabsList>
@@ -204,22 +204,8 @@ const Dashboard = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="residents">
-            <Card className="border-0 shadow-sm bg-white/70">
-              <CardHeader>
-                <CardTitle>Resident Management</CardTitle>
-                <CardDescription>Visual census and bed board coming soon</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Users className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Drag & Drop Bed Management</h3>
-                  <p className="text-gray-600 max-w-md mx-auto">
-                    Interactive bed board with hospital transfer tracking and pending discharge management will be available here.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+          <TabsContent value="residents" className="h-[800px]">
+            <BedBoard />
           </TabsContent>
 
           <TabsContent value="clinical">
