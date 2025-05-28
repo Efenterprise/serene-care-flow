@@ -685,6 +685,114 @@ export type Database = {
           },
         ]
       }
+      residents: {
+        Row: {
+          admission_date: string
+          allergies: string[] | null
+          care_level: string | null
+          created_at: string | null
+          created_by: string | null
+          date_of_birth: string
+          diagnosis_primary: string | null
+          diagnosis_secondary: string[] | null
+          diet_restrictions: string[] | null
+          discharge_date: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          emergency_contact_relationship: string | null
+          first_name: string
+          floor: string | null
+          gender: string | null
+          id: string
+          insurance_details: Json | null
+          last_name: string
+          medications: Json | null
+          mobility_status: string | null
+          mrn: string
+          notes: string | null
+          payor_primary: string | null
+          payor_secondary: string | null
+          physician_attending: string | null
+          physician_primary_care: string | null
+          room_number: string | null
+          special_needs: string[] | null
+          status: string
+          unit: string | null
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          admission_date: string
+          allergies?: string[] | null
+          care_level?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          date_of_birth: string
+          diagnosis_primary?: string | null
+          diagnosis_secondary?: string[] | null
+          diet_restrictions?: string[] | null
+          discharge_date?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          emergency_contact_relationship?: string | null
+          first_name: string
+          floor?: string | null
+          gender?: string | null
+          id?: string
+          insurance_details?: Json | null
+          last_name: string
+          medications?: Json | null
+          mobility_status?: string | null
+          mrn: string
+          notes?: string | null
+          payor_primary?: string | null
+          payor_secondary?: string | null
+          physician_attending?: string | null
+          physician_primary_care?: string | null
+          room_number?: string | null
+          special_needs?: string[] | null
+          status?: string
+          unit?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          admission_date?: string
+          allergies?: string[] | null
+          care_level?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          date_of_birth?: string
+          diagnosis_primary?: string | null
+          diagnosis_secondary?: string[] | null
+          diet_restrictions?: string[] | null
+          discharge_date?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          emergency_contact_relationship?: string | null
+          first_name?: string
+          floor?: string | null
+          gender?: string | null
+          id?: string
+          insurance_details?: Json | null
+          last_name?: string
+          medications?: Json | null
+          mobility_status?: string | null
+          mrn?: string
+          notes?: string | null
+          payor_primary?: string | null
+          payor_secondary?: string | null
+          physician_attending?: string | null
+          physician_primary_care?: string | null
+          room_number?: string | null
+          special_needs?: string[] | null
+          status?: string
+          unit?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       user_mfa_settings: {
         Row: {
           backup_codes: string[] | null
