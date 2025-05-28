@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -12,9 +13,12 @@ import {
   Heart
 } from "lucide-react";
 import { usePatientTracking } from "@/hooks/usePatientTracking";
+import PatientProfile from "@/components/patient/PatientProfile";
 
 const PatientLifecycleTracker = () => {
   const { data: patients, isLoading } = usePatientTracking();
+  const [selectedPatientId, setSelectedPatientId] = useState<string | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -44,6 +48,16 @@ const PatientLifecycleTracker = () => {
     return new Date(dateString).toLocaleDateString();
   };
 
+  const handlePatientNameClick = (patientId: string) => {
+    setSelectedPatientId(patientId);
+    setIsProfileOpen(true);
+  };
+
+  const handleCloseProfile = () => {
+    setIsProfileOpen(false);
+    setSelectedPatientId(null);
+  };
+
   if (isLoading) {
     return <div>Loading patient tracking data...</div>;
   }
@@ -71,7 +85,15 @@ const PatientLifecycleTracker = () => {
                       MRN: {patient.patient_mrn}
                     </CardTitle>
                     <p className="text-sm text-gray-600">
-                      {patient.referral?.patient_name} • {patient.referral?.diagnosis}
+                      <button 
+                        onClick={() => handlePatientNameClick(patient.id)}
+                        className="text-blue-600 hover:text-blue-800 underline font-medium"
+                      >
+                        {patient.referral?.patient_name}
+                      </button>
+                      {patient.referral?.diagnosis && (
+                        <span> • {patient.referral.diagnosis}</span>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -139,8 +161,12 @@ const PatientLifecycleTracker = () => {
               )}
 
               <div className="flex justify-end mt-4 space-x-2">
-                <Button size="sm" variant="outline">
-                  View Details
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => handlePatientNameClick(patient.id)}
+                >
+                  View Profile
                 </Button>
                 <Button size="sm" variant="outline">
                   Update Status
@@ -150,6 +176,13 @@ const PatientLifecycleTracker = () => {
           </Card>
         ))}
       </div>
+
+      {/* Patient Profile Modal */}
+      <PatientProfile 
+        patientId={selectedPatientId || undefined}
+        isOpen={isProfileOpen}
+        onClose={handleCloseProfile}
+      />
     </div>
   );
 };

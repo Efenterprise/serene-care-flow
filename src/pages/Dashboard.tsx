@@ -1,10 +1,11 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import { Heart, Bell, User, Calendar, BarChart3, Users, AlertTriangle, CheckCircle, Clock, MessageCircle, Shield } from "lucide-react";
+import { Heart, Bell, User, Calendar, BarChart3, Users, AlertTriangle, CheckCircle, Clock, MessageCircle, Shield, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 import BedBoard from "@/components/BedBoard";
 
@@ -48,6 +49,12 @@ const Dashboard = () => {
             </div>
             
             <div className="flex items-center space-x-4">
+              <Link to="/emr">
+                <Button variant="ghost" size="sm">
+                  <Activity className="w-4 h-4 mr-2" />
+                  EMR Hub
+                </Button>
+              </Link>
               <Button variant="ghost" size="sm">
                 <Bell className="w-4 h-4" />
               </Button>
