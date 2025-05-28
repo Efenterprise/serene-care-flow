@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { format, differenceInDays } from "date-fns";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,9 +19,11 @@ import {
   Activity,
   ClipboardList,
   Stethoscope,
-  Target
+  Target,
+  Users
 } from "lucide-react";
 import { Resident } from "@/hooks/useResidents";
+import ContactsManagement from "./contacts/ContactsManagement";
 
 interface ResidentProfileProps {
   resident: Resident;
@@ -115,10 +116,14 @@ const ResidentProfile = ({ resident, isOpen, onClose }: ResidentProfileProps) =>
         {/* Content */}
         <div className="overflow-y-auto max-h-[calc(95vh-120px)]">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-6 bg-gray-50 m-4">
+            <TabsList className="grid w-full grid-cols-7 bg-gray-50 m-4">
               <TabsTrigger value="overview" className="flex items-center space-x-1">
                 <User className="w-4 h-4" />
                 <span>Overview</span>
+              </TabsTrigger>
+              <TabsTrigger value="contacts" className="flex items-center space-x-1">
+                <Users className="w-4 h-4" />
+                <span>Contacts</span>
               </TabsTrigger>
               <TabsTrigger value="medical" className="flex items-center space-x-1">
                 <Heart className="w-4 h-4" />
@@ -252,6 +257,10 @@ const ResidentProfile = ({ resident, isOpen, onClose }: ResidentProfileProps) =>
                     </CardContent>
                   </Card>
                 </div>
+              </TabsContent>
+
+              <TabsContent value="contacts">
+                <ContactsManagement resident={resident} />
               </TabsContent>
 
               <TabsContent value="medical">

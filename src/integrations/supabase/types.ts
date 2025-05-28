@@ -111,6 +111,155 @@ export type Database = {
         }
         Relationships: []
       }
+      communication_log: {
+        Row: {
+          communication_type: string
+          contact_id: string | null
+          content: string | null
+          created_at: string | null
+          direction: string
+          id: string
+          metadata: Json | null
+          resident_id: string
+          sent_at: string | null
+          sent_by: string | null
+          status: string | null
+          subject: string | null
+        }
+        Insert: {
+          communication_type: string
+          contact_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          direction: string
+          id?: string
+          metadata?: Json | null
+          resident_id: string
+          sent_at?: string | null
+          sent_by?: string | null
+          status?: string | null
+          subject?: string | null
+        }
+        Update: {
+          communication_type?: string
+          contact_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          direction?: string
+          id?: string
+          metadata?: Json | null
+          resident_id?: string
+          sent_at?: string | null
+          sent_by?: string | null
+          status?: string | null
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "communication_log_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "resident_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "communication_log_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_types: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          requires_verification: boolean | null
+          updated_at: string | null
+          verification_document_types: string[] | null
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          requires_verification?: boolean | null
+          updated_at?: string | null
+          verification_document_types?: string[] | null
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          requires_verification?: boolean | null
+          updated_at?: string | null
+          verification_document_types?: string[] | null
+        }
+        Relationships: []
+      }
+      contact_verification: {
+        Row: {
+          created_at: string | null
+          document_name: string | null
+          document_url: string | null
+          expiration_date: string | null
+          id: string
+          notes: string | null
+          resident_contact_id: string
+          updated_at: string | null
+          verification_status: string | null
+          verification_type: string
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          document_name?: string | null
+          document_url?: string | null
+          expiration_date?: string | null
+          id?: string
+          notes?: string | null
+          resident_contact_id: string
+          updated_at?: string | null
+          verification_status?: string | null
+          verification_type: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          document_name?: string | null
+          document_url?: string | null
+          expiration_date?: string | null
+          id?: string
+          notes?: string | null
+          resident_contact_id?: string
+          updated_at?: string | null
+          verification_status?: string | null
+          verification_type?: string
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_verification_resident_contact_id_fkey"
+            columns: ["resident_contact_id"]
+            isOneToOne: false
+            referencedRelation: "resident_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       emr_connections: {
         Row: {
           access_token: string | null
@@ -779,6 +928,93 @@ export type Database = {
             columns: ["platform_id"]
             isOneToOne: false
             referencedRelation: "referral_platforms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resident_contacts: {
+        Row: {
+          address: Json | null
+          contact_type_id: string
+          created_at: string | null
+          created_by: string | null
+          email: string | null
+          first_name: string
+          id: string
+          is_active: boolean | null
+          is_authorized_to_receive_info: boolean | null
+          is_emergency_contact: boolean | null
+          last_name: string
+          notes: string | null
+          phone_primary: string | null
+          phone_secondary: string | null
+          preferred_contact_method: string | null
+          preferred_contact_time: string | null
+          priority_level: number | null
+          relationship: string | null
+          resident_id: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          address?: Json | null
+          contact_type_id: string
+          created_at?: string | null
+          created_by?: string | null
+          email?: string | null
+          first_name: string
+          id?: string
+          is_active?: boolean | null
+          is_authorized_to_receive_info?: boolean | null
+          is_emergency_contact?: boolean | null
+          last_name: string
+          notes?: string | null
+          phone_primary?: string | null
+          phone_secondary?: string | null
+          preferred_contact_method?: string | null
+          preferred_contact_time?: string | null
+          priority_level?: number | null
+          relationship?: string | null
+          resident_id: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          address?: Json | null
+          contact_type_id?: string
+          created_at?: string | null
+          created_by?: string | null
+          email?: string | null
+          first_name?: string
+          id?: string
+          is_active?: boolean | null
+          is_authorized_to_receive_info?: boolean | null
+          is_emergency_contact?: boolean | null
+          last_name?: string
+          notes?: string | null
+          phone_primary?: string | null
+          phone_secondary?: string | null
+          preferred_contact_method?: string | null
+          preferred_contact_time?: string | null
+          priority_level?: number | null
+          relationship?: string | null
+          resident_id?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resident_contacts_contact_type_id_fkey"
+            columns: ["contact_type_id"]
+            isOneToOne: false
+            referencedRelation: "contact_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "resident_contacts_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
             referencedColumns: ["id"]
           },
         ]
