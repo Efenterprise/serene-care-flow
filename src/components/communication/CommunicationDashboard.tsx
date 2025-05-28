@@ -19,11 +19,11 @@ import { useResidentContacts, useCommunicationLog } from "@/hooks/useContacts";
 import { format, startOfDay, endOfDay } from "date-fns";
 
 const CommunicationDashboard = () => {
-  const [selectedResidentId, setSelectedResidentId] = useState<string>("");
+  const [selectedResidentId, setSelectedResidentId] = useState<string>("all");
 
   const { data: residents } = useResidents();
-  const { data: contacts } = useResidentContacts(selectedResidentId || "skip");
-  const { data: communications, refetch: refetchCommunications } = useCommunicationLog(selectedResidentId || "skip");
+  const { data: contacts } = useResidentContacts(selectedResidentId === "all" ? "skip" : selectedResidentId);
+  const { data: communications, refetch: refetchCommunications } = useCommunicationLog(selectedResidentId === "all" ? "skip" : selectedResidentId);
 
   const selectedResident = residents?.find(r => r.id === selectedResidentId);
 
@@ -92,7 +92,7 @@ const CommunicationDashboard = () => {
                 <p className="text-xs text-gray-500 mt-1">
                   Total All Time: {allCommunicationsCount}
                 </p>
-                {selectedResidentId && (
+                {selectedResidentId !== "all" && (
                   <p className="text-xs text-green-600 mt-1">
                     Filtered for selected resident
                   </p>
@@ -200,7 +200,7 @@ const CommunicationDashboard = () => {
                 <SelectValue placeholder="Choose a resident to view communications" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Residents</SelectItem>
+                <SelectItem value="all">All Residents</SelectItem>
                 {residents?.map(resident => (
                   <SelectItem key={resident.id} value={resident.id}>
                     {resident.first_name} {resident.last_name} - Room {resident.room_number || 'N/A'}
@@ -226,7 +226,7 @@ const CommunicationDashboard = () => {
       </Card>
 
       {/* Contact Overview */}
-      {selectedResidentId && contacts && contacts.length > 0 && (
+      {selectedResidentId !== "all" && contacts && contacts.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -278,7 +278,7 @@ const CommunicationDashboard = () => {
       )}
 
       {/* No resident selected state */}
-      {!selectedResidentId && (
+      {selectedResidentId === "all" && (
         <Card>
           <CardContent className="p-8 text-center">
             <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
