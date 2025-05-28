@@ -4,26 +4,22 @@ import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { CollapsibleContent } from "@/components/ui/collapsible";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Edit, 
   Eye, 
-  Phone, 
-  Mail, 
   UserPlus,
   Shield,
   Heart,
   Building,
   CreditCard,
-  User,
-  CheckCircle,
-  AlertCircle
+  User
 } from "lucide-react";
 import { Resident } from "@/hooks/useResidents";
 import { useResidentContacts } from "@/hooks/useContacts";
 import ContactCategorySection from "./contact-details/ContactCategorySection";
 import ContactQuickStats from "./contact-details/ContactQuickStats";
+import LegacyContactFallback from "./contact-details/LegacyContactFallback";
 
 interface ResidentRowDetailsProps {
   resident: Resident;
@@ -46,6 +42,10 @@ const ResidentRowDetails = ({ resident, onViewDetails, onEdit }: ResidentRowDeta
   const insuranceContacts = getContactsByCategory("insurance");
   const facilityContacts = getContactsByCategory("facility");
 
+  // Check if we have any contacts in the new system or need to fall back to legacy data
+  const hasNewContacts = contacts && contacts.length > 0;
+  const hasLegacyEmergencyContact = resident.emergency_contact_name || resident.emergency_contact_phone;
+
   if (isLoading) {
     return (
       <CollapsibleContent asChild>
@@ -65,10 +65,10 @@ const ResidentRowDetails = ({ resident, onViewDetails, onEdit }: ResidentRowDeta
           <div className="bg-gray-50 border-t">
             {/* Quick Stats Bar */}
             <ContactQuickStats 
-              emergencyCount={emergencyContacts.length}
+              emergencyCount={hasNewContacts ? emergencyContacts.length : (hasLegacyEmergencyContact ? 1 : 0)}
               medicalCount={medicalContacts.length}
               legalCount={legalContacts.length}
-              totalCount={contacts?.length || 0}
+              totalCount={hasNewContacts ? contacts.length : (hasLegacyEmergencyContact ? 1 : 0)}
             />
 
             {/* Contact Management Tabs */}
@@ -79,7 +79,7 @@ const ResidentRowDetails = ({ resident, onViewDetails, onEdit }: ResidentRowDeta
                     <User className="w-4 h-4" />
                     <span>Contacts</span>
                     <Badge variant="secondary" className="ml-1">
-                      {emergencyContacts.length + familyContacts.length}
+                      {hasNewContacts ? emergencyContacts.length + familyContacts.length : (hasLegacyEmergencyContact ? 1 : 0)}
                     </Badge>
                   </TabsTrigger>
                   <TabsTrigger value="medical" className="flex items-center space-x-2">
@@ -106,18 +106,24 @@ const ResidentRowDetails = ({ resident, onViewDetails, onEdit }: ResidentRowDeta
                 </TabsList>
 
                 <TabsContent value="contacts" className="space-y-4">
-                  <ContactCategorySection
-                    title="Emergency Contacts"
-                    contacts={emergencyContacts}
-                    categoryColor="red"
-                    icon={<Phone className="w-4 h-4" />}
-                  />
-                  <ContactCategorySection
-                    title="Family Members"
-                    contacts={familyContacts}
-                    categoryColor="blue"
-                    icon={<User className="w-4 h-4" />}
-                  />
+                  {hasNewContacts ? (
+                    <>
+                      <ContactCategorySection
+                        title="Emergency Contacts"
+                        contacts={emergencyContacts}
+                        categoryColor="red"
+                        icon={<User className="w-4 h-4" />}
+                      />
+                      <ContactCategorySection
+                        title="Family Members"
+                        contacts={familyContacts}
+                        categoryColor="blue"
+                        icon={<User className="w-4 h-4" />}
+                      />
+                    </>
+                  ) : (
+                    <LegacyContactFallback resident={resident} />
+                  )}
                 </TabsContent>
 
                 <TabsContent value="medical" className="space-y-4">
