@@ -8,6 +8,10 @@ import { Progress } from "@/components/ui/progress";
 import { Heart, Bell, User, Calendar, BarChart3, Users, AlertTriangle, CheckCircle, Clock, MessageCircle, Shield, Activity } from "lucide-react";
 import { Link } from "react-router-dom";
 import BedBoard from "@/components/BedBoard";
+import ClinicalDashboard from "@/components/emr/ClinicalDashboard";
+import MdsManagement from "@/components/emr/MdsManagement";
+import CensusDashboard from "@/components/emr/CensusDashboard";
+import RevenueCycleDashboard from "@/components/emr/RevenueCycleDashboard";
 
 const Dashboard = () => {
   const [currentTime] = useState(new Date().toLocaleString());
@@ -52,7 +56,7 @@ const Dashboard = () => {
               <Link to="/emr">
                 <Button variant="ghost" size="sm">
                   <Activity className="w-4 h-4 mr-2" />
-                  EMR Hub
+                  EMR Connections
                 </Button>
               </Link>
               <Button variant="ghost" size="sm">
@@ -151,10 +155,12 @@ const Dashboard = () => {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid grid-cols-4 w-full max-w-md">
+          <TabsList className="grid grid-cols-6 w-full">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="residents">Bed Board</TabsTrigger>
+            <TabsTrigger value="census">Census</TabsTrigger>
             <TabsTrigger value="clinical">Clinical</TabsTrigger>
+            <TabsTrigger value="mds">MDS</TabsTrigger>
+            <TabsTrigger value="revenue">Revenue Cycle</TabsTrigger>
             <TabsTrigger value="reports">Reports</TabsTrigger>
           </TabsList>
 
@@ -211,26 +217,20 @@ const Dashboard = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="residents" className="h-[800px]">
-            <BedBoard />
+          <TabsContent value="census">
+            <CensusDashboard />
           </TabsContent>
 
           <TabsContent value="clinical">
-            <Card className="border-0 shadow-sm bg-white/70">
-              <CardHeader>
-                <CardTitle>Clinical Dashboard</CardTitle>
-                <CardDescription>Color-coded flags and drill-down analytics</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <BarChart3 className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Clinical Intelligence</h3>
-                  <p className="text-gray-600 max-w-md mx-auto">
-                    Dynamic views for pressure ulcers, infections, falls, and rehospitalizations with predictive insights.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <ClinicalDashboard />
+          </TabsContent>
+
+          <TabsContent value="mds">
+            <MdsManagement />
+          </TabsContent>
+
+          <TabsContent value="revenue">
+            <RevenueCycleDashboard />
           </TabsContent>
 
           <TabsContent value="reports">
