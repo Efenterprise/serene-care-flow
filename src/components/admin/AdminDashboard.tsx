@@ -1,9 +1,10 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Shield, Activity, Settings } from 'lucide-react';
+import { Users, Shield, Activity, Settings, Plug } from 'lucide-react';
 import UserManagement from './UserManagement';
 import AuditTrailReport from './AuditTrailReport';
+import IntegrationsManager from './IntegrationsManager';
 import { useAuth } from '@/hooks/useAuth';
 
 const AdminDashboard = () => {
@@ -28,11 +29,11 @@ const AdminDashboard = () => {
       <div className="container mx-auto px-6 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Administration Dashboard</h1>
-          <p className="text-gray-600">Manage users, security settings, and system monitoring</p>
+          <p className="text-gray-600">Manage users, security settings, system monitoring, and integrations</p>
         </div>
 
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid grid-cols-4 w-full max-w-2xl">
+          <TabsList className="grid grid-cols-5 w-full max-w-3xl">
             <TabsTrigger value="users" className="flex items-center space-x-2">
               <Users className="w-4 h-4" />
               <span>Users</span>
@@ -40,6 +41,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="audit" className="flex items-center space-x-2">
               <Activity className="w-4 h-4" />
               <span>Audit Trail</span>
+            </TabsTrigger>
+            <TabsTrigger value="integrations" className="flex items-center space-x-2">
+              <Plug className="w-4 h-4" />
+              <span>Integrations</span>
             </TabsTrigger>
             <TabsTrigger value="security" className="flex items-center space-x-2">
               <Shield className="w-4 h-4" />
@@ -57,6 +62,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="audit">
             <AuditTrailReport />
+          </TabsContent>
+
+          <TabsContent value="integrations">
+            <IntegrationsManager />
           </TabsContent>
 
           <TabsContent value="security">

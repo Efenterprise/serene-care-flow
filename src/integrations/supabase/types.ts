@@ -313,6 +313,104 @@ export type Database = {
           },
         ]
       }
+      integration_providers: {
+        Row: {
+          category: string
+          contact_email: string | null
+          created_at: string | null
+          description: string
+          id: string
+          integration_benefits: string[] | null
+          is_active: boolean | null
+          logo_url: string | null
+          name: string
+          pricing_model: string | null
+          updated_at: string | null
+          website: string
+        }
+        Insert: {
+          category: string
+          contact_email?: string | null
+          created_at?: string | null
+          description: string
+          id?: string
+          integration_benefits?: string[] | null
+          is_active?: boolean | null
+          logo_url?: string | null
+          name: string
+          pricing_model?: string | null
+          updated_at?: string | null
+          website: string
+        }
+        Update: {
+          category?: string
+          contact_email?: string | null
+          created_at?: string | null
+          description?: string
+          id?: string
+          integration_benefits?: string[] | null
+          is_active?: boolean | null
+          logo_url?: string | null
+          name?: string
+          pricing_model?: string | null
+          updated_at?: string | null
+          website?: string
+        }
+        Relationships: []
+      }
+      integration_requests: {
+        Row: {
+          contact_email: string
+          contact_name: string
+          contact_phone: string | null
+          created_at: string | null
+          custom_notes: string | null
+          facility_name: string
+          id: string
+          message_content: string
+          provider_id: string
+          requested_by: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          contact_email: string
+          contact_name: string
+          contact_phone?: string | null
+          created_at?: string | null
+          custom_notes?: string | null
+          facility_name: string
+          id?: string
+          message_content: string
+          provider_id: string
+          requested_by: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string | null
+          created_at?: string | null
+          custom_notes?: string | null
+          facility_name?: string
+          id?: string
+          message_content?: string
+          provider_id?: string
+          requested_by?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integration_requests_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "integration_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       login_attempts: {
         Row: {
           attempted_at: string | null
