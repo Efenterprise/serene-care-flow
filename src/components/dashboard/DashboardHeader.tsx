@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -66,6 +65,7 @@ const DashboardHeader = () => {
       title: "Clinical",
       icon: Activity,
       items: [
+        { title: "Residents Management", href: "/residents" },
         { title: "Patient Care", href: "/clinical/care" },
         { title: "Assessments", href: "/clinical/assessments" },
         { title: "Care Plans", href: "/clinical/careplans" },

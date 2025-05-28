@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Dashboard from "./pages/Dashboard";
 import EmrIntegration from "./pages/EmrIntegration";
+import Residents from "./pages/Residents";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Landing />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/emr" element={<EmrIntegration />} />
+          <Route path="/residents" element={<Residents />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
