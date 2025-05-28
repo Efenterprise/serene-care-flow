@@ -29,7 +29,7 @@ const IndividualMessaging = () => {
   const [scheduledTime, setScheduledTime] = useState("");
 
   const { data: residents } = useResidents();
-  const { data: contacts } = useResidentContacts(selectedResidentId);
+  const { data: contacts } = useResidentContacts(selectedResidentId || "skip");
   const createCommunication = useCreateCommunication();
   const { sendSMS, isLoading: isSendingSMS } = useSMS();
 
@@ -56,38 +56,40 @@ const IndividualMessaging = () => {
     }
 
     try {
-      // For SMS, use the SMS hook
+      // For SMS, use the SMS hook which now handles logging automatically
       if (messageType === "sms" && selectedContact.phone_primary) {
         sendSMS({
           to: selectedContact.phone_primary,
           message: `${subject}\n\n${content}`,
-          residentName: `${selectedResident.first_name} ${selectedResident.last_name}`
+          residentName: `${selectedResident.first_name} ${selectedResident.last_name}`,
+          residentId: selectedResidentId,
+          contactId: selectedContactId
         });
+      } else {
+        // For email and call, log to communication table
+        await createCommunication.mutateAsync({
+          resident_id: selectedResidentId,
+          contact_id: selectedContactId,
+          communication_type: messageType,
+          direction: "outbound",
+          subject,
+          content,
+          status: isScheduled ? "scheduled" : "sent",
+          sent_at: isScheduled && scheduledTime ? new Date(scheduledTime).toISOString() : new Date().toISOString(),
+          metadata: {
+            contact_name: `${selectedContact.first_name} ${selectedContact.last_name}`,
+            contact_method: messageType === "email" ? selectedContact.email : selectedContact.phone_primary,
+            scheduled: isScheduled,
+            scheduled_time: scheduledTime
+          }
+        });
+
+        toast.success(
+          isScheduled 
+            ? `Message scheduled for ${new Date(scheduledTime).toLocaleDateString()}`
+            : `${messageType.toUpperCase()} ${messageType === 'call' ? 'logged' : 'sent'} successfully`
+        );
       }
-
-      // Log the communication
-      await createCommunication.mutateAsync({
-        resident_id: selectedResidentId,
-        contact_id: selectedContactId,
-        communication_type: messageType,
-        direction: "outbound",
-        subject,
-        content,
-        status: isScheduled ? "scheduled" : "sent",
-        sent_at: isScheduled && scheduledTime ? new Date(scheduledTime).toISOString() : new Date().toISOString(),
-        metadata: {
-          contact_name: `${selectedContact.first_name} ${selectedContact.last_name}`,
-          contact_method: messageType === "email" ? selectedContact.email : selectedContact.phone_primary,
-          scheduled: isScheduled,
-          scheduled_time: scheduledTime
-        }
-      });
-
-      toast.success(
-        isScheduled 
-          ? `Message scheduled for ${new Date(scheduledTime).toLocaleDateString()}`
-          : `${messageType.toUpperCase()} sent successfully`
-      );
       
       // Reset form
       setSubject("");
@@ -95,8 +97,8 @@ const IndividualMessaging = () => {
       setIsScheduled(false);
       setScheduledTime("");
     } catch (error) {
+      console.error('Message sending error:', error);
       toast.error(`Failed to send ${messageType}`);
-      console.error(error);
     }
   };
 
@@ -120,7 +122,10 @@ const IndividualMessaging = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Select value={selectedResidentId} onValueChange={setSelectedResidentId}>
+            <Select value={selectedResidentId} onValueChange={(value) => {
+              setSelectedResidentId(value);
+              setSelectedContactId(""); // Reset contact when resident changes
+            }}>
               <SelectTrigger>
                 <SelectValue placeholder="Choose a resident" />
               </SelectTrigger>
@@ -157,7 +162,10 @@ const IndividualMessaging = () => {
             {/* Message Type Selection */}
             <div>
               <label className="block text-sm font-medium mb-2">Communication Method</label>
-              <Select value={messageType} onValueChange={(value: "email" | "sms" | "call") => setMessageType(value)}>
+              <Select value={messageType} onValueChange={(value: "email" | "sms" | "call") => {
+                setMessageType(value);
+                setSelectedContactId(""); // Reset contact when method changes
+              }}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -178,7 +186,13 @@ const IndividualMessaging = () => {
                 disabled={!selectedResidentId}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Choose a contact" />
+                  <SelectValue placeholder={
+                    !selectedResidentId 
+                      ? "Select a resident first" 
+                      : filteredContacts?.length === 0 
+                        ? `No contacts with ${messageType === 'email' ? 'email' : 'phone'} available`
+                        : "Choose a contact"
+                  } />
                 </SelectTrigger>
                 <SelectContent>
                   {filteredContacts?.map(contact => (
@@ -281,6 +295,11 @@ const IndividualMessaging = () => {
                   rows={messageType === "email" ? 6 : 4}
                   required
                 />
+                {messageType === "sms" && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {content.length}/160 characters
+                  </p>
+                )}
               </div>
 
               <div className="flex justify-end space-x-2 pt-4 border-t">
@@ -311,6 +330,19 @@ const IndividualMessaging = () => {
                 </Button>
               </div>
             </form>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Help text when no selections made */}
+      {!selectedResidentId && (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Get Started</h3>
+            <p className="text-gray-600">
+              Select a resident and contact to start sending personalized messages.
+            </p>
           </CardContent>
         </Card>
       )}

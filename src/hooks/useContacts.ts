@@ -1,4 +1,3 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -83,6 +82,10 @@ export const useResidentContacts = (residentId: string) => {
   return useQuery({
     queryKey: ["resident-contacts", residentId],
     queryFn: async () => {
+      if (!residentId || residentId === "skip") {
+        return [];
+      }
+
       const { data, error } = await supabase
         .from("resident_contacts")
         .select(`
@@ -97,6 +100,7 @@ export const useResidentContacts = (residentId: string) => {
       if (error) throw error;
       return data as ResidentContact[];
     },
+    enabled: !!residentId && residentId !== "skip",
   });
 };
 
@@ -145,6 +149,10 @@ export const useCommunicationLog = (residentId: string) => {
   return useQuery({
     queryKey: ["communication-log", residentId],
     queryFn: async () => {
+      if (!residentId || residentId === "skip") {
+        return [];
+      }
+
       const { data, error } = await supabase
         .from("communication_log")
         .select(`
@@ -157,6 +165,7 @@ export const useCommunicationLog = (residentId: string) => {
       if (error) throw error;
       return data as CommunicationLog[];
     },
+    enabled: !!residentId && residentId !== "skip",
   });
 };
 

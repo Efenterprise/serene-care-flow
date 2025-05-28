@@ -21,8 +21,8 @@ const CommunicationDashboard = () => {
   const [selectedResidentId, setSelectedResidentId] = useState<string>("");
 
   const { data: residents } = useResidents();
-  const { data: contacts } = useResidentContacts(selectedResidentId);
-  const { data: communications } = useCommunicationLog(selectedResidentId);
+  const { data: contacts } = useResidentContacts(selectedResidentId || "skip");
+  const { data: communications } = useCommunicationLog(selectedResidentId || "skip");
 
   const selectedResident = residents?.find(r => r.id === selectedResidentId);
 
@@ -128,7 +128,7 @@ const CommunicationDashboard = () => {
       </Card>
 
       {/* Contact Overview */}
-      {selectedResidentId && contacts && (
+      {selectedResidentId && contacts && contacts.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
@@ -179,8 +179,21 @@ const CommunicationDashboard = () => {
         </Card>
       )}
 
+      {/* No resident selected state */}
+      {!selectedResidentId && (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Select a Resident</h3>
+            <p className="text-gray-600">
+              Choose a resident from the dropdown above to view their contacts and communication history.
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Recent Communications */}
-      {selectedResidentId && communications && (
+      {selectedResidentId && communications && communications.length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle>Recent Communications</CardTitle>
@@ -207,13 +220,20 @@ const CommunicationDashboard = () => {
                   </Badge>
                 </div>
               ))}
-              
-              {communications.length === 0 && (
-                <p className="text-center text-gray-600 py-4">
-                  No communications yet for this resident
-                </p>
-              )}
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* No communications state */}
+      {selectedResidentId && communications && communications.length === 0 && (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No Communications Yet</h3>
+            <p className="text-gray-600">
+              No communications have been sent for this resident. Start by sending your first message!
+            </p>
           </CardContent>
         </Card>
       )}
