@@ -9,7 +9,7 @@ import {
   Shield, 
   Brain,
   Activity,
-  Building2
+  MessageSquare
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
@@ -18,6 +18,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import DashboardContent from "../dashboard/DashboardContent";
 import ResidentsContent from "../residents/ResidentsContent";
 import ClinicalContent from "../clinical/ClinicalContent";
+import CommunicationContent from "../communication/CommunicationContent";
 import EmrContent from "../emr/EmrContent";
 import AdminContent from "../admin/AdminContent";
 import AiInsightsContent from "../ai/AiInsightsContent";
@@ -44,6 +45,12 @@ const TabbedMainLayout = () => {
       label: "Clinical",
       icon: Stethoscope,
       component: ClinicalContent
+    },
+    {
+      id: "communication",
+      label: "Communication",
+      icon: MessageSquare,
+      component: CommunicationContent
     },
     {
       id: "emr",
@@ -86,7 +93,7 @@ const TabbedMainLayout = () => {
 
         <Card className="border-0 shadow-sm bg-white/70">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-5 lg:grid-cols-6 mb-6">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-7 mb-6">
               {mainTabs.map((tab) => (
                 <TabsTrigger 
                   key={tab.id} 
