@@ -2,55 +2,23 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Heart, Shield, Zap, Users, Brain, BarChart3 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { 
+  Shield, 
+  Users, 
+  Activity, 
+  Zap, 
+  Lock,
+  Eye,
+  TrendingUp,
+  Heart,
+  Brain,
+  CheckCircle,
+  ArrowRight
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
-  const features = [
-    {
-      icon: Brain,
-      title: "Narrative AI Assistant",
-      description: "Voice-powered documentation that creates survey-ready SOAP notes in seconds",
-      color: "bg-blue-50 text-blue-600"
-    },
-    {
-      icon: Users,
-      title: "Real-Time IDT Communication",
-      description: "Slack-like messaging linked to resident profiles for seamless care coordination",
-      color: "bg-green-50 text-green-600"
-    },
-    {
-      icon: BarChart3,
-      title: "Visual Census & Dashboards",
-      description: "Drag-and-drop bed management with dynamic clinical insights",
-      color: "bg-purple-50 text-purple-600"
-    },
-    {
-      icon: Shield,
-      title: "Survey Readiness Module",
-      description: "F-Tag aligned compliance tracking with automated alerts",
-      color: "bg-amber-50 text-amber-600"
-    },
-    {
-      icon: Heart,
-      title: "Integrated Care Planning",
-      description: "AI-assisted care plans that evolve with your residents",
-      color: "bg-rose-50 text-rose-600"
-    },
-    {
-      icon: Zap,
-      title: "Voice-to-Chart",
-      description: "Smart voice input that parses vitals and documentation automatically",
-      color: "bg-indigo-50 text-indigo-600"
-    }
-  ];
-
-  const userProfiles = [
-    { title: "Floor Nurses", description: "Fast, mobile-friendly documentation" },
-    { title: "MDS Coordinators", description: "Clean, compliant assessments with PDPM insights" },
-    { title: "Administrators", description: "Census dashboards and survey readiness tools" },
-    { title: "Corporate Teams", description: "EBITDAR visibility and quality metrics" }
-  ];
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
@@ -58,136 +26,224 @@ const Landing = () => {
       <header className="container mx-auto px-6 py-8">
         <nav className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Heart className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-xl font-semibold text-gray-900">Serene Care</span>
+            <Heart className="w-8 h-8 text-blue-600" />
+            <span className="text-2xl font-bold text-gray-900">HealthCare Pro</span>
           </div>
-          <div className="flex items-center space-x-4">
-            <Link to="/login">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
-            <Link to="/login">
-              <Button>Get Started <ArrowRight className="w-4 h-4 ml-2" /></Button>
-            </Link>
+          <div className="space-x-4">
+            <Button variant="outline" onClick={() => navigate('/auth')}>
+              Sign In
+            </Button>
+            <Button onClick={() => navigate('/auth')} className="bg-blue-600 hover:bg-blue-700">
+              Get Started
+            </Button>
           </div>
         </nav>
       </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-16 text-center">
-        <Badge variant="secondary" className="mb-6">
-          The Future of Long-Term Care
-        </Badge>
-        <h1 className="text-5xl font-bold text-gray-900 mb-6 max-w-4xl mx-auto leading-tight">
-          The EMR that skilled nursing operators deserve
-        </h1>
-        <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-          Beautiful, fast, intuitive, and built by people who actually understand the industry. 
-          Make every user say "This system makes my life easier."
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/dashboard">
-            <Button size="lg" className="text-lg px-8 py-3">
-              View Demo Dashboard
+      <section className="container mx-auto px-6 py-20 text-center">
+        <div className="max-w-4xl mx-auto">
+          <Badge className="mb-4 bg-blue-100 text-blue-800">
+            <Shield className="w-4 h-4 mr-2" />
+            HIPAA Compliant
+          </Badge>
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            Advanced Healthcare Management
+            <span className="text-blue-600"> with AI Intelligence</span>
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+            Streamline patient admissions, manage bed capacity, and optimize care delivery 
+            with our comprehensive healthcare management platform featuring AI-powered insights.
+          </p>
+          <div className="flex items-center justify-center space-x-4">
+            <Button size="lg" onClick={() => navigate('/auth')} className="bg-blue-600 hover:bg-blue-700">
+              Access Portal
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-          </Link>
-          <Button size="lg" variant="outline" className="text-lg px-8 py-3">
-            Schedule Demo
-          </Button>
+            <Button size="lg" variant="outline">
+              Schedule Demo
+            </Button>
+          </div>
         </div>
       </section>
 
-      {/* Core Values */}
+      {/* Security Features */}
       <section className="container mx-auto px-6 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Our North Star</h2>
-          <p className="text-lg text-gray-600">Clarity • Compliance • Communication • Care</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Enterprise Security & Compliance</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Built with healthcare's most stringent security requirements in mind
+          </p>
         </div>
-        <div className="grid md:grid-cols-4 gap-8">
-          {["Clarity", "Compliance", "Communication", "Care"].map((value, index) => (
-            <Card key={value} className="text-center border-0 shadow-sm bg-white/70">
-              <CardHeader>
-                <CardTitle className="text-lg">{value}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <div className="w-6 h-6 bg-blue-600 rounded-full"></div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        
+        <div className="grid md:grid-cols-4 gap-6">
+          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+            <CardHeader className="text-center">
+              <Lock className="w-12 h-12 mx-auto text-blue-600 mb-4" />
+              <CardTitle className="text-lg">Multi-Factor Auth</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 text-center">
+                Advanced MFA with backup codes and IP restrictions for secure access control.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+            <CardHeader className="text-center">
+              <Eye className="w-12 h-12 mx-auto text-green-600 mb-4" />
+              <CardTitle className="text-lg">Audit Trail</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 text-center">
+                Complete activity logging with timestamps and user identification for compliance.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+            <CardHeader className="text-center">
+              <Users className="w-12 h-12 mx-auto text-purple-600 mb-4" />
+              <CardTitle className="text-lg">Role-Based Access</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 text-center">
+                Granular permissions with facility vs remote access controls.
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+            <CardHeader className="text-center">
+              <Shield className="w-12 h-12 mx-auto text-red-600 mb-4" />
+              <CardTitle className="text-lg">HIPAA Compliant</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 text-center">
+                Full HIPAA compliance with encrypted data and secure communications.
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* Key Features */}
       <section className="container mx-auto px-6 py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Features That Disrupt</h2>
-          <p className="text-lg text-gray-600">Not just a better PCC—the future of long-term care documentation</p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Comprehensive Healthcare Management</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Everything you need to manage patient care, from admission to discharge
+          </p>
         </div>
+        
         <div className="grid md:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${feature.color}`}>
-                  <feature.icon className="w-6 h-6" />
-                </div>
-                <CardTitle className="text-lg">{feature.title}</CardTitle>
-                <CardDescription className="text-gray-600">
-                  {feature.description}
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
-      </section>
+          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+            <CardHeader>
+              <Brain className="w-12 h-12 text-blue-600 mb-4" />
+              <CardTitle>AI-Powered Admissions</CardTitle>
+              <CardDescription>
+                Intelligent patient screening and bed assignment with predictive analytics
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                  Automated referral processing
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                  Real-time bed availability
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                  Risk assessment algorithms
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
 
-      {/* User Profiles */}
-      <section className="container mx-auto px-6 py-16 bg-white/50 rounded-3xl mx-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Built for Every Role</h2>
-          <p className="text-lg text-gray-600">From floor nurses to corporate teams</p>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {userProfiles.map((profile, index) => (
-            <Card key={index} className="border-0 shadow-sm">
-              <CardHeader>
-                <CardTitle className="text-lg text-blue-900">{profile.title}</CardTitle>
-                <CardDescription>{profile.description}</CardDescription>
-              </CardHeader>
-            </Card>
-          ))}
+          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+            <CardHeader>
+              <Activity className="w-12 h-12 text-green-600 mb-4" />
+              <CardTitle>Clinical Dashboard</CardTitle>
+              <CardDescription>
+                Comprehensive patient monitoring with real-time vitals and alerts
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                  EMR integration
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                  Quality metrics tracking
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                  Care plan management
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+            <CardHeader>
+              <TrendingUp className="w-12 h-12 text-purple-600 mb-4" />
+              <CardTitle>Revenue Optimization</CardTitle>
+              <CardDescription>
+                Financial analytics and billing optimization for improved EBITDAR
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                  Insurance verification
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                  Length of stay optimization
+                </li>
+                <li className="flex items-center">
+                  <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                  Cost per day tracking
+                </li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="container mx-auto px-6 py-16 text-center">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          Ready to Transform Your Facility?
-        </h2>
-        <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-          Join the future of skilled nursing documentation and see why operators choose Serene Care.
-        </p>
-        <Link to="/dashboard">
-          <Button size="lg" className="text-lg px-8 py-3">
-            Explore Dashboard <ArrowRight className="w-4 h-4 ml-2" />
+      <section className="container mx-auto px-6 py-20 text-center">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+            Ready to Transform Your Healthcare Operations?
+          </h2>
+          <p className="text-xl text-gray-600 mb-8">
+            Join leading healthcare facilities using our platform to improve patient outcomes 
+            and operational efficiency.
+          </p>
+          <Button size="lg" onClick={() => navigate('/auth')} className="bg-blue-600 hover:bg-blue-700">
+            Start Your Journey
+            <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
-        </Link>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-white/70 mt-16">
-        <div className="container mx-auto px-6 py-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-                <Heart className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-semibold text-gray-900">Serene Care</span>
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="container mx-auto px-6">
+          <div className="text-center">
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              <Heart className="w-6 h-6" />
+              <span className="text-xl font-bold">HealthCare Pro</span>
             </div>
-            <p className="text-sm text-gray-600">
-              © 2024 Serene Care. Making skilled nursing beautiful.
+            <p className="text-gray-400">
+              Secure, compliant, and intelligent healthcare management solutions.
             </p>
           </div>
         </div>

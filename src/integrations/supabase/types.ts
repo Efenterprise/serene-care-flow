@@ -9,6 +9,57 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      audit_trail: {
+        Row: {
+          action: string
+          details: Json | null
+          error_message: string | null
+          id: string
+          ip_address: unknown | null
+          patient_mrn: string | null
+          resource_id: string | null
+          resource_type: string | null
+          session_id: string | null
+          success: boolean | null
+          timestamp: string | null
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          details?: Json | null
+          error_message?: string | null
+          id?: string
+          ip_address?: unknown | null
+          patient_mrn?: string | null
+          resource_id?: string | null
+          resource_type?: string | null
+          session_id?: string | null
+          success?: boolean | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          details?: Json | null
+          error_message?: string | null
+          id?: string
+          ip_address?: unknown | null
+          patient_mrn?: string | null
+          resource_id?: string | null
+          resource_type?: string | null
+          session_id?: string | null
+          success?: boolean | null
+          timestamp?: string | null
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       beds: {
         Row: {
           admit_date: string | null
@@ -131,6 +182,33 @@ export type Database = {
           },
         ]
       }
+      facility_ip_addresses: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          ip_address: unknown
+          is_active: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          ip_address: unknown
+          is_active?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          ip_address?: unknown
+          is_active?: boolean | null
+        }
+        Relationships: []
+      }
       hospital_communications: {
         Row: {
           communication_type: string
@@ -234,6 +312,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      login_attempts: {
+        Row: {
+          attempted_at: string | null
+          email: string
+          failure_reason: string | null
+          id: string
+          ip_address: unknown
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          attempted_at?: string | null
+          email: string
+          failure_reason?: string | null
+          id?: string
+          ip_address: unknown
+          success: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          attempted_at?: string | null
+          email?: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: unknown
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
       }
       patient_tracking: {
         Row: {
@@ -577,12 +685,123 @@ export type Database = {
           },
         ]
       }
+      user_mfa_settings: {
+        Row: {
+          backup_codes: string[] | null
+          created_at: string | null
+          id: string
+          is_enabled: boolean | null
+          last_used_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          backup_codes?: string[] | null
+          created_at?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          last_used_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          backup_codes?: string[] | null
+          created_at?: string | null
+          id?: string
+          is_enabled?: boolean | null
+          last_used_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          department: string | null
+          email: string
+          first_name: string
+          id: string
+          is_active: boolean | null
+          last_login_at: string | null
+          last_name: string
+          license_number: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string | null
+          user_id: string
+          work_location: Database["public"]["Enums"]["work_location"]
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          department?: string | null
+          email: string
+          first_name: string
+          id?: string
+          is_active?: boolean | null
+          last_login_at?: string | null
+          last_name: string
+          license_number?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+          user_id: string
+          work_location?: Database["public"]["Enums"]["work_location"]
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          department?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          is_active?: boolean | null
+          last_login_at?: string | null
+          last_name?: string
+          license_number?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string | null
+          user_id?: string
+          work_location?: Database["public"]["Enums"]["work_location"]
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["user_role"]
+        }
+        Returns: boolean
+      }
+      is_admin: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
+      log_audit_trail: {
+        Args: {
+          _user_id: string
+          _user_email: string
+          _action: string
+          _resource_type?: string
+          _resource_id?: string
+          _ip_address?: unknown
+          _user_agent?: string
+          _session_id?: string
+          _details?: Json
+          _patient_mrn?: string
+          _success?: boolean
+          _error_message?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       insurance_type:
@@ -610,6 +829,14 @@ export type Database = {
         | "approved"
         | "rejected"
         | "admitted"
+      user_role:
+        | "admin"
+        | "nurse"
+        | "doctor"
+        | "social_worker"
+        | "administrator"
+        | "read_only"
+      work_location: "facility_only" | "remote_allowed" | "hybrid"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -753,6 +980,15 @@ export const Constants = {
         "rejected",
         "admitted",
       ],
+      user_role: [
+        "admin",
+        "nurse",
+        "doctor",
+        "social_worker",
+        "administrator",
+        "read_only",
+      ],
+      work_location: ["facility_only", "remote_allowed", "hybrid"],
     },
   },
 } as const
