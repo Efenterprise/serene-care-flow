@@ -71,6 +71,14 @@ const CommunicationDashboard = () => {
     refetchCommunications();
   };
 
+  // Helper function to safely access metadata properties
+  const getMetadataValue = (metadata: any, key: string): string | undefined => {
+    if (metadata && typeof metadata === 'object' && !Array.isArray(metadata)) {
+      return metadata[key];
+    }
+    return undefined;
+  };
+
   return (
     <div className="space-y-6">
       {/* Stats Overview */}
@@ -296,33 +304,38 @@ const CommunicationDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {communications.slice(0, 10).map(comm => (
-                <div key={comm.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    {comm.communication_type === 'email' && <Mail className="w-4 h-4 text-green-600" />}
-                    {comm.communication_type === 'sms' && <MessageSquare className="w-4 h-4 text-purple-600" />}
-                    {comm.communication_type === 'call' && <Phone className="w-4 h-4 text-orange-600" />}
-                    
-                    <div>
-                      <p className="font-medium text-sm">{comm.subject || 'No subject'}</p>
-                      <p className="text-xs text-gray-600">
-                        {comm.sent_at && format(new Date(comm.sent_at), "MMM dd, h:mm a")} •
-                        {comm.metadata?.provider && ` via ${comm.metadata.provider}`}
-                        {comm.metadata?.message_id && ` • ID: ${comm.metadata.message_id.substring(0, 8)}...`}
-                      </p>
-                      {comm.content && (
-                        <p className="text-xs text-gray-500 mt-1 truncate max-w-xs">
-                          {comm.content.substring(0, 50)}...
+              {communications.slice(0, 10).map(comm => {
+                const provider = getMetadataValue(comm.metadata, 'provider');
+                const messageId = getMetadataValue(comm.metadata, 'message_id');
+                
+                return (
+                  <div key={comm.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-3">
+                      {comm.communication_type === 'email' && <Mail className="w-4 h-4 text-green-600" />}
+                      {comm.communication_type === 'sms' && <MessageSquare className="w-4 h-4 text-purple-600" />}
+                      {comm.communication_type === 'call' && <Phone className="w-4 h-4 text-orange-600" />}
+                      
+                      <div>
+                        <p className="font-medium text-sm">{comm.subject || 'No subject'}</p>
+                        <p className="text-xs text-gray-600">
+                          {comm.sent_at && format(new Date(comm.sent_at), "MMM dd, h:mm a")} •
+                          {provider && ` via ${provider}`}
+                          {messageId && ` • ID: ${messageId.substring(0, 8)}...`}
                         </p>
-                      )}
+                        {comm.content && (
+                          <p className="text-xs text-gray-500 mt-1 truncate max-w-xs">
+                            {comm.content.substring(0, 50)}...
+                          </p>
+                        )}
+                      </div>
                     </div>
+                    
+                    <Badge variant="outline" className="text-xs">
+                      {comm.status}
+                    </Badge>
                   </div>
-                  
-                  <Badge variant="outline" className="text-xs">
-                    {comm.status}
-                  </Badge>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>
