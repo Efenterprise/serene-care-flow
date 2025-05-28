@@ -45,7 +45,7 @@ const AuditLogEntry = ({ log }: AuditLogEntryProps) => {
                 {format(new Date(log.timestamp || ''), 'MMM dd, yyyy HH:mm:ss')}
               </span>
               {log.ip_address && (
-                <span>IP: {log.ip_address}</span>
+                <span>IP: {String(log.ip_address)}</span>
               )}
             </div>
             

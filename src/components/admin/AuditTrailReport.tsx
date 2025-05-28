@@ -9,6 +9,12 @@ import AuditTrailFilters from './audit/AuditTrailFilters';
 import AuditLogsList from './audit/AuditLogsList';
 import { exportToCsv } from './audit/auditTrailUtils';
 
+interface UserForFilter {
+  email: string;
+  first_name: string;
+  last_name: string;
+}
+
 const AuditTrailReport = () => {
   const [dateRange, setDateRange] = useState({
     start: format(subDays(new Date(), 7), 'yyyy-MM-dd'),
@@ -51,7 +57,7 @@ const AuditTrailReport = () => {
         .order('first_name');
       
       if (error) throw error;
-      return data;
+      return data as UserForFilter[];
     },
   });
 

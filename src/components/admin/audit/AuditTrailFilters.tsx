@@ -4,15 +4,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Filter } from 'lucide-react';
-import type { Database } from '@/integrations/supabase/types';
 
-type UserProfile = Database['public']['Tables']['user_profiles']['Row'];
+interface UserForFilter {
+  email: string;
+  first_name: string;
+  last_name: string;
+}
 
 interface AuditTrailFiltersProps {
   dateRange: { start: string; end: string };
   userFilter: string;
   actionFilter: string;
-  users: UserProfile[] | undefined;
+  users: UserForFilter[] | undefined;
   onDateRangeChange: (field: 'start' | 'end', value: string) => void;
   onUserFilterChange: (value: string) => void;
   onActionFilterChange: (value: string) => void;
