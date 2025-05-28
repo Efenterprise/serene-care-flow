@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,7 +40,7 @@ const BedBoard = () => {
       diagnosis: "Hip Fracture",
       insurance: "Medicare A",
       estimatedLOS: "14 days",
-      priority: "high",
+      priority: "high" as const,
       readyDate: "Today",
       aiScore: 92
     },
@@ -52,7 +51,7 @@ const BedBoard = () => {
       diagnosis: "Stroke Recovery",
       insurance: "Medicare A + Humana",
       estimatedLOS: "21 days", 
-      priority: "medium",
+      priority: "medium" as const,
       readyDate: "Tomorrow",
       aiScore: 87
     }
