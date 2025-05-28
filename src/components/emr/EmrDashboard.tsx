@@ -12,7 +12,10 @@ import {
   Hospital,
   Stethoscope,
   AlertTriangle,
-  CheckCircle2
+  CheckCircle2,
+  FileText,
+  DollarSign,
+  ClipboardList
 } from "lucide-react";
 import { useEmrConnections } from "@/hooks/useEmrConnections";
 import { usePatientTracking } from "@/hooks/usePatientTracking";
@@ -20,6 +23,10 @@ import { useHospitalCommunications } from "@/hooks/useHospitalCommunications";
 import EmrConnectionManager from "./EmrConnectionManager";
 import PatientLifecycleTracker from "./PatientLifecycleTracker";
 import CommunicationLog from "./CommunicationLog";
+import MdsManagement from "./MdsManagement";
+import ClinicalDashboard from "./ClinicalDashboard";
+import CensusDashboard from "./CensusDashboard";
+import RevenueCycleDashboard from "./RevenueCycleDashboard";
 
 const EmrDashboard = () => {
   const { data: connections } = useEmrConnections();
@@ -107,10 +114,13 @@ const EmrDashboard = () => {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="connections" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="connections">EMR Connections</TabsTrigger>
           <TabsTrigger value="tracking">Patient Lifecycle</TabsTrigger>
-          <TabsTrigger value="communications">Communication Log</TabsTrigger>
+          <TabsTrigger value="mds">MDS</TabsTrigger>
+          <TabsTrigger value="clinical">Clinical</TabsTrigger>
+          <TabsTrigger value="census">Census</TabsTrigger>
+          <TabsTrigger value="revenue">Revenue Cycle</TabsTrigger>
         </TabsList>
 
         <TabsContent value="connections">
@@ -121,8 +131,20 @@ const EmrDashboard = () => {
           <PatientLifecycleTracker />
         </TabsContent>
 
-        <TabsContent value="communications">
-          <CommunicationLog />
+        <TabsContent value="mds">
+          <MdsManagement />
+        </TabsContent>
+
+        <TabsContent value="clinical">
+          <ClinicalDashboard />
+        </TabsContent>
+
+        <TabsContent value="census">
+          <CensusDashboard />
+        </TabsContent>
+
+        <TabsContent value="revenue">
+          <RevenueCycleDashboard />
         </TabsContent>
       </Tabs>
     </div>
