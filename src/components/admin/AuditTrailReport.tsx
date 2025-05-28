@@ -253,7 +253,7 @@ const AuditTrailReport = () => {
                       {log.details && (
                         <div className="text-xs bg-gray-50 p-2 rounded mt-2">
                           <pre className="whitespace-pre-wrap">
-                            {(() => {
+                            {((): string => {
                               try {
                                 return typeof log.details === 'object' 
                                   ? JSON.stringify(log.details, null, 2)
