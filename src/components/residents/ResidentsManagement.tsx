@@ -16,10 +16,12 @@ import {
 import { useResidents, useResidentStats } from "@/hooks/useResidents";
 import ResidentsTable from "./ResidentsTable";
 import ResidentFilters from "./ResidentFilters";
+import AddResidentForm from "./AddResidentForm";
 
 const ResidentsManagement = () => {
   const [activeTab, setActiveTab] = useState("current");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showAddResident, setShowAddResident] = useState(false);
   const [filters, setFilters] = useState({
     floor: "all",
     unit: "all",
@@ -59,7 +61,10 @@ const ResidentsManagement = () => {
           <h1 className="text-3xl font-bold text-gray-900">Resident Management</h1>
           <p className="text-gray-600">Manage current and discharged residents</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
+        <Button 
+          className="bg-blue-600 hover:bg-blue-700"
+          onClick={() => setShowAddResident(true)}
+        >
           <UserPlus className="w-4 h-4 mr-2" />
           Add New Resident
         </Button>
@@ -157,6 +162,12 @@ const ResidentsManagement = () => {
           <ResidentsTable residents={filteredResidents} />
         </TabsContent>
       </Tabs>
+
+      {/* Add Resident Form */}
+      <AddResidentForm
+        isOpen={showAddResident}
+        onClose={() => setShowAddResident(false)}
+      />
     </div>
   );
 };
