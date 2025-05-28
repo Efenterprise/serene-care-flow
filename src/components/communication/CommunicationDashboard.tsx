@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,8 @@ import {
   Send,
   Clock,
   Users,
-  TrendingUp
+  TrendingUp,
+  RefreshCw
 } from "lucide-react";
 import { useResidents } from "@/hooks/useResidents";
 import { useResidentContacts, useCommunicationLog } from "@/hooks/useContacts";
@@ -21,7 +23,7 @@ const CommunicationDashboard = () => {
 
   const { data: residents } = useResidents();
   const { data: contacts } = useResidentContacts(selectedResidentId || "skip");
-  const { data: communications } = useCommunicationLog(selectedResidentId || "skip");
+  const { data: communications, refetch: refetchCommunications } = useCommunicationLog(selectedResidentId || "skip");
 
   const selectedResident = residents?.find(r => r.id === selectedResidentId);
 
@@ -32,22 +34,29 @@ const CommunicationDashboard = () => {
 
   // Filter communications for today with proper timezone handling
   const todayCommunications = communications?.filter(comm => {
+    if (!comm.sent_at) return false;
     const commDate = new Date(comm.sent_at);
     return commDate >= todayStart && commDate <= todayEnd;
   }) || [];
 
-  console.log('Dashboard Debug:', {
+  // Get all communications regardless of date for debugging
+  const allCommunicationsCount = communications?.length || 0;
+
+  console.log('Dashboard Debug - Updated:', {
     today: today.toISOString(),
     todayStart: todayStart.toISOString(),
     todayEnd: todayEnd.toISOString(),
-    totalCommunications: communications?.length || 0,
+    selectedResidentId,
+    totalCommunications: allCommunicationsCount,
     todayCommunications: todayCommunications.length,
-    allCommunications: communications?.map(c => ({
+    communications: communications?.map(c => ({
       id: c.id,
       type: c.communication_type,
       sent_at: c.sent_at,
-      status: c.status
-    }))
+      status: c.status,
+      subject: c.subject
+    })),
+    rawCommunicationsData: communications
   });
 
   const stats = {
@@ -55,6 +64,11 @@ const CommunicationDashboard = () => {
     emailsSent: todayCommunications.filter(c => c.communication_type === 'email').length,
     smsSent: todayCommunications.filter(c => c.communication_type === 'sms').length,
     callsMade: todayCommunications.filter(c => c.communication_type === 'call').length,
+  };
+
+  const handleRefresh = () => {
+    console.log('Refreshing communications data...');
+    refetchCommunications();
   };
 
   return (
@@ -68,10 +82,25 @@ const CommunicationDashboard = () => {
                 <p className="text-sm font-medium text-gray-600">Today's Communications</p>
                 <p className="text-2xl font-bold text-blue-600">{stats.totalToday}</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  Total: {communications?.length || 0}
+                  Total All Time: {allCommunicationsCount}
                 </p>
+                {selectedResidentId && (
+                  <p className="text-xs text-green-600 mt-1">
+                    Filtered for selected resident
+                  </p>
+                )}
               </div>
-              <MessageSquare className="w-8 h-8 text-blue-600" />
+              <div className="flex flex-col items-end space-y-2">
+                <MessageSquare className="w-8 h-8 text-blue-600" />
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={handleRefresh}
+                  className="p-1 h-6 w-6"
+                >
+                  <RefreshCw className="w-3 h-3" />
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -82,6 +111,9 @@ const CommunicationDashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Emails Sent</p>
                 <p className="text-2xl font-bold text-green-600">{stats.emailsSent}</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  All Time: {communications?.filter(c => c.communication_type === 'email').length || 0}
+                </p>
               </div>
               <Mail className="w-8 h-8 text-green-600" />
             </div>
@@ -94,6 +126,9 @@ const CommunicationDashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">SMS Messages</p>
                 <p className="text-2xl font-bold text-purple-600">{stats.smsSent}</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  All Time: {communications?.filter(c => c.communication_type === 'sms').length || 0}
+                </p>
               </div>
               <MessageSquare className="w-8 h-8 text-purple-600" />
             </div>
@@ -106,12 +141,44 @@ const CommunicationDashboard = () => {
               <div>
                 <p className="text-sm font-medium text-gray-600">Calls Made</p>
                 <p className="text-2xl font-bold text-orange-600">{stats.callsMade}</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  All Time: {communications?.filter(c => c.communication_type === 'call').length || 0}
+                </p>
               </div>
               <Phone className="w-8 h-8 text-orange-600" />
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Data Status Indicator */}
+      {communications === undefined && (
+        <Card className="border-orange-200 bg-orange-50">
+          <CardContent className="p-4">
+            <div className="flex items-center space-x-2">
+              <RefreshCw className="w-4 h-4 animate-spin text-orange-600" />
+              <p className="text-orange-800">Loading communications data...</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {communications !== undefined && allCommunicationsCount === 0 && (
+        <Card className="border-blue-200 bg-blue-50">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <MessageSquare className="w-4 h-4 text-blue-600" />
+                <p className="text-blue-800">No communications found. Try selecting a resident or sending a message.</p>
+              </div>
+              <Button size="sm" onClick={handleRefresh}>
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Refresh
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Resident Selection */}
       <Card>
@@ -125,6 +192,7 @@ const CommunicationDashboard = () => {
                 <SelectValue placeholder="Choose a resident to view communications" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="">All Residents</SelectItem>
                 {residents?.map(resident => (
                   <SelectItem key={resident.id} value={resident.id}>
                     {resident.first_name} {resident.last_name} - Room {resident.room_number || 'N/A'}
@@ -206,23 +274,29 @@ const CommunicationDashboard = () => {
         <Card>
           <CardContent className="p-8 text-center">
             <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Select a Resident</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Viewing All Communications</h3>
             <p className="text-gray-600">
-              Choose a resident from the dropdown above to view their contacts and communication history.
+              Select a specific resident from the dropdown above to filter communications, or view all communications across all residents.
             </p>
           </CardContent>
         </Card>
       )}
 
       {/* Recent Communications */}
-      {selectedResidentId && communications && communications.length > 0 && (
+      {communications && communications.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Recent Communications</CardTitle>
+            <CardTitle className="flex items-center justify-between">
+              <span>Recent Communications</span>
+              <Button size="sm" variant="outline" onClick={handleRefresh}>
+                <RefreshCw className="w-4 h-4 mr-2" />
+                Refresh
+              </Button>
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {communications.slice(0, 5).map(comm => (
+              {communications.slice(0, 10).map(comm => (
                 <div key={comm.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
                     {comm.communication_type === 'email' && <Mail className="w-4 h-4 text-green-600" />}
@@ -232,10 +306,15 @@ const CommunicationDashboard = () => {
                     <div>
                       <p className="font-medium text-sm">{comm.subject || 'No subject'}</p>
                       <p className="text-xs text-gray-600">
-                        {format(new Date(comm.sent_at), "MMM dd, h:mm a")} •
+                        {comm.sent_at && format(new Date(comm.sent_at), "MMM dd, h:mm a")} •
                         {comm.metadata?.provider && ` via ${comm.metadata.provider}`}
                         {comm.metadata?.message_id && ` • ID: ${comm.metadata.message_id.substring(0, 8)}...`}
                       </p>
+                      {comm.content && (
+                        <p className="text-xs text-gray-500 mt-1 truncate max-w-xs">
+                          {comm.content.substring(0, 50)}...
+                        </p>
+                      )}
                     </div>
                   </div>
                   
@@ -245,19 +324,6 @@ const CommunicationDashboard = () => {
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* No communications state */}
-      {selectedResidentId && communications && communications.length === 0 && (
-        <Card>
-          <CardContent className="p-8 text-center">
-            <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No Communications Yet</h3>
-            <p className="text-gray-600">
-              No communications have been sent for this resident. Start by sending your first message!
-            </p>
           </CardContent>
         </Card>
       )}

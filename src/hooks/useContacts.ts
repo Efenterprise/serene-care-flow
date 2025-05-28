@@ -145,27 +145,51 @@ export const useUpdateContact = () => {
   });
 };
 
+// Enhanced communication log hook with better error handling and debugging
 export const useCommunicationLog = (residentId: string) => {
   return useQuery({
-    queryKey: ["communication-log", residentId],
+    queryKey: ['communication-log', residentId],
     queryFn: async () => {
-      if (!residentId || residentId === "skip") {
+      console.log('Fetching communication log for resident:', residentId);
+      
+      if (residentId === "skip") {
+        console.log('Skipping communication log fetch - no resident selected');
         return [];
       }
 
-      const { data, error } = await supabase
-        .from("communication_log")
-        .select(`
-          *,
-          contact:resident_contacts(first_name, last_name)
-        `)
-        .eq("resident_id", residentId)
-        .order("sent_at", { ascending: false });
+      try {
+        let query = supabase
+          .from('communication_log')
+          .select('*')
+          .order('sent_at', { ascending: false });
 
-      if (error) throw error;
-      return data as CommunicationLog[];
+        // Only filter by resident if a specific resident is selected
+        if (residentId && residentId !== "skip") {
+          query = query.eq('resident_id', residentId);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+          console.error('Error fetching communication log:', error);
+          throw error;
+        }
+
+        console.log('Communication log fetched successfully:', {
+          count: data?.length || 0,
+          residentId,
+          data: data?.slice(0, 3) // Log first 3 items for debugging
+        });
+
+        return data || [];
+      } catch (error) {
+        console.error('Failed to fetch communication log:', error);
+        throw error;
+      }
     },
-    enabled: !!residentId && residentId !== "skip",
+    enabled: true, // Always enabled, we handle "skip" logic inside the function
+    refetchOnWindowFocus: true,
+    staleTime: 30000, // Consider data stale after 30 seconds
   });
 };
 
