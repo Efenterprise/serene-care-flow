@@ -9,14 +9,12 @@ import {
   Users, 
   UserPlus, 
   Search, 
-  Filter,
   Calendar,
   MapPin,
-  Phone,
   FileText
 } from "lucide-react";
 import { useResidents, useResidentStats } from "@/hooks/useResidents";
-import ResidentCard from "./ResidentCard";
+import ResidentsTable from "./ResidentsTable";
 import ResidentFilters from "./ResidentFilters";
 
 const ResidentsManagement = () => {
@@ -156,25 +154,7 @@ const ResidentsManagement = () => {
         </TabsList>
 
         <TabsContent value={activeTab}>
-          {filteredResidents.length === 0 ? (
-            <Card>
-              <CardContent className="p-8 text-center">
-                <Users className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No residents found</h3>
-                <p className="text-gray-600">
-                  {searchTerm || Object.values(filters).some(f => f !== "all") 
-                    ? "Try adjusting your search or filters"
-                    : "No residents match the current status"}
-                </p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid gap-4">
-              {filteredResidents.map((resident) => (
-                <ResidentCard key={resident.id} resident={resident} />
-              ))}
-            </div>
-          )}
+          <ResidentsTable residents={filteredResidents} />
         </TabsContent>
       </Tabs>
     </div>
