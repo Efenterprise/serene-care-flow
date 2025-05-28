@@ -37,15 +37,15 @@ const ResidentFilters = ({ filters, onFiltersChange }: ResidentFiltersProps) => 
 
   const clearFilters = () => {
     onFiltersChange({
-      floor: "",
-      unit: "",
-      payor: "",
-      careLevel: "",
-      physician: ""
+      floor: "all",
+      unit: "all",
+      payor: "all",
+      careLevel: "all",
+      physician: "all"
     });
   };
 
-  const hasActiveFilters = Object.values(filters).some(filter => filter !== "");
+  const hasActiveFilters = Object.values(filters).some(filter => filter !== "all");
 
   return (
     <Popover>
@@ -78,7 +78,7 @@ const ResidentFilters = ({ filters, onFiltersChange }: ResidentFiltersProps) => 
                   <SelectValue placeholder="All floors" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All floors</SelectItem>
+                  <SelectItem value="all">All floors</SelectItem>
                   <SelectItem value="1">Floor 1</SelectItem>
                   <SelectItem value="2">Floor 2</SelectItem>
                   <SelectItem value="3">Floor 3</SelectItem>
@@ -93,7 +93,7 @@ const ResidentFilters = ({ filters, onFiltersChange }: ResidentFiltersProps) => 
                   <SelectValue placeholder="All units" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All units</SelectItem>
+                  <SelectItem value="all">All units</SelectItem>
                   <SelectItem value="East Wing">East Wing</SelectItem>
                   <SelectItem value="West Wing">West Wing</SelectItem>
                   <SelectItem value="North Wing">North Wing</SelectItem>
@@ -109,7 +109,7 @@ const ResidentFilters = ({ filters, onFiltersChange }: ResidentFiltersProps) => 
                   <SelectValue placeholder="All payors" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All payors</SelectItem>
+                  <SelectItem value="all">All payors</SelectItem>
                   <SelectItem value="Medicare Part A">Medicare Part A</SelectItem>
                   <SelectItem value="Medicare Advantage">Medicare Advantage</SelectItem>
                   <SelectItem value="Medicaid">Medicaid</SelectItem>
@@ -126,7 +126,7 @@ const ResidentFilters = ({ filters, onFiltersChange }: ResidentFiltersProps) => 
                   <SelectValue placeholder="All care levels" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All care levels</SelectItem>
+                  <SelectItem value="all">All care levels</SelectItem>
                   <SelectItem value="skilled">Skilled Nursing</SelectItem>
                   <SelectItem value="assisted">Assisted Living</SelectItem>
                   <SelectItem value="memory_care">Memory Care</SelectItem>
@@ -142,7 +142,7 @@ const ResidentFilters = ({ filters, onFiltersChange }: ResidentFiltersProps) => 
                   <SelectValue placeholder="All physicians" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All physicians</SelectItem>
+                  <SelectItem value="all">All physicians</SelectItem>
                   <SelectItem value="Dr. Smith">Dr. Smith</SelectItem>
                   <SelectItem value="Dr. Adams">Dr. Adams</SelectItem>
                   <SelectItem value="Dr. Johnson">Dr. Johnson</SelectItem>

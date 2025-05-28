@@ -23,11 +23,11 @@ const ResidentsManagement = () => {
   const [activeTab, setActiveTab] = useState("current");
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
-    floor: "",
-    unit: "",
-    payor: "",
-    careLevel: "",
-    physician: ""
+    floor: "all",
+    unit: "all",
+    payor: "all",
+    careLevel: "all",
+    physician: "all"
   });
 
   const { data: residents, isLoading } = useResidents(activeTab);
@@ -40,11 +40,11 @@ const ResidentsManagement = () => {
       resident.room_number?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesFilters = 
-      (!filters.floor || resident.floor === filters.floor) &&
-      (!filters.unit || resident.unit === filters.unit) &&
-      (!filters.payor || resident.payor_primary === filters.payor) &&
-      (!filters.careLevel || resident.care_level === filters.careLevel) &&
-      (!filters.physician || resident.physician_attending === filters.physician);
+      (filters.floor === "all" || resident.floor === filters.floor) &&
+      (filters.unit === "all" || resident.unit === filters.unit) &&
+      (filters.payor === "all" || resident.payor_primary === filters.payor) &&
+      (filters.careLevel === "all" || resident.care_level === filters.careLevel) &&
+      (filters.physician === "all" || resident.physician_attending === filters.physician);
 
     return matchesSearch && matchesFilters;
   }) || [];
@@ -162,7 +162,7 @@ const ResidentsManagement = () => {
                 <Users className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">No residents found</h3>
                 <p className="text-gray-600">
-                  {searchTerm || Object.values(filters).some(f => f) 
+                  {searchTerm || Object.values(filters).some(f => f !== "all") 
                     ? "Try adjusting your search or filters"
                     : "No residents match the current status"}
                 </p>
