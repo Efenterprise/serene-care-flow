@@ -98,14 +98,14 @@ const Dashboard = () => {
             <Card className="border-0 shadow-sm bg-white/70">
               <CardHeader>
                 <CardTitle>Reports & Analytics</CardTitle>
-                <CardDescription>EBITDAR drivers and quality metrics</CardDescription>
+                <CardDescription>Performance metrics and quality indicators</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-center py-12">
                   <Calendar className="w-16 h-16 mx-auto text-gray-400 mb-4" />
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">Executive Reporting</h3>
                   <p className="text-gray-600 max-w-md mx-auto">
-                    Comprehensive dashboards for staffing vs acuity, Five-Star trends, and financial performance.
+                    Comprehensive dashboards for staffing vs acuity, quality trends, and financial performance.
                   </p>
                 </div>
               </CardContent>

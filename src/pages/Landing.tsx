@@ -3,12 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
-  Shield, 
   Users, 
   Activity, 
   Zap, 
-  Lock,
-  Eye,
   TrendingUp,
   Heart,
   Brain,
@@ -30,11 +27,8 @@ const Landing = () => {
             <span className="text-2xl font-bold text-gray-900">HealthCare Pro</span>
           </div>
           <div className="space-x-4">
-            <Button variant="outline" onClick={() => navigate('/auth')}>
-              Sign In
-            </Button>
-            <Button onClick={() => navigate('/auth')} className="bg-blue-600 hover:bg-blue-700">
-              Get Started
+            <Button onClick={() => navigate('/dashboard')} className="bg-blue-600 hover:bg-blue-700">
+              View Demo
             </Button>
           </div>
         </nav>
@@ -44,8 +38,8 @@ const Landing = () => {
       <section className="container mx-auto px-6 py-20 text-center">
         <div className="max-w-4xl mx-auto">
           <Badge className="mb-4 bg-blue-100 text-blue-800">
-            <Shield className="w-4 h-4 mr-2" />
-            HIPAA Compliant
+            <Zap className="w-4 h-4 mr-2" />
+            Live Demo Available
           </Badge>
           <h1 className="text-5xl font-bold text-gray-900 mb-6">
             Advanced Healthcare Management
@@ -56,74 +50,14 @@ const Landing = () => {
             with our comprehensive healthcare management platform featuring AI-powered insights.
           </p>
           <div className="flex items-center justify-center space-x-4">
-            <Button size="lg" onClick={() => navigate('/auth')} className="bg-blue-600 hover:bg-blue-700">
-              Access Portal
+            <Button size="lg" onClick={() => navigate('/dashboard')} className="bg-blue-600 hover:bg-blue-700">
+              View Live Demo
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button size="lg" variant="outline">
-              Schedule Demo
+            <Button size="lg" variant="outline" onClick={() => navigate('/emr')}>
+              EMR Integration
             </Button>
           </div>
-        </div>
-      </section>
-
-      {/* Security Features */}
-      <section className="container mx-auto px-6 py-16">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Enterprise Security & Compliance</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Built with healthcare's most stringent security requirements in mind
-          </p>
-        </div>
-        
-        <div className="grid md:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
-            <CardHeader className="text-center">
-              <Lock className="w-12 h-12 mx-auto text-blue-600 mb-4" />
-              <CardTitle className="text-lg">Multi-Factor Auth</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 text-center">
-                Advanced MFA with backup codes and IP restrictions for secure access control.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
-            <CardHeader className="text-center">
-              <Eye className="w-12 h-12 mx-auto text-green-600 mb-4" />
-              <CardTitle className="text-lg">Audit Trail</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 text-center">
-                Complete activity logging with timestamps and user identification for compliance.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
-            <CardHeader className="text-center">
-              <Users className="w-12 h-12 mx-auto text-purple-600 mb-4" />
-              <CardTitle className="text-lg">Role-Based Access</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 text-center">
-                Granular permissions with facility vs remote access controls.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
-            <CardHeader className="text-center">
-              <Shield className="w-12 h-12 mx-auto text-red-600 mb-4" />
-              <CardTitle className="text-lg">HIPAA Compliant</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 text-center">
-                Full HIPAA compliance with encrypted data and secure communications.
-              </p>
-            </CardContent>
-          </Card>
         </div>
       </section>
 
@@ -194,7 +128,7 @@ const Landing = () => {
               <TrendingUp className="w-12 h-12 text-purple-600 mb-4" />
               <CardTitle>Revenue Optimization</CardTitle>
               <CardDescription>
-                Financial analytics and billing optimization for improved EBITDAR
+                Financial analytics and billing optimization for improved outcomes
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -224,11 +158,10 @@ const Landing = () => {
             Ready to Transform Your Healthcare Operations?
           </h2>
           <p className="text-xl text-gray-600 mb-8">
-            Join leading healthcare facilities using our platform to improve patient outcomes 
-            and operational efficiency.
+            Experience the power of our healthcare management platform with this interactive demo.
           </p>
-          <Button size="lg" onClick={() => navigate('/auth')} className="bg-blue-600 hover:bg-blue-700">
-            Start Your Journey
+          <Button size="lg" onClick={() => navigate('/dashboard')} className="bg-blue-600 hover:bg-blue-700">
+            Explore Demo Dashboard
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
         </div>
@@ -243,7 +176,7 @@ const Landing = () => {
               <span className="text-xl font-bold">HealthCare Pro</span>
             </div>
             <p className="text-gray-400">
-              Secure, compliant, and intelligent healthcare management solutions.
+              Intelligent healthcare management solutions for modern facilities.
             </p>
           </div>
         </div>
