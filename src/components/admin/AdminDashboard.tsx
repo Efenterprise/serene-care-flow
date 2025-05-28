@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Shield, Activity, Settings, Plug } from 'lucide-react';
@@ -11,31 +12,20 @@ import MainLayout from '@/components/layout/MainLayout';
 const AdminDashboard = () => {
   const { profile } = useAuth();
 
-  if (profile?.role !== 'admin') {
-    return (
-      <ProtectedRoute>
-        <MainLayout>
-          <div className="min-h-screen flex items-center justify-center">
-            <Card className="max-w-md">
-              <CardContent className="p-6 text-center">
-                <Shield className="w-16 h-16 mx-auto text-red-500 mb-4" />
-                <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
-                <p className="text-gray-600">You need administrator privileges to access this area.</p>
-              </CardContent>
-            </Card>
-          </div>
-        </MainLayout>
-      </ProtectedRoute>
-    );
-  }
+  console.log('AdminDashboard - Current user profile:', profile);
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoute requiredRole={['admin']}>
       <MainLayout>
         <div className="container mx-auto px-6 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Administration Dashboard</h1>
             <p className="text-gray-600">Manage users, security settings, system monitoring, and integrations</p>
+            {profile && (
+              <p className="text-sm text-blue-600 mt-2">
+                Logged in as: {profile.first_name} {profile.last_name} ({profile.role})
+              </p>
+            )}
           </div>
 
           <Tabs defaultValue="users" className="space-y-6">

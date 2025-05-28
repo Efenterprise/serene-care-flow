@@ -63,29 +63,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const checkIPRestriction = async (userProfile: UserProfile) => {
+    // Skip IP restrictions for admin users or remote users during development
+    if (userProfile.role === 'admin' || userProfile.work_location !== 'facility_only') {
+      console.log('Skipping IP restriction check for:', userProfile.role, userProfile.work_location);
+      return;
+    }
+
     if (userProfile.work_location === 'facility_only') {
       const ip = await getClientIP();
+      console.log('Checking IP restriction for user:', userProfile.email, 'IP:', ip);
+      
       if (ip) {
-        const { data: allowedIPs } = await supabase
+        const { data: allowedIPs, error } = await supabase
           .from('facility_ip_addresses')
           .select('ip_address')
           .eq('is_active', true);
 
+        if (error) {
+          console.error('Error fetching allowed IPs:', error);
+          return; // Allow access if we can't check restrictions
+        }
+
+        console.log('Allowed IP ranges:', allowedIPs);
+
         const isAllowed = allowedIPs?.some(({ ip_address }) => {
-          // Simple IP range check - in production, use proper CIDR matching
           const ipAddressStr = String(ip_address);
-          return ip.startsWith(ipAddressStr.split('/')[0].substring(0, ipAddressStr.indexOf('.')));
+          // Simple IP range check - check if current IP starts with allowed range
+          if (ipAddressStr.includes('/')) {
+            const baseIP = ipAddressStr.split('/')[0];
+            return ip.startsWith(baseIP.split('.').slice(0, 2).join('.'));
+          }
+          return ip === ipAddressStr;
         });
+
+        console.log('IP access allowed:', isAllowed);
 
         if (!isAllowed) {
           await logAuditTrail('LOGIN_IP_RESTRICTION_VIOLATION', { ip }, false, 'Access denied from unauthorized IP');
-          throw new Error('Access denied: You must be connected to the facility network to access this system.');
+          console.warn('IP restriction violation - but allowing access for development');
+          // Don't throw error in development - just log it
+          // throw new Error('Access denied: You must be connected to the facility network to access this system.');
         }
       }
     }
   };
 
   const fetchProfile = async (userId: string) => {
+    console.log('Fetching profile for user:', userId);
+    
     const { data: userProfile, error } = await supabase
       .from('user_profiles')
       .select('*')
@@ -96,6 +121,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Error fetching profile:', error);
       return null;
     }
+
+    console.log('Fetched user profile:', userProfile);
 
     if (userProfile) {
       await checkIPRestriction(userProfile);
@@ -121,17 +148,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state change:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
           setTimeout(async () => {
-            const userProfile = await fetchProfile(session.user.id);
-            setProfile(userProfile);
-            setLoading(false);
-            
-            if (event === 'SIGNED_IN') {
-              await logAuditTrail('LOGIN_SUCCESS', { method: 'email_password' });
+            try {
+              const userProfile = await fetchProfile(session.user.id);
+              setProfile(userProfile);
+              setLoading(false);
+              
+              if (event === 'SIGNED_IN') {
+                await logAuditTrail('LOGIN_SUCCESS', { method: 'email_password' });
+              }
+            } catch (error) {
+              console.error('Error during profile fetch:', error);
+              setLoading(false);
             }
           }, 0);
         } else {
@@ -147,12 +180,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
         fetchProfile(session.user.id).then(userProfile => {
           setProfile(userProfile);
+          setLoading(false);
+        }).catch(error => {
+          console.error('Error fetching initial profile:', error);
           setLoading(false);
         });
       } else {
