@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,13 +20,17 @@ import {
   Utensils,
   Shield,
   Pill,
-  Stethoscope
+  Stethoscope,
+  DollarSign
 } from "lucide-react";
 import { MdsAssessment, AssessmentStatus, MdsData } from "@/types/mds";
 import { CaaEngine } from "@/utils/caaEngine";
 import MdsSectionA from "./sections/MdsSectionA";
 import MdsSectionB from "./sections/MdsSectionB";
 import MdsSectionC from "./sections/MdsSectionC";
+import MdsSectionD from "./sections/MdsSectionD";
+import MdsSectionG from "./sections/MdsSectionG";
+import HippsCalculator from "./HippsCalculator";
 
 interface MdsAssessmentFormProps {
   assessment?: MdsAssessment;
@@ -186,7 +189,8 @@ const MdsAssessmentForm = ({ assessment, residentId, onSave, onClose }: MdsAsses
     { id: "section-q", title: "Q. Participation", icon: User, color: "stone" },
     { id: "section-v", title: "V. CAA Summary", icon: CheckCircle, color: "green" },
     { id: "section-x", title: "X. Correction", icon: FileText, color: "gray" },
-    { id: "section-z", title: "Z. Administration", icon: Clock, color: "blue" }
+    { id: "section-z", title: "Z. Administration", icon: Clock, color: "blue" },
+    { id: "hipps", title: "HIPPS & Revenue", icon: DollarSign, color: "emerald" }
   ];
 
   const calculateProgress = () => {
@@ -302,10 +306,11 @@ const MdsAssessmentForm = ({ assessment, residentId, onSave, onClose }: MdsAsses
                       <div className="flex-1">
                         <div className="font-medium">{section.title}</div>
                         <div className="text-xs text-gray-500">
-                          {status === 'completed' ? 'Completed' : 'Pending'}
+                          {section.id === 'hipps' ? 'Live Calculation' : 
+                           status === 'completed' ? 'Completed' : 'Pending'}
                         </div>
                       </div>
-                      {status === 'completed' && (
+                      {status === 'completed' && section.id !== 'hipps' && (
                         <CheckCircle className="w-5 h-5 text-green-600" />
                       )}
                     </button>
@@ -369,8 +374,49 @@ const MdsAssessmentForm = ({ assessment, residentId, onSave, onClose }: MdsAsses
                     </CardContent>
                   </Card>
                 </TabsContent>
+                
+                <TabsContent value="section-d">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <Heart className="w-5 h-5 mr-2 text-pink-600" />
+                        Section D: Mood
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <MdsSectionD 
+                        data={formData.data?.section_d}
+                        onChange={(data) => handleSectionUpdate('section_d', data)}
+                      />
+                    </CardContent>
+                  </Card>
+                </TabsContent>
 
-                {/* Additional sections would be implemented similarly */}
+                <TabsContent value="section-g">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center">
+                        <Activity className="w-5 h-5 mr-2 text-indigo-600" />
+                        Section G: Functional Status
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <MdsSectionG 
+                        data={formData.data?.section_g}
+                        onChange={(data) => handleSectionUpdate('section_g', data)}
+                      />
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="hipps">
+                  <HippsCalculator 
+                    mdsData={formData.data!}
+                    residentName="John Doe" // This would come from resident data
+                    mrn="MRN12345" // This would come from resident data
+                  />
+                </TabsContent>
+
                 <TabsContent value="section-v">
                   <Card>
                     <CardHeader>
