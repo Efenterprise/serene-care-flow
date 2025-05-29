@@ -11,6 +11,14 @@ export interface AdmissionsAgreement {
   updated_at: string;
   expires_at?: string;
   notes?: string;
+  // PandaDoc integration fields
+  pandadoc_document_id?: string;
+  pandadoc_template_id?: string;
+  pandadoc_status?: string;
+  pandadoc_download_url?: string;
+  pandadoc_view_url?: string;
+  pandadoc_created_at?: string;
+  pandadoc_completed_at?: string;
 }
 
 export interface AgreementSignature {
