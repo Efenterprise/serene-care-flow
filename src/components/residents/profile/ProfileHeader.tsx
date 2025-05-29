@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Edit, FileText, X } from "lucide-react";
 import { Resident } from "@/hooks/useResidents";
-import { differenceInDays } from "date-fns";
 
 interface ProfileHeaderProps {
   resident: Resident;
@@ -46,7 +45,7 @@ const ProfileHeader = ({ resident, onClose }: ProfileHeaderProps) => {
     <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-blue-50 to-green-50">
       <div className="flex items-center space-x-4">
         <Avatar className="w-16 h-16">
-          <AvatarImage src="" />
+          <AvatarImage src={resident.photo_url || ""} />
           <AvatarFallback className="bg-blue-100 text-blue-600 text-lg font-semibold">
             {getInitials(resident.first_name, resident.last_name)}
           </AvatarFallback>

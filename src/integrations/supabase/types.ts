@@ -1076,6 +1076,59 @@ export type Database = {
           },
         ]
       }
+      resident_documents: {
+        Row: {
+          created_at: string
+          description: string | null
+          document_type: string | null
+          file_name: string
+          file_size: number
+          id: string
+          mime_type: string
+          original_file_name: string
+          resident_id: string
+          storage_path: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          document_type?: string | null
+          file_name: string
+          file_size: number
+          id?: string
+          mime_type: string
+          original_file_name: string
+          resident_id: string
+          storage_path: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          document_type?: string | null
+          file_name?: string
+          file_size?: number
+          id?: string
+          mime_type?: string
+          original_file_name?: string
+          resident_id?: string
+          storage_path?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resident_documents_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       residents: {
         Row: {
           admission_date: string
@@ -1103,6 +1156,7 @@ export type Database = {
           notes: string | null
           payor_primary: string | null
           payor_secondary: string | null
+          photo_url: string | null
           physician_attending: string | null
           physician_primary_care: string | null
           room_number: string | null
@@ -1138,6 +1192,7 @@ export type Database = {
           notes?: string | null
           payor_primary?: string | null
           payor_secondary?: string | null
+          photo_url?: string | null
           physician_attending?: string | null
           physician_primary_care?: string | null
           room_number?: string | null
@@ -1173,6 +1228,7 @@ export type Database = {
           notes?: string | null
           payor_primary?: string | null
           payor_secondary?: string | null
+          photo_url?: string | null
           physician_attending?: string | null
           physician_primary_care?: string | null
           room_number?: string | null

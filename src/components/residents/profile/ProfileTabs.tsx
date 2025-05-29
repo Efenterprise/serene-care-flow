@@ -7,7 +7,8 @@ import {
   Pill, 
   FileText, 
   Stethoscope, 
-  Target 
+  Target,
+  FolderOpen
 } from "lucide-react";
 
 interface ProfileTabsProps {
@@ -17,7 +18,7 @@ interface ProfileTabsProps {
 
 const ProfileTabs = ({ activeTab, onTabChange }: ProfileTabsProps) => {
   return (
-    <TabsList className="grid w-full grid-cols-7 bg-gray-50 m-4">
+    <TabsList className="grid w-full grid-cols-8 bg-gray-50 m-4">
       <TabsTrigger value="overview" className="flex items-center space-x-1">
         <User className="w-4 h-4" />
         <span>Overview</span>
@@ -43,7 +44,7 @@ const ProfileTabs = ({ activeTab, onTabChange }: ProfileTabsProps) => {
         <span>Assessments</span>
       </TabsTrigger>
       <TabsTrigger value="documents" className="flex items-center space-x-1">
-        <FileText className="w-4 h-4" />
+        <FolderOpen className="w-4 h-4" />
         <span>Documents</span>
       </TabsTrigger>
     </TabsList>

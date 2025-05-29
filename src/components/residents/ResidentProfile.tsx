@@ -8,6 +8,7 @@ import ProfileTabs from "./profile/ProfileTabs";
 import OverviewTab from "./profile/OverviewTab";
 import MedicalTab from "./profile/MedicalTab";
 import PlaceholderTab from "./profile/PlaceholderTab";
+import DocumentsTab from "./profile/DocumentsTab";
 
 interface ResidentProfileProps {
   resident: Resident;
@@ -64,10 +65,7 @@ const ResidentProfile = ({ resident, isOpen, onClose }: ResidentProfileProps) =>
               </TabsContent>
 
               <TabsContent value="documents">
-                <PlaceholderTab 
-                  title="Documents" 
-                  message="Document management system will be integrated here." 
-                />
+                <DocumentsTab resident={resident} />
               </TabsContent>
             </div>
           </Tabs>
