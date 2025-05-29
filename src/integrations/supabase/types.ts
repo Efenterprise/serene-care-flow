@@ -958,6 +958,42 @@ export type Database = {
           },
         ]
       }
+      medical_information_fields: {
+        Row: {
+          created_at: string
+          display_order: number
+          field_category: string
+          field_name: string
+          field_type: string
+          id: string
+          is_active: boolean
+          is_required: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          field_category?: string
+          field_name: string
+          field_type?: string
+          id?: string
+          is_active?: boolean
+          is_required?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          field_category?: string
+          field_name?: string
+          field_type?: string
+          id?: string
+          is_active?: boolean
+          is_required?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pandadoc_templates: {
         Row: {
           agreement_type: string
@@ -1627,6 +1663,71 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "resident_documents_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      resident_medical_professionals: {
+        Row: {
+          address: Json | null
+          created_at: string
+          email: string | null
+          id: string
+          is_active: boolean
+          is_primary: boolean
+          license_number: string | null
+          mobile_phone: string | null
+          name: string
+          notes: string | null
+          npi_number: string | null
+          office_phone: string | null
+          profession: string
+          relation: string | null
+          resident_id: string
+          updated_at: string
+        }
+        Insert: {
+          address?: Json | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          is_primary?: boolean
+          license_number?: string | null
+          mobile_phone?: string | null
+          name: string
+          notes?: string | null
+          npi_number?: string | null
+          office_phone?: string | null
+          profession: string
+          relation?: string | null
+          resident_id: string
+          updated_at?: string
+        }
+        Update: {
+          address?: Json | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          is_primary?: boolean
+          license_number?: string | null
+          mobile_phone?: string | null
+          name?: string
+          notes?: string | null
+          npi_number?: string | null
+          office_phone?: string | null
+          profession?: string
+          relation?: string | null
+          resident_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resident_medical_professionals_resident_id_fkey"
             columns: ["resident_id"]
             isOneToOne: false
             referencedRelation: "residents"

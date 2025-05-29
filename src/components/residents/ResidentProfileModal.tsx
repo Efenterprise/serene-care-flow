@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,7 +20,9 @@ import {
   Calendar,
   TrendingUp,
   AlertTriangle,
-  Users
+  Users,
+  History,
+  BarChart3
 } from "lucide-react";
 import { Resident } from "@/hooks/useResidents";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -33,6 +36,8 @@ import ResidentCarePlansTab from "./profile/clinical/ResidentCarePlansTab";
 import ResidentTasksTab from "./profile/clinical/ResidentTasksTab";
 import ContactsManagement from "./contacts/ContactsManagement";
 import MedicalProfessionalsTab from "./profile/medical/MedicalProfessionalsTab";
+import MedicalHistoryTab from "./profile/medical/MedicalHistoryTab";
+import MedicalAnalyticsDashboard from "./profile/medical/MedicalAnalyticsDashboard";
 
 interface ResidentProfileModalProps {
   resident: Resident;
@@ -137,7 +142,7 @@ const ResidentProfileModal = ({ resident, isOpen, onClose }: ResidentProfileModa
         {/* Content with Clinical Tabs */}
         <div className="overflow-y-auto flex-1" style={{ maxHeight: 'calc(95vh - 140px)' }}>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-13 bg-gray-50 m-4">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-16 bg-gray-50 m-4">
               <TabsTrigger value="overview" className="flex items-center space-x-1">
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">Overview</span>
@@ -177,6 +182,14 @@ const ResidentProfileModal = ({ resident, isOpen, onClose }: ResidentProfileModa
               <TabsTrigger value="medical-team" className="flex items-center space-x-1">
                 <Users className="w-4 h-4" />
                 <span className="hidden sm:inline">Medical Team</span>
+              </TabsTrigger>
+              <TabsTrigger value="medical-history" className="flex items-center space-x-1">
+                <History className="w-4 h-4" />
+                <span className="hidden sm:inline">History</span>
+              </TabsTrigger>
+              <TabsTrigger value="medical-analytics" className="flex items-center space-x-1">
+                <BarChart3 className="w-4 h-4" />
+                <span className="hidden sm:inline">Analytics</span>
               </TabsTrigger>
               <TabsTrigger value="therapy" className="flex items-center space-x-1">
                 <Activity className="w-4 h-4" />
@@ -231,6 +244,14 @@ const ResidentProfileModal = ({ resident, isOpen, onClose }: ResidentProfileModa
 
               <TabsContent value="medical-team">
                 <MedicalProfessionalsTab resident={resident} />
+              </TabsContent>
+
+              <TabsContent value="medical-history">
+                <MedicalHistoryTab resident={resident} />
+              </TabsContent>
+
+              <TabsContent value="medical-analytics">
+                <MedicalAnalyticsDashboard />
               </TabsContent>
 
               <TabsContent value="therapy">
