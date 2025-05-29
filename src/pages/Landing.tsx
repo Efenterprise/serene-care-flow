@@ -24,7 +24,7 @@ const Landing = () => {
         <nav className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Heart className="w-8 h-8 text-blue-600" />
-            <span className="text-2xl font-bold text-gray-900">HealthCare Pro</span>
+            <span className="text-2xl font-bold text-gray-900">HisChaver</span>
           </div>
           <div className="space-x-4">
             <Button onClick={() => navigate('/dashboard')} className="bg-blue-600 hover:bg-blue-700">
@@ -173,7 +173,7 @@ const Landing = () => {
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <Heart className="w-6 h-6" />
-              <span className="text-xl font-bold">HealthCare Pro</span>
+              <span className="text-xl font-bold">HisChaver</span>
             </div>
             <p className="text-gray-400">
               Intelligent healthcare management solutions for modern facilities.

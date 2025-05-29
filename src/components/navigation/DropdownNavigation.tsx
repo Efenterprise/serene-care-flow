@@ -184,7 +184,7 @@ const DropdownNavigation = ({ onNavigate, currentPath }: DropdownNavigationProps
       <div className="container mx-auto px-6 py-3">
         <div className="flex items-center justify-between">
           <div className="text-xl font-semibold text-gray-800">
-            LTC Ally
+            HisChaver
           </div>
           <div className="space-x-4 flex items-center">
             {/* Navigation Links */}
