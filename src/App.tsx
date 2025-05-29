@@ -40,6 +40,11 @@ const App = () => (
                 <DropdownMainLayout />
               </ProtectedRoute>
             } />
+            <Route path="/referrals" element={
+              <ProtectedRoute>
+                <DropdownMainLayout />
+              </ProtectedRoute>
+            } />
             <Route path="/emr" element={
               <ProtectedRoute>
                 <DropdownMainLayout />

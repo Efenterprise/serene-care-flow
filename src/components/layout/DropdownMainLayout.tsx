@@ -12,6 +12,7 @@ import MaintenanceContent from "@/components/maintenance/MaintenanceContent";
 import MdsManagement from "@/components/emr/MdsManagement";
 import SurveyContent from "@/components/survey/SurveyContent";
 import TherapyContent from "@/components/therapy/TherapyContent";
+import ReferralContent from "@/components/referrals/ReferralContent";
 import { useFacilityStore } from "@/stores/facilityStore";
 
 interface DropdownMainLayoutProps {
@@ -36,6 +37,11 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
   const renderContent = () => {
     console.log('Current path:', currentPath); // Debug log
     
+    // Handle referrals navigation - new referral/CRM system
+    if (currentPath === "referrals" || currentPath.startsWith("referrals/")) {
+      return <ReferralContent currentPath={currentPath} />;
+    }
+
     // Handle therapy navigation - this is the key fix
     if (currentPath === "therapy" || currentPath.startsWith("therapy/")) {
       return <TherapyContent currentPath={currentPath} />;

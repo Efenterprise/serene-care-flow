@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,7 +24,8 @@ import {
   BarChart3,
   Wrench,
   Shield,
-  ChevronDown
+  ChevronDown,
+  UserPlus
 } from "lucide-react";
 
 interface DropdownNavigationProps {
@@ -61,6 +61,20 @@ const DropdownNavigation = ({ onNavigate, currentPath }: DropdownNavigationProps
         { label: "Admissions Queue", path: "residents/admissions" },
         { label: "Bed Board", path: "residents/beds" },
         { label: "Census Report", path: "residents/census" }
+      ]
+    },
+    {
+      key: "referrals",
+      label: "Referrals & CRM",
+      icon: UserPlus,
+      path: "referrals",
+      badge: "CRM",
+      items: [
+        { label: "Referral Dashboard", path: "referrals/dashboard" },
+        { label: "Live Connections", path: "referrals/connections" },
+        { label: "Platform Management", path: "referrals/platforms" },
+        { label: "Admissions Queue", path: "referrals/admissions" },
+        { label: "Analytics", path: "referrals/analytics" }
       ]
     },
     {
