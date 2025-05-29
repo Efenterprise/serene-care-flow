@@ -101,7 +101,7 @@ export const useResidentDocuments = (residentId: string) => {
   const deleteDocument = useMutation({
     mutationFn: async (documentId: string) => {
       // Get document info first
-      const { data: document, error: fetchError } = await supabase
+      const { data: documentData, error: fetchError } = await supabase
         .from('resident_documents')
         .select('storage_path')
         .eq('id', documentId)
@@ -112,7 +112,7 @@ export const useResidentDocuments = (residentId: string) => {
       // Delete from storage
       const { error: storageError } = await supabase.storage
         .from('resident-documents')
-        .remove([document.storage_path]);
+        .remove([documentData.storage_path]);
 
       if (storageError) throw storageError;
 
@@ -168,22 +168,22 @@ export const useResidentDocuments = (residentId: string) => {
     },
   });
 
-  const downloadDocument = async (document: ResidentDocument) => {
+  const downloadDocument = async (doc: ResidentDocument) => {
     try {
       const { data, error } = await supabase.storage
         .from('resident-documents')
-        .download(document.storage_path);
+        .download(doc.storage_path);
 
       if (error) throw error;
 
       // Create download link
       const url = URL.createObjectURL(data);
-      const link = document.createElement('a');
+      const link = window.document.createElement('a');
       link.href = url;
-      link.download = document.original_file_name;
-      document.body.appendChild(link);
+      link.download = doc.original_file_name;
+      window.document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
+      window.document.body.removeChild(link);
       URL.revokeObjectURL(url);
     } catch (error: any) {
       toast({
