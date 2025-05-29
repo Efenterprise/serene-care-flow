@@ -23,7 +23,7 @@ import {
   Pill,
   Stethoscope
 } from "lucide-react";
-import { MdsAssessment, AssessmentStatus } from "@/types/mds";
+import { MdsAssessment, AssessmentStatus, MdsData } from "@/types/mds";
 import { CaaEngine } from "@/utils/caaEngine";
 import MdsSectionA from "./sections/MdsSectionA";
 import MdsSectionB from "./sections/MdsSectionB";
@@ -36,39 +36,77 @@ interface MdsAssessmentFormProps {
   onClose: () => void;
 }
 
+const createEmptyMdsData = (): MdsData => ({
+  section_a: {
+    a0100: '',
+    a0200: '',
+    a0310: 'admission',
+    a0320: '',
+    a1000: '',
+    a1005: '',
+    a1010: '',
+    a1700: '',
+    a1800: '',
+    completed: false
+  },
+  section_b: {
+    b0100: '0',
+    b0200: '0',
+    b0300: '0',
+    b0600: '0',
+    b0700: '0',
+    b0800: '0',
+    b1000: '0',
+    b1200: '0',
+    completed: false
+  },
+  section_c: {
+    c0100: '0',
+    c0200: '0',
+    c0300: '0',
+    c0400: '0',
+    c0500: '0',
+    c0600: '0',
+    c0700: '0',
+    c0800: '0',
+    c0900: '0',
+    c1000: '0',
+    c1300: '0',
+    c1600: '0',
+    completed: false
+  },
+  section_d: { completed: false },
+  section_e: { completed: false },
+  section_f: { completed: false },
+  section_g: { completed: false },
+  section_h: { completed: false },
+  section_i: { completed: false },
+  section_j: { completed: false },
+  section_k: { completed: false },
+  section_l: { completed: false },
+  section_m: { completed: false },
+  section_n: { completed: false },
+  section_o: { completed: false },
+  section_p: { completed: false },
+  section_q: { completed: false },
+  section_v: { completed: false },
+  section_x: { completed: false },
+  section_z: { completed: false }
+});
+
 const MdsAssessmentForm = ({ assessment, residentId, onSave, onClose }: MdsAssessmentFormProps) => {
   const [activeSection, setActiveSection] = useState("section-a");
-  const [formData, setFormData] = useState(assessment || {
-    resident_id: residentId,
-    assessment_type: 'admission',
-    status: 'in_progress' as AssessmentStatus,
-    sections_completed: [],
+  const [formData, setFormData] = useState<Partial<MdsAssessment>>(() => ({
+    ...assessment,
+    resident_id: assessment?.resident_id || residentId,
+    assessment_type: assessment?.assessment_type || 'admission',
+    status: assessment?.status || 'in_progress' as AssessmentStatus,
+    sections_completed: assessment?.sections_completed || [],
     total_sections: 20,
-    completion_percentage: 0,
-    data: {
-      section_a: { completed: false },
-      section_b: { completed: false },
-      section_c: { completed: false },
-      section_d: { completed: false },
-      section_e: { completed: false },
-      section_f: { completed: false },
-      section_g: { completed: false },
-      section_h: { completed: false },
-      section_i: { completed: false },
-      section_j: { completed: false },
-      section_k: { completed: false },
-      section_l: { completed: false },
-      section_m: { completed: false },
-      section_n: { completed: false },
-      section_o: { completed: false },
-      section_p: { completed: false },
-      section_q: { completed: false },
-      section_v: { completed: false },
-      section_x: { completed: false },
-      section_z: { completed: false }
-    },
-    caa_triggers: []
-  });
+    completion_percentage: assessment?.completion_percentage || 0,
+    data: assessment?.data || createEmptyMdsData(),
+    caa_triggers: assessment?.caa_triggers || []
+  }));
 
   const sections = [
     { id: "section-a", title: "A. Identification", icon: User, color: "blue" },
@@ -94,7 +132,8 @@ const MdsAssessmentForm = ({ assessment, residentId, onSave, onClose }: MdsAsses
   ];
 
   const calculateProgress = () => {
-    const completedSections = Object.values(formData.data || {}).filter(section => section?.completed).length;
+    if (!formData.data) return 0;
+    const completedSections = Object.values(formData.data).filter(section => section?.completed).length;
     return Math.round((completedSections / sections.length) * 100);
   };
 
@@ -112,7 +151,7 @@ const MdsAssessmentForm = ({ assessment, residentId, onSave, onClose }: MdsAsses
     setFormData(prev => ({
       ...prev,
       data: {
-        ...prev.data,
+        ...prev.data!,
         [sectionKey]: {
           ...sectionData,
           completed: true
@@ -122,7 +161,7 @@ const MdsAssessmentForm = ({ assessment, residentId, onSave, onClose }: MdsAsses
   };
 
   const handleSave = () => {
-    const updatedAssessment = {
+    const updatedAssessment: Partial<MdsAssessment> = {
       ...formData,
       completion_percentage: calculateProgress(),
       updated_at: new Date().toISOString()
@@ -132,7 +171,7 @@ const MdsAssessmentForm = ({ assessment, residentId, onSave, onClose }: MdsAsses
 
   const getSectionStatus = (sectionId: string) => {
     const sectionKey = sectionId.replace('-', '_');
-    const section = formData.data?.[sectionKey as keyof typeof formData.data];
+    const section = formData.data?.[sectionKey as keyof MdsData];
     return section?.completed ? 'completed' : 'pending';
   };
 

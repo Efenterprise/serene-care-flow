@@ -10,17 +10,24 @@ interface MdsAssessment {
   status: string;
   completedBy: string;
   lastModified: string;
+  completion_percentage?: number;
+  caa_triggers?: any[];
 }
 
 interface MdsAssessmentListProps {
   assessments: MdsAssessment[];
+  onEditAssessment?: (assessment: MdsAssessment) => void;
 }
 
-const MdsAssessmentList = ({ assessments }: MdsAssessmentListProps) => {
+const MdsAssessmentList = ({ assessments, onEditAssessment }: MdsAssessmentListProps) => {
   return (
     <div className="grid gap-4">
       {assessments.map((assessment) => (
-        <MdsAssessmentCard key={assessment.id} assessment={assessment} />
+        <MdsAssessmentCard 
+          key={assessment.id} 
+          assessment={assessment} 
+          onEditAssessment={onEditAssessment}
+        />
       ))}
     </div>
   );
