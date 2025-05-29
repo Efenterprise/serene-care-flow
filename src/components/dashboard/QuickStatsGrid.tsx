@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { 
@@ -9,19 +8,16 @@ import {
   CheckCircle
 } from "lucide-react";
 import { useFacilityStore } from "@/stores/facilityStore";
-import { useEffect, useCallback } from "react";
+import { useEffect } from "react";
 
 const QuickStatsGrid = () => {
   const { stats, isLoading, fetchFacilityStats } = useFacilityStore();
 
-  // Use useCallback to prevent infinite loops
-  const handleFetchStats = useCallback(() => {
-    fetchFacilityStats();
-  }, []);
-
+  // Call fetchFacilityStats once on mount only
   useEffect(() => {
-    handleFetchStats();
-  }, [handleFetchStats]);
+    console.log('QuickStatsGrid: Fetching facility stats...');
+    fetchFacilityStats();
+  }, []); // Empty dependency array to prevent infinite loops
 
   if (isLoading) {
     return (

@@ -1,11 +1,10 @@
-
 import { Button } from "@/components/ui/button";
 import { 
   Calendar, 
   Video
 } from "lucide-react";
 import { useFacilityStore } from "@/stores/facilityStore";
-import { useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import TherapyMetricsCards from "./TherapyMetricsCards";
 import TherapyPriorityActions from "./TherapyPriorityActions";
 import TherapistProductivity from "./TherapistProductivity";
@@ -15,14 +14,11 @@ import TherapyQualityMetrics from "./TherapyQualityMetrics";
 const TherapyDashboard = () => {
   const { fetchTherapyStats } = useFacilityStore();
 
-  // Use useCallback to prevent infinite loops
-  const handleFetchTherapyStats = useCallback(() => {
-    fetchTherapyStats();
-  }, []);
-
+  // Call fetchTherapyStats once on mount only
   useEffect(() => {
-    handleFetchTherapyStats();
-  }, [handleFetchTherapyStats]);
+    console.log('TherapyDashboard: Fetching therapy stats...');
+    fetchTherapyStats();
+  }, []); // Empty dependency array to prevent infinite loops
 
   return (
     <div className="space-y-6">

@@ -1,6 +1,7 @@
 
 import { useFacilityStatsStore } from './facilityStatsStore';
 import { useTherapyStatsStore } from './therapyStatsStore';
+import { useCallback } from 'react';
 
 // Combined store that provides both facility and therapy stats
 // This maintains the existing API for backward compatibility
@@ -8,27 +9,25 @@ export const useFacilityStore = () => {
   const facilityStore = useFacilityStatsStore();
   const therapyStore = useTherapyStatsStore();
 
-  // Custom fetchTherapyStats that updates therapy stats based on facility stats
-  const fetchTherapyStats = () => {
+  // Create stable function references using useCallback
+  const fetchTherapyStats = useCallback(() => {
     therapyStore.fetchTherapyStats(facilityStore.stats.currentResidents);
-  };
+  }, [facilityStore.stats.currentResidents, therapyStore.fetchTherapyStats]);
 
-  // Enhanced fetchFacilityStats that also updates therapy stats
-  const fetchFacilityStats = async () => {
-    // Call the underlying facility store's fetch function, not our own
+  const fetchFacilityStats = useCallback(async () => {
+    // Call the underlying facility store's fetch function
     await facilityStore.fetchFacilityStats();
     // Then update therapy stats based on the new facility data
     therapyStore.updateTherapyStatsFromResidents(facilityStore.stats.currentResidents);
-  };
+  }, [facilityStore.fetchFacilityStats, facilityStore.stats.currentResidents, therapyStore.updateTherapyStatsFromResidents]);
 
-  // Enhanced updateResidentCount that also updates therapy stats
-  const updateResidentCount = (change: number) => {
+  const updateResidentCount = useCallback((change: number) => {
     // Call the underlying facility store's update function
     facilityStore.updateResidentCount(change);
     // Calculate the new count and update therapy stats
-    const newResidentCount = facilityStore.stats.currentResidents;
-    therapyStore.updateTherapyStatsFromResidents(Math.max(0, newResidentCount));
-  };
+    const newResidentCount = Math.max(0, facilityStore.stats.currentResidents + change);
+    therapyStore.updateTherapyStatsFromResidents(newResidentCount);
+  }, [facilityStore.updateResidentCount, facilityStore.stats.currentResidents, therapyStore.updateTherapyStatsFromResidents]);
 
   return {
     // Facility stats
@@ -39,7 +38,7 @@ export const useFacilityStore = () => {
     // Therapy stats
     therapyStats: therapyStore.therapyStats,
     
-    // Combined actions
+    // Stable function references
     fetchFacilityStats,
     fetchTherapyStats,
     updateResidentCount,

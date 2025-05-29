@@ -22,10 +22,11 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
   const [currentPath, setCurrentPath] = useState("dashboard");
   const { fetchFacilityStats } = useFacilityStore();
 
-  // Initialize facility data when layout loads
+  // Initialize facility data when layout loads - call once on mount only
   useEffect(() => {
+    console.log('DropdownMainLayout: Initializing facility stats...');
     fetchFacilityStats();
-  }, [fetchFacilityStats]);
+  }, []); // Empty dependency array to call only once on mount
 
   const handleNavigate = (path: string) => {
     setCurrentPath(path);
