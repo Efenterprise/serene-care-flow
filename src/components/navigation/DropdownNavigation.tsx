@@ -1,200 +1,265 @@
 
 import { useState } from "react";
-import { ChevronDown, Search, Bell, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import AuthStatus from "@/components/auth/AuthStatus";
-
-interface NavigationItem {
-  label: string;
-  items: { label: string; path: string; description?: string }[];
-}
+import { Badge } from "@/components/ui/badge";
+import { 
+  Menu, 
+  LayoutDashboard, 
+  Users, 
+  Activity,
+  FileText, 
+  MessageSquare, 
+  Settings, 
+  Brain,
+  Stethoscope,
+  Building2,
+  ClipboardList,
+  Search,
+  BarChart3,
+  Wrench,
+  Shield,
+  ChevronDown
+} from "lucide-react";
 
 interface DropdownNavigationProps {
   onNavigate: (path: string) => void;
   currentPath: string;
 }
 
-const navigationConfig: NavigationItem[] = [
-  {
-    label: "Clinical",
-    items: [
-      { label: "MDS Assessments", path: "clinical/mds", description: "MDS 3.0 assessments and forms" },
-      { label: "Care Area Assessments", path: "clinical/caa", description: "CAA triggers and documentation" },
-      { label: "Care Plans", path: "clinical/care-plans", description: "Resident care planning" },
-      { label: "Progress Notes", path: "clinical/progress-notes", description: "Clinical documentation" },
-      { label: "Quality Measures", path: "clinical/quality", description: "Clinical quality metrics" },
-    ]
-  },
-  {
-    label: "Residents",
-    items: [
-      { label: "Resident Directory", path: "residents/directory", description: "All residents overview" },
-      { label: "Add New Resident", path: "residents/add", description: "Admit new resident" },
-      { label: "Admissions Queue", path: "residents/admissions", description: "Pending admissions" },
-      { label: "Resident Profiles", path: "residents/profiles", description: "Individual resident details" },
-    ]
-  },
-  {
-    label: "Survey & Regulatory",
-    items: [
-      { label: "Survey Readiness", path: "survey/readiness", description: "Annual survey preparation dashboard" },
-      { label: "Facility Assessment", path: "survey/facility-assessment", description: "Comprehensive facility assessment tool" },
-      { label: "Document Management", path: "survey/documents", description: "Survey-required documentation" },
-      { label: "Compliance Tracking", path: "survey/compliance", description: "Regulatory compliance monitoring" },
-      { label: "Policy Management", path: "survey/policies", description: "Policy and procedure tracking" },
-      { label: "Mock Surveys", path: "survey/mock-surveys", description: "Internal audit and preparation tools" },
-    ]
-  },
-  {
-    label: "Documentation",
-    items: [
-      { label: "MDS Forms", path: "documentation/mds", description: "MDS form management" },
-      { label: "Physician Orders", path: "documentation/orders", description: "Medical orders tracking" },
-      { label: "Incident Reports", path: "documentation/incidents", description: "Safety and incident documentation" },
-      { label: "Document Library", path: "documentation/library", description: "Document templates and forms" },
-    ]
-  },
-  {
-    label: "Reports",
-    items: [
-      { label: "Quality Measures", path: "reports/quality", description: "Quality indicator reports" },
-      { label: "Census Reports", path: "reports/census", description: "Occupancy and census data" },
-      { label: "MDS Reports", path: "reports/mds", description: "MDS compliance and analytics" },
-      { label: "Financial Reports", path: "reports/financial", description: "Revenue and billing reports" },
-    ]
-  },
-  {
-    label: "Communication",
-    items: [
-      { label: "Messaging Hub", path: "communication/messages", description: "Internal messaging system" },
-      { label: "Family Communication", path: "communication/family", description: "Family notifications and updates" },
-      { label: "Alerts & Notifications", path: "communication/alerts", description: "System alerts and reminders" },
-      { label: "Communication Templates", path: "communication/templates", description: "Message templates" },
-    ]
-  },
-  {
-    label: "Administration",
-    items: [
-      { label: "User Management", path: "admin/users", description: "Staff accounts and permissions" },
-      { label: "System Settings", path: "admin/settings", description: "Application configuration" },
-      { label: "Audit Logs", path: "admin/audit", description: "System activity tracking" },
-      { label: "EMR Integrations", path: "admin/integrations", description: "External system connections" },
-    ]
-  }
-];
-
 const DropdownNavigation = ({ onNavigate, currentPath }: DropdownNavigationProps) => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  const handleNavigation = (path: string) => {
+  const handleNavigate = (path: string) => {
     onNavigate(path);
+    setOpenDropdown(null);
   };
 
-  const isCurrentPath = (path: string) => {
-    return currentPath.includes(path);
-  };
+  const isActive = (path: string) => currentPath === path || currentPath.startsWith(path + "/");
 
-  const getActiveSection = () => {
-    for (const section of navigationConfig) {
-      if (section.items.some(item => isCurrentPath(item.path))) {
-        return section.label;
-      }
+  const navigationItems = [
+    {
+      key: "dashboard",
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      path: "dashboard",
+      items: []
+    },
+    {
+      key: "residents",
+      label: "Residents",
+      icon: Users,
+      path: "residents",
+      items: [
+        { label: "All Residents", path: "residents/all" },
+        { label: "Admissions Queue", path: "residents/admissions" },
+        { label: "Bed Board", path: "residents/beds" },
+        { label: "Census Report", path: "residents/census" }
+      ]
+    },
+    {
+      key: "therapy",
+      label: "Therapy",
+      icon: Activity,
+      path: "therapy",
+      badge: "NEW",
+      items: [
+        { label: "Dashboard", path: "therapy/dashboard" },
+        { label: "Patient Management", path: "therapy/patients" },
+        { label: "Scheduling", path: "therapy/scheduling" },
+        { label: "Documentation", path: "therapy/documentation" },
+        { label: "Outcomes", path: "therapy/outcomes" },
+        { label: "Telehealth", path: "therapy/telehealth" }
+      ]
+    },
+    {
+      key: "clinical",
+      label: "Clinical",
+      icon: Stethoscope,
+      path: "clinical",
+      items: [
+        { label: "Care Plans", path: "clinical/care-plans" },
+        { label: "Assessments", path: "clinical/assessments" },
+        { label: "MDS Management", path: "clinical/mds" },
+        { label: "Quality Metrics", path: "clinical/quality" },
+        { label: "Clinical Alerts", path: "clinical/alerts" }
+      ]
+    },
+    {
+      key: "communication",
+      label: "Communication",
+      icon: MessageSquare,
+      path: "communication",
+      items: [
+        { label: "Family Portal", path: "communication/family" },
+        { label: "Staff Messages", path: "communication/staff" },
+        { label: "Mass Communication", path: "communication/mass" },
+        { label: "Templates", path: "communication/templates" }
+      ]
+    },
+    {
+      key: "documentation",
+      label: "Documentation",
+      icon: FileText,
+      path: "documentation",
+      items: [
+        { label: "MDS Assessments", path: "documentation/mds" },
+        { label: "Care Plans", path: "documentation/care-plans" },
+        { label: "Progress Notes", path: "documentation/notes" },
+        { label: "Reports", path: "documentation/reports" }
+      ]
+    },
+    {
+      key: "survey",
+      label: "Survey & Regulatory",
+      icon: Shield,
+      path: "survey",
+      items: [
+        { label: "Survey Readiness", path: "survey/readiness" },
+        { label: "Compliance Tracking", path: "survey/compliance" },
+        { label: "Policy Management", path: "survey/policies" },
+        { label: "Mock Surveys", path: "survey/mock" }
+      ]
+    },
+    {
+      key: "reports",
+      label: "Reports & Analytics",
+      icon: BarChart3,
+      path: "reports",
+      items: [
+        { label: "Census Reports", path: "reports/census" },
+        { label: "Financial Reports", path: "reports/financial" },
+        { label: "Quality Reports", path: "reports/quality" },
+        { label: "Custom Reports", path: "reports/custom" }
+      ]
+    },
+    {
+      key: "maintenance",
+      label: "Maintenance",
+      icon: Wrench,
+      path: "maintenance",
+      items: [
+        { label: "Work Orders", path: "maintenance/orders" },
+        { label: "Preventive Maintenance", path: "maintenance/preventive" },
+        { label: "Asset Management", path: "maintenance/assets" }
+      ]
+    },
+    {
+      key: "admin",
+      label: "Administration",
+      icon: Settings,
+      path: "admin",
+      items: [
+        { label: "User Management", path: "admin/users" },
+        { label: "Facility Settings", path: "admin/facility" },
+        { label: "Integration Hub", path: "admin/integrations" },
+        { label: "Audit Trail", path: "admin/audit" }
+      ]
+    },
+    {
+      key: "ai-insights",
+      label: "AI Insights",
+      icon: Brain,
+      path: "insights/ai-proact",
+      badge: "AI",
+      items: []
     }
-    return null;
-  };
+  ];
 
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-3">
-      <div className="flex items-center justify-between">
-        {/* Left side - Logo and Navigation */}
-        <div className="flex items-center space-x-6">
+    <header className="bg-white border-b shadow-sm">
+      <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-3">
-            <h1 className="text-xl font-bold text-blue-600">ResidentCare Pro</h1>
+            <Building2 className="w-8 h-8 text-blue-600" />
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">CareConnect Pro</h1>
+              <p className="text-xs text-gray-600">Integrated Care Management</p>
+            </div>
           </div>
-          
-          {/* Navigation Dropdowns */}
-          <nav className="flex items-center space-x-1">
-            {navigationConfig.map((section) => (
-              <DropdownMenu key={section.label}>
+        </div>
+
+        <nav className="flex items-center space-x-1">
+          {navigationItems.map((item) => {
+            const Icon = item.icon;
+            const hasItems = item.items.length > 0;
+            
+            if (!hasItems) {
+              return (
+                <Button
+                  key={item.key}
+                  variant={isActive(item.path) ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => handleNavigate(item.path)}
+                  className="relative"
+                >
+                  <Icon className="w-4 h-4 mr-2" />
+                  {item.label}
+                  {item.badge && (
+                    <Badge variant="secondary" className="ml-2 text-xs">
+                      {item.badge}
+                    </Badge>
+                  )}
+                </Button>
+              );
+            }
+
+            return (
+              <DropdownMenu 
+                key={item.key} 
+                open={openDropdown === item.key}
+                onOpenChange={(open) => setOpenDropdown(open ? item.key : null)}
+              >
                 <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    className={`
-                      flex items-center space-x-1 px-3 py-2 text-sm font-medium
-                      ${getActiveSection() === section.label 
-                        ? 'bg-blue-50 text-blue-700 border-b-2 border-blue-500' 
-                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-                      }
-                    `}
+                  <Button
+                    variant={isActive(item.path) ? "default" : "ghost"}
+                    size="sm"
+                    className="relative"
                   >
-                    <span>{section.label}</span>
-                    <ChevronDown className="w-4 h-4" />
+                    <Icon className="w-4 h-4 mr-2" />
+                    {item.label}
+                    {item.badge && (
+                      <Badge variant="secondary" className="ml-2 text-xs">
+                        {item.badge}
+                      </Badge>
+                    )}
+                    <ChevronDown className="w-3 h-3 ml-1" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-64 p-2">
-                  <DropdownMenuLabel className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    {section.label}
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {section.items.map((item) => (
-                    <DropdownMenuItem
-                      key={item.path}
-                      onClick={() => handleNavigation(item.path)}
-                      className={`
-                        p-3 cursor-pointer rounded-md transition-colors
-                        ${isCurrentPath(item.path) 
-                          ? 'bg-blue-50 text-blue-700' 
-                          : 'hover:bg-gray-50'
-                        }
-                      `}
+                <DropdownMenuContent align="start" className="w-56">
+                  <DropdownMenuItem onClick={() => handleNavigate(item.path)}>
+                    <Icon className="w-4 h-4 mr-2" />
+                    {item.label} Overview
+                  </DropdownMenuItem>
+                  {item.items.length > 0 && <DropdownMenuSeparator />}
+                  {item.items.map((subItem) => (
+                    <DropdownMenuItem 
+                      key={subItem.path}
+                      onClick={() => handleNavigate(subItem.path)}
                     >
-                      <div>
-                        <div className="font-medium text-sm">{item.label}</div>
-                        {item.description && (
-                          <div className="text-xs text-gray-500 mt-1">{item.description}</div>
-                        )}
-                      </div>
+                      {subItem.label}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-            ))}
-          </nav>
-        </div>
+            );
+          })}
+        </nav>
 
-        {/* Right side - Search and User Actions */}
         <div className="flex items-center space-x-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <Input
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 w-64 h-9"
-            />
+          <Button variant="outline" size="sm">
+            <Search className="w-4 h-4 mr-2" />
+            Search
+          </Button>
+          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+            <span className="text-white text-sm font-medium">JD</span>
           </div>
-          
-          <AuthStatus />
-          
-          <Button variant="ghost" size="sm" className="relative">
-            <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-              3
-            </span>
-          </Button>
-          
-          <Button variant="ghost" size="sm">
-            <Settings className="w-5 h-5" />
-          </Button>
         </div>
       </div>
     </header>

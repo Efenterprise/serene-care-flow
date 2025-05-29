@@ -29,11 +29,14 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
 
   const handleNavigate = (path: string) => {
     setCurrentPath(path);
+    console.log('Navigating to:', path); // Debug log
   };
 
   const renderContent = () => {
-    // Handle therapy navigation
-    if (currentPath.startsWith("therapy/")) {
+    console.log('Current path:', currentPath); // Debug log
+    
+    // Handle therapy navigation - this is the key fix
+    if (currentPath === "therapy" || currentPath.startsWith("therapy/")) {
       return <TherapyContent currentPath={currentPath} />;
     }
 
@@ -72,13 +75,31 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
       return <EmrContent />;
     }
 
+    // Handle AI insights
+    if (currentPath === "insights/ai-proact") {
+      return <AiInsightsContent />;
+    }
+
     // Handle reports and documentation paths
     if (currentPath.startsWith("reports/") || currentPath.startsWith("documentation/")) {
       return <MaintenanceContent />; // Placeholder for now
     }
 
+    // Handle maintenance paths
+    if (currentPath.startsWith("maintenance/")) {
+      return <MaintenanceContent />;
+    }
+
     // Default to dashboard
     return <DashboardContent />;
+  };
+
+  const formatBreadcrumb = (path: string) => {
+    return path
+      .split('/')
+      .map(segment => segment.replace('-', ' '))
+      .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1))
+      .join(' / ');
   };
 
   return (
@@ -96,7 +117,7 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
             <>
               <span>/</span>
               <span className="capitalize">
-                {currentPath.replace("/", " / ").replace("-", " ")}
+                {formatBreadcrumb(currentPath)}
               </span>
             </>
           )}
