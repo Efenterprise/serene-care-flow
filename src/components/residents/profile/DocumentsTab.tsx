@@ -78,7 +78,7 @@ const DocumentsTab = ({ resident }: DocumentsTabProps) => {
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="agreements" className="flex items-center space-x-2">
             <PenTool className="w-4 h-4" />
-            <span>Admissions Agreements</span>
+            <span>Agreements</span>
           </TabsTrigger>
           <TabsTrigger value="documents" className="flex items-center space-x-2">
             <FileText className="w-4 h-4" />

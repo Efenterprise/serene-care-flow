@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -145,6 +146,8 @@ const AdmissionsAgreementsPortal = () => {
     return acc;
   }, {} as Record<string, number>);
 
+  const electronicAgreements = agreements.filter(a => a.pandadoc_document_id);
+
   if (isLoading) {
     return <div className="text-center py-8">Loading agreements...</div>;
   }
@@ -178,10 +181,8 @@ const AdmissionsAgreementsPortal = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">PandaDoc</p>
-                <p className="text-2xl font-bold text-purple-600">
-                  {agreements.filter(a => (a as any).pandadoc_document_id).length}
-                </p>
+                <p className="text-sm font-medium text-gray-600">Electronic</p>
+                <p className="text-2xl font-bold text-purple-600">{electronicAgreements.length}</p>
               </div>
               <div className="p-3 bg-purple-100 rounded-full">
                 <FileText className="w-6 h-6 text-purple-600" />
@@ -294,9 +295,9 @@ const AdmissionsAgreementsPortal = () => {
                       <div>
                         <div className="flex items-center gap-2">
                           <h4 className="font-medium">{agreement.resident_name}</h4>
-                          {(agreement as any).pandadoc_document_id && (
-                            <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700">
-                              PandaDoc
+                          {agreement.pandadoc_document_id && (
+                            <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">
+                              Electronic
                             </Badge>
                           )}
                         </div>
@@ -313,9 +314,9 @@ const AdmissionsAgreementsPortal = () => {
                             </>
                           )}
                         </div>
-                        {(agreement as any).pandadoc_status && (
-                          <p className="text-xs text-purple-600 mt-1">
-                            PandaDoc: {(agreement as any).pandadoc_status.replace('document.', '')}
+                        {agreement.pandadoc_status && (
+                          <p className="text-xs text-blue-600 mt-1">
+                            Status: {agreement.pandadoc_status.replace('document.', '')}
                           </p>
                         )}
                         {agreement.notes && (
@@ -327,12 +328,12 @@ const AdmissionsAgreementsPortal = () => {
                     <div className="flex items-center space-x-3">
                       {getStatusBadge(agreement.status)}
                       
-                      {(agreement as any).pandadoc_view_url && (
+                      {agreement.pandadoc_view_url && (
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => window.open((agreement as any).pandadoc_view_url, '_blank')}
-                          title="View in PandaDoc"
+                          onClick={() => window.open(agreement.pandadoc_view_url, '_blank')}
+                          title="View Agreement"
                         >
                           <Eye className="w-4 h-4" />
                         </Button>
