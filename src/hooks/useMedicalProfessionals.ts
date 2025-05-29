@@ -26,7 +26,7 @@ export const useMedicalProfessionals = (residentId: string) => {
     queryKey: ['medicalProfessionals', residentId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('resident_medical_professionals')
+        .from('resident_medical_professionals' as any)
         .select('*')
         .eq('resident_id', residentId)
         .eq('is_active', true)
@@ -45,7 +45,7 @@ export const useCreateMedicalProfessional = () => {
   return useMutation({
     mutationFn: async (professional: Omit<MedicalProfessional, 'id' | 'created_at' | 'updated_at'>) => {
       const { data, error } = await supabase
-        .from('resident_medical_professionals')
+        .from('resident_medical_professionals' as any)
         .insert(professional)
         .select()
         .single();
@@ -65,7 +65,7 @@ export const useUpdateMedicalProfessional = () => {
   return useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Partial<MedicalProfessional> }) => {
       const { data, error } = await supabase
-        .from('resident_medical_professionals')
+        .from('resident_medical_professionals' as any)
         .update(updates)
         .eq('id', id)
         .select()
@@ -86,7 +86,7 @@ export const useDeleteMedicalProfessional = () => {
   return useMutation({
     mutationFn: async (id: string) => {
       const { data, error } = await supabase
-        .from('resident_medical_professionals')
+        .from('resident_medical_professionals' as any)
         .update({ is_active: false })
         .eq('id', id)
         .select()

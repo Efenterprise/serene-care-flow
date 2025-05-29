@@ -22,7 +22,8 @@ const ClinicalConfigurationsManagement = () => {
     configuration_key: '',
     configuration_value: '',
     description: '',
-    display_order: 0
+    display_order: 0,
+    is_active: true
   });
 
   const configurationTypes = [
@@ -56,7 +57,8 @@ const ClinicalConfigurationsManagement = () => {
         configuration_key: '',
         configuration_value: '',
         description: '',
-        display_order: 0
+        display_order: 0,
+        is_active: true
       });
       setShowAddForm(false);
       toast({

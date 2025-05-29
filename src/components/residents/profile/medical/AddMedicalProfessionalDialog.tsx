@@ -69,7 +69,16 @@ const AddMedicalProfessionalDialog = ({ resident, isOpen, onClose }: AddMedicalP
     setIsLoading(true);
     try {
       await createMutation.mutateAsync({
-        ...data,
+        name: data.name,
+        profession: data.profession,
+        relation: data.relation || "",
+        office_phone: data.office_phone || "",
+        mobile_phone: data.mobile_phone || "",
+        email: data.email || "",
+        npi_number: data.npi_number || "",
+        license_number: data.license_number || "",
+        notes: data.notes || "",
+        is_primary: data.is_primary,
         resident_id: resident.id,
         is_active: true,
       });
