@@ -15,14 +15,18 @@ export const useFacilityStore = () => {
 
   // Enhanced fetchFacilityStats that also updates therapy stats
   const fetchFacilityStats = async () => {
+    // Call the underlying facility store's fetch function, not our own
     await facilityStore.fetchFacilityStats();
+    // Then update therapy stats based on the new facility data
     therapyStore.updateTherapyStatsFromResidents(facilityStore.stats.currentResidents);
   };
 
   // Enhanced updateResidentCount that also updates therapy stats
   const updateResidentCount = (change: number) => {
+    // Call the underlying facility store's update function
     facilityStore.updateResidentCount(change);
-    const newResidentCount = facilityStore.stats.currentResidents + change;
+    // Calculate the new count and update therapy stats
+    const newResidentCount = facilityStore.stats.currentResidents;
     therapyStore.updateTherapyStatsFromResidents(Math.max(0, newResidentCount));
   };
 

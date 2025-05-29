@@ -31,7 +31,7 @@ export const useTherapyStatsStore = create<TherapyStatsStore>((set, get) => ({
   },
 
   fetchTherapyStats: (currentResidents = 95) => {
-    console.log('Updating therapy stats based on facility data...');
+    console.log('Updating therapy stats based on facility data...', { currentResidents });
     
     // Therapy stats should be based on current residents
     const activePatients = currentResidents;
@@ -63,6 +63,14 @@ export const useTherapyStatsStore = create<TherapyStatsStore>((set, get) => ({
   },
 
   updateTherapyStatsFromResidents: (currentResidents: number) => {
-    get().fetchTherapyStats(currentResidents);
+    // Only update if the resident count actually changed to prevent unnecessary updates
+    const currentActivePatients = get().therapyStats.activePatients;
+    if (currentActivePatients !== currentResidents) {
+      console.log('Resident count changed, updating therapy stats', { 
+        from: currentActivePatients, 
+        to: currentResidents 
+      });
+      get().fetchTherapyStats(currentResidents);
+    }
   },
 }));
