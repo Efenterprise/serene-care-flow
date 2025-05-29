@@ -34,7 +34,7 @@ export const useMedicalProfessionals = (residentId: string) => {
         .order('name');
       
       if (error) throw error;
-      return (data as any[]) as MedicalProfessional[];
+      return (data as unknown) as MedicalProfessional[];
     },
   });
 };
@@ -51,7 +51,7 @@ export const useCreateMedicalProfessional = () => {
         .single();
       
       if (error) throw error;
-      return data as MedicalProfessional;
+      return (data as unknown) as MedicalProfessional;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['medicalProfessionals', (data as any).resident_id] });
@@ -72,7 +72,7 @@ export const useUpdateMedicalProfessional = () => {
         .single();
       
       if (error) throw error;
-      return data as MedicalProfessional;
+      return (data as unknown) as MedicalProfessional;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['medicalProfessionals', (data as any).resident_id] });
@@ -93,7 +93,7 @@ export const useDeleteMedicalProfessional = () => {
         .single();
       
       if (error) throw error;
-      return data as MedicalProfessional;
+      return (data as unknown) as MedicalProfessional;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['medicalProfessionals', (data as any).resident_id] });
