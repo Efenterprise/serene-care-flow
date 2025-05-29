@@ -9,6 +9,7 @@ import OverviewTab from "./profile/OverviewTab";
 import MedicalTab from "./profile/MedicalTab";
 import PlaceholderTab from "./profile/PlaceholderTab";
 import DocumentsTab from "./profile/DocumentsTab";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ResidentProfileProps {
   resident: Resident;
@@ -18,19 +19,23 @@ interface ResidentProfileProps {
 
 const ResidentProfile = ({ resident, isOpen, onClose }: ResidentProfileProps) => {
   const [activeTab, setActiveTab] = useState("overview");
+  const isMobile = useIsMobile();
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-6xl w-full max-h-[95vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className={`
+        bg-white rounded-lg shadow-xl w-full h-full max-h-[95vh] overflow-hidden
+        ${isMobile ? 'max-w-full' : 'max-w-6xl'}
+      `}>
         <ProfileHeader resident={resident} onClose={onClose} />
 
-        <div className="overflow-y-auto max-h-[calc(95vh-120px)]">
+        <div className="overflow-y-auto flex-1" style={{ maxHeight: 'calc(95vh - 120px)' }}>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-            <div className="p-6">
+            <div className="p-3 sm:p-6">
               <TabsContent value="overview">
                 <OverviewTab resident={resident} />
               </TabsContent>
