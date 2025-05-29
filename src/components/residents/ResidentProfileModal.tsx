@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,7 +18,8 @@ import {
   Shield,
   Calendar,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  Users
 } from "lucide-react";
 import { Resident } from "@/hooks/useResidents";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -32,6 +32,7 @@ import ResidentProgressNotesTab from "./profile/clinical/ResidentProgressNotesTa
 import ResidentCarePlansTab from "./profile/clinical/ResidentCarePlansTab";
 import ResidentTasksTab from "./profile/clinical/ResidentTasksTab";
 import ContactsManagement from "./contacts/ContactsManagement";
+import MedicalProfessionalsTab from "./profile/medical/MedicalProfessionalsTab";
 
 interface ResidentProfileModalProps {
   resident: Resident;
@@ -136,7 +137,7 @@ const ResidentProfileModal = ({ resident, isOpen, onClose }: ResidentProfileModa
         {/* Content with Clinical Tabs */}
         <div className="overflow-y-auto flex-1" style={{ maxHeight: 'calc(95vh - 140px)' }}>
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-12 bg-gray-50 m-4">
+            <TabsList className="grid w-full grid-cols-6 lg:grid-cols-13 bg-gray-50 m-4">
               <TabsTrigger value="overview" className="flex items-center space-x-1">
                 <User className="w-4 h-4" />
                 <span className="hidden sm:inline">Overview</span>
@@ -172,6 +173,10 @@ const ResidentProfileModal = ({ resident, isOpen, onClose }: ResidentProfileModa
               <TabsTrigger value="contacts" className="flex items-center space-x-1">
                 <Shield className="w-4 h-4" />
                 <span className="hidden sm:inline">Contacts</span>
+              </TabsTrigger>
+              <TabsTrigger value="medical-team" className="flex items-center space-x-1">
+                <Users className="w-4 h-4" />
+                <span className="hidden sm:inline">Medical Team</span>
               </TabsTrigger>
               <TabsTrigger value="therapy" className="flex items-center space-x-1">
                 <Activity className="w-4 h-4" />
@@ -222,6 +227,10 @@ const ResidentProfileModal = ({ resident, isOpen, onClose }: ResidentProfileModa
 
               <TabsContent value="contacts">
                 <ContactsManagement resident={resident} />
+              </TabsContent>
+
+              <TabsContent value="medical-team">
+                <MedicalProfessionalsTab resident={resident} />
               </TabsContent>
 
               <TabsContent value="therapy">
