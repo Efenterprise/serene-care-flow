@@ -11,11 +11,13 @@ import {
   TrendingUp,
   Users,
   Pill,
-  Plus
+  Plus,
+  ClipboardList
 } from "lucide-react";
 import { useCarePlanStats } from '@/hooks/useCarePlans';
 import { useResidentStats } from '@/hooks/useResidents';
 import ClinicalCarePlansManagement from './ClinicalCarePlansManagement';
+import UdaManagement from './uda/UdaManagement';
 
 const ClinicalContent = () => {
   const { data: carePlanStats } = useCarePlanStats();
@@ -29,9 +31,10 @@ const ClinicalContent = () => {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="assessments">Assessments</TabsTrigger>
+          <TabsTrigger value="uda">UDA</TabsTrigger>
           <TabsTrigger value="careplans">Care Plans</TabsTrigger>
           <TabsTrigger value="medications">Medications</TabsTrigger>
           <TabsTrigger value="vitals">Vitals & Labs</TabsTrigger>
@@ -158,6 +161,10 @@ const ClinicalContent = () => {
               <p className="text-center text-gray-500 py-8">Assessment management interface will be implemented here</p>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="uda">
+          <UdaManagement />
         </TabsContent>
 
         <TabsContent value="careplans">
