@@ -272,6 +272,133 @@ export type Database = {
         }
         Relationships: []
       }
+      care_plan_interventions: {
+        Row: {
+          care_plan_id: string
+          created_at: string
+          frequency: string
+          id: string
+          intervention: string
+          last_completed: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          care_plan_id: string
+          created_at?: string
+          frequency: string
+          id?: string
+          intervention: string
+          last_completed?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          care_plan_id?: string
+          created_at?: string
+          frequency?: string
+          id?: string
+          intervention?: string
+          last_completed?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_plan_interventions_care_plan_id_fkey"
+            columns: ["care_plan_id"]
+            isOneToOne: false
+            referencedRelation: "care_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_plan_outcomes: {
+        Row: {
+          care_plan_id: string
+          created_at: string
+          id: string
+          outcome_date: string
+          outcome_text: string
+          recorded_by: string | null
+        }
+        Insert: {
+          care_plan_id: string
+          created_at?: string
+          id?: string
+          outcome_date?: string
+          outcome_text: string
+          recorded_by?: string | null
+        }
+        Update: {
+          care_plan_id?: string
+          created_at?: string
+          id?: string
+          outcome_date?: string
+          outcome_text?: string
+          recorded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "care_plan_outcomes_care_plan_id_fkey"
+            columns: ["care_plan_id"]
+            isOneToOne: false
+            referencedRelation: "care_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      care_plans: {
+        Row: {
+          assigned_to: string | null
+          created_at: string
+          created_by: string | null
+          goal: string
+          id: string
+          notes: string | null
+          priority: string
+          problem: string
+          progress: number
+          resident_id: string
+          start_date: string
+          status: string
+          target_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          created_at?: string
+          created_by?: string | null
+          goal: string
+          id?: string
+          notes?: string | null
+          priority?: string
+          problem: string
+          progress?: number
+          resident_id: string
+          start_date?: string
+          status?: string
+          target_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          created_at?: string
+          created_by?: string | null
+          goal?: string
+          id?: string
+          notes?: string | null
+          priority?: string
+          problem?: string
+          progress?: number
+          resident_id?: string
+          start_date?: string
+          status?: string
+          target_date?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       clinical_configurations: {
         Row: {
           configuration_key: string

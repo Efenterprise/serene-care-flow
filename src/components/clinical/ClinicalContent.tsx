@@ -1,6 +1,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { 
   Activity, 
   Heart, 
@@ -9,10 +10,17 @@ import {
   AlertTriangle,
   TrendingUp,
   Users,
-  Pill
+  Pill,
+  Plus
 } from "lucide-react";
+import { useCarePlanStats } from '@/hooks/useCarePlans';
+import { useResidentStats } from '@/hooks/useResidents';
+import ClinicalCarePlansManagement from './ClinicalCarePlansManagement';
 
 const ClinicalContent = () => {
+  const { data: carePlanStats } = useCarePlanStats();
+  const { data: residentStats } = useResidentStats();
+
   return (
     <div className="space-y-6">
       <div className="mb-6">
@@ -37,7 +45,7 @@ const ClinicalContent = () => {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Active Residents</p>
-                    <p className="text-2xl font-bold text-blue-600">95</p>
+                    <p className="text-2xl font-bold text-blue-600">{residentStats?.current || 0}</p>
                   </div>
                   <Users className="w-8 h-8 text-blue-600" />
                 </div>
@@ -48,10 +56,10 @@ const ClinicalContent = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Pending Assessments</p>
-                    <p className="text-2xl font-bold text-orange-600">12</p>
+                    <p className="text-sm font-medium text-gray-600">Active Care Plans</p>
+                    <p className="text-2xl font-bold text-green-600">{carePlanStats?.active || 0}</p>
                   </div>
-                  <FileText className="w-8 h-8 text-orange-600" />
+                  <FileText className="w-8 h-8 text-green-600" />
                 </div>
               </CardContent>
             </Card>
@@ -60,8 +68,8 @@ const ClinicalContent = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Critical Alerts</p>
-                    <p className="text-2xl font-bold text-red-600">3</p>
+                    <p className="text-sm font-medium text-gray-600">High Priority Plans</p>
+                    <p className="text-2xl font-bold text-red-600">{carePlanStats?.high_priority || 0}</p>
                   </div>
                   <AlertTriangle className="w-8 h-8 text-red-600" />
                 </div>
@@ -72,10 +80,10 @@ const ClinicalContent = () => {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Quality Score</p>
-                    <p className="text-2xl font-bold text-green-600">92%</p>
+                    <p className="text-sm font-medium text-gray-600">Goals Met</p>
+                    <p className="text-2xl font-bold text-purple-600">{carePlanStats?.met || 0}</p>
                   </div>
-                  <TrendingUp className="w-8 h-8 text-green-600" />
+                  <TrendingUp className="w-8 h-8 text-purple-600" />
                 </div>
               </CardContent>
             </Card>
@@ -153,14 +161,7 @@ const ClinicalContent = () => {
         </TabsContent>
 
         <TabsContent value="careplans">
-          <Card>
-            <CardHeader>
-              <CardTitle>Care Plans Management</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-center text-gray-500 py-8">Care plans interface will be implemented here</p>
-            </CardContent>
-          </Card>
+          <ClinicalCarePlansManagement />
         </TabsContent>
 
         <TabsContent value="medications">
