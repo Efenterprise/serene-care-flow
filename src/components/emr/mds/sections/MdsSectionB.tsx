@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
+import { CheckCircle } from "lucide-react";
 import { SectionB } from "@/types/mds";
 
 interface MdsSectionBProps {
@@ -34,8 +36,33 @@ const MdsSectionB = ({ data, onChange }: MdsSectionBProps) => {
     }));
   };
 
+  const markSectionComplete = () => {
+    setFormData(prev => ({
+      ...prev,
+      completed: !prev.completed
+    }));
+  };
+
   return (
     <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold">Section B: Hearing, Speech, and Vision</h3>
+        <Button 
+          onClick={markSectionComplete}
+          variant={formData.completed ? "default" : "outline"}
+          size="sm"
+        >
+          {formData.completed ? (
+            <>
+              <CheckCircle className="w-4 h-4 mr-1" />
+              Completed
+            </>
+          ) : (
+            "Mark Complete"
+          )}
+        </Button>
+      </div>
+
       {/* B0100 - Comatose */}
       <div className="space-y-4">
         <Label className="text-base font-semibold">B0100. Comatose</Label>

@@ -68,7 +68,80 @@ const MdsAssessmentDashboard = ({ facilityId }: MdsAssessmentDashboardProps) => 
   };
 
   const handleEditAssessment = (assessment: any) => {
-    setSelectedAssessment(assessment);
+    console.log('Editing assessment:', assessment);
+    
+    // Create a proper MDS assessment object for editing
+    const mdsAssessment = {
+      id: assessment.id,
+      resident_id: assessment.id, // Using assessment ID as resident ID for mock data
+      assessment_type: assessment.assessmentType.toLowerCase().replace(' ', '_'),
+      status: assessment.status,
+      target_date: assessment.dueDate,
+      completion_date: assessment.status === 'completed' ? assessment.dueDate : undefined,
+      created_by: 'current_user',
+      sections_completed: [],
+      total_sections: 20,
+      completion_percentage: assessment.completion_percentage || 0,
+      data: {
+        section_a: {
+          a0100: '12345',
+          a0200: '01',
+          a0310: assessment.assessmentType.toLowerCase().replace(' ', '_'),
+          a0320: '',
+          a1000: '01',
+          a1005: '01',
+          a1010: '2024-01-15',
+          a1700: '',
+          a1800: '',
+          a2000: '',
+          a2100: assessment.mrn,
+          a2300: '',
+          a2400: '',
+          completed: true
+        },
+        section_b: {
+          b0100: '0',
+          b0200: '1',
+          b0300: '0',
+          b0600: '0',
+          b0700: '1',
+          b0800: '1',
+          b1000: '1',
+          b1200: '1',
+          completed: assessment.completion_percentage > 25
+        },
+        section_g: {
+          g0110: '2',
+          g0120: '1',
+          g0130: '2',
+          g0140: '1',
+          g0150: '2',
+          g0160: '1',
+          g0170: '2',
+          g0180: '1',
+          g0190: '2',
+          g0200: '1',
+          g0300: '2',
+          g0400: '1',
+          g0600: '2',
+          completed: assessment.completion_percentage > 50
+        },
+        section_d: {
+          d0100: '1',
+          d0200: '0',
+          d0300: '1',
+          d0350: '0',
+          d0500: '1',
+          d0600: '0',
+          completed: assessment.completion_percentage > 75
+        }
+      },
+      caa_triggers: assessment.caa_triggers || [],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    setSelectedAssessment(mdsAssessment);
     setShowAssessmentForm(true);
   };
 
