@@ -9,7 +9,7 @@ import { AuthProvider } from "@/hooks/useAuth.tsx";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
-import TabbedMainLayout from "./components/layout/TabbedMainLayout";
+import DropdownMainLayout from "./components/layout/DropdownMainLayout";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -26,33 +26,33 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/app" element={
               <ProtectedRoute>
-                <TabbedMainLayout />
+                <DropdownMainLayout />
               </ProtectedRoute>
             } />
             {/* Redirect old routes to main app */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
-                <TabbedMainLayout />
+                <DropdownMainLayout />
               </ProtectedRoute>
             } />
             <Route path="/residents" element={
               <ProtectedRoute>
-                <TabbedMainLayout />
+                <DropdownMainLayout />
               </ProtectedRoute>
             } />
             <Route path="/emr" element={
               <ProtectedRoute>
-                <TabbedMainLayout />
+                <DropdownMainLayout />
               </ProtectedRoute>
             } />
             <Route path="/admin" element={
               <ProtectedRoute>
-                <TabbedMainLayout />
+                <DropdownMainLayout />
               </ProtectedRoute>
             } />
             <Route path="/insights/ai-proact" element={
               <ProtectedRoute>
-                <TabbedMainLayout />
+                <DropdownMainLayout />
               </ProtectedRoute>
             } />
             <Route path="*" element={<NotFound />} />
