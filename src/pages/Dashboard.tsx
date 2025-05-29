@@ -15,14 +15,6 @@ const Dashboard = () => {
   const [currentTime] = useState(new Date().toLocaleString());
   const [isAdmissionFormOpen, setIsAdmissionFormOpen] = useState(false);
 
-  const censusData = {
-    total: 120,
-    occupied: 95,
-    admissions: 3,
-    discharges: 1,
-    occupancyRate: 79.2
-  };
-
   const alerts = [
     { id: 1, type: "urgent", message: "Room 105 - Fall incident requires documentation", time: "10 min ago" },
     { id: 2, type: "warning", message: "MDS due for 3 residents this week", time: "1 hour ago" },
@@ -52,7 +44,7 @@ const Dashboard = () => {
             </Button>
           </div>
           
-          <QuickStatsGrid censusData={censusData} />
+          <QuickStatsGrid />
 
           {/* Main Dashboard Content */}
           <div className="space-y-6">
