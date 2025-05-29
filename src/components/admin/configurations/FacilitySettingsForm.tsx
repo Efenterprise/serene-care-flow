@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,12 +9,19 @@ import { useToast } from '@/components/ui/use-toast';
 import { useFacilitySettings, useUpdateFacilitySettings } from '@/hooks/useConfigurations';
 import { Save } from 'lucide-react';
 
+interface FacilityAddress {
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+
 const FacilitySettingsForm = () => {
   const { toast } = useToast();
   const { data: facilitySettings, isLoading } = useFacilitySettings();
   const updateSettings = useUpdateFacilitySettings();
   
-  const [formData, setFormData] = useState(() => ({
+  const [formData, setFormData] = useState({
     facility_name: '',
     medicare_provider_number: '',
     medicaid_provider_number: '',
@@ -34,15 +41,16 @@ const FacilitySettingsForm = () => {
       city: '',
       state: '',
       zip: ''
-    }
-  }));
+    } as FacilityAddress
+  });
 
   // Update form data when facility settings load
-  useState(() => {
+  useEffect(() => {
     if (facilitySettings) {
+      const address = facilitySettings.facility_address as FacilityAddress | null;
       setFormData({
         ...facilitySettings,
-        facility_address: facilitySettings.facility_address || {
+        facility_address: address || {
           street: '',
           city: '',
           state: '',
@@ -139,6 +147,17 @@ const FacilitySettingsForm = () => {
                   })}
                 />
               </div>
+              <div>
+                <Label htmlFor="zip">ZIP Code</Label>
+                <Input
+                  id="zip"
+                  value={formData.facility_address?.zip || ''}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    facility_address: { ...formData.facility_address, zip: e.target.value }
+                  })}
+                />
+              </div>
             </div>
           </div>
 
@@ -167,6 +186,14 @@ const FacilitySettingsForm = () => {
                   id="state_license_number"
                   value={formData.state_license_number}
                   onChange={(e) => setFormData({ ...formData, state_license_number: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="federal_tax_id">Federal Tax ID</Label>
+                <Input
+                  id="federal_tax_id"
+                  value={formData.federal_tax_id}
+                  onChange={(e) => setFormData({ ...formData, federal_tax_id: e.target.value })}
                 />
               </div>
               <div>
@@ -200,6 +227,15 @@ const FacilitySettingsForm = () => {
                   onChange={(e) => setFormData({ ...formData, administrator_email: e.target.value })}
                 />
               </div>
+              <div>
+                <Label htmlFor="administrator_phone">Administrator Phone</Label>
+                <Input
+                  id="administrator_phone"
+                  type="tel"
+                  value={formData.administrator_phone}
+                  onChange={(e) => setFormData({ ...formData, administrator_phone: e.target.value })}
+                />
+              </div>
             </div>
           </div>
 
@@ -220,6 +256,24 @@ const FacilitySettingsForm = () => {
                   id="medical_director_npi"
                   value={formData.medical_director_npi}
                   onChange={(e) => setFormData({ ...formData, medical_director_npi: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="medical_director_phone">Medical Director Phone</Label>
+                <Input
+                  id="medical_director_phone"
+                  type="tel"
+                  value={formData.medical_director_phone}
+                  onChange={(e) => setFormData({ ...formData, medical_director_phone: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label htmlFor="medical_director_email">Medical Director Email</Label>
+                <Input
+                  id="medical_director_email"
+                  type="email"
+                  value={formData.medical_director_email}
+                  onChange={(e) => setFormData({ ...formData, medical_director_email: e.target.value })}
                 />
               </div>
             </div>
