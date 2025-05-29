@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -47,15 +46,27 @@ const FacilitySettingsForm = () => {
   // Update form data when facility settings load
   useEffect(() => {
     if (facilitySettings) {
-      const address = facilitySettings.facility_address as FacilityAddress | null;
+      // Safely parse the facility_address JSON field
+      let address: FacilityAddress = {
+        street: '',
+        city: '',
+        state: '',
+        zip: ''
+      };
+      
+      if (facilitySettings.facility_address && typeof facilitySettings.facility_address === 'object') {
+        const addressData = facilitySettings.facility_address as any;
+        address = {
+          street: addressData.street || '',
+          city: addressData.city || '',
+          state: addressData.state || '',
+          zip: addressData.zip || ''
+        };
+      }
+
       setFormData({
         ...facilitySettings,
-        facility_address: address || {
-          street: '',
-          city: '',
-          state: '',
-          zip: ''
-        }
+        facility_address: address
       });
     }
   }, [facilitySettings]);
