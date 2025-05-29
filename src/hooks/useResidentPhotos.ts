@@ -22,16 +22,19 @@ export const useResidentPhotos = () => {
       setUploading(true);
       
       try {
-        // Create unique filename
-        const fileExt = file.name.split('.').pop();
+        console.log('Starting photo upload for resident:', residentId);
+        console.log('File details:', { name: file.name, size: file.size, type: file.type });
+
+        // Create unique filename with timestamp
+        const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
         const timestamp = Date.now();
-        const fileName = `${residentId}-${timestamp}.${fileExt}`;
+        const fileName = `photo-${timestamp}.${fileExt}`;
         const filePath = `${residentId}/${fileName}`;
 
-        console.log('Uploading file:', fileName, 'Size:', file.size, 'Type:', file.type);
+        console.log('Upload path:', filePath);
 
         // Upload file to storage
-        const { error: uploadError } = await supabase.storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
           .from('resident-photos')
           .upload(filePath, file, {
             cacheControl: '3600',
@@ -43,6 +46,8 @@ export const useResidentPhotos = () => {
           throw new Error(`Upload failed: ${uploadError.message}`);
         }
 
+        console.log('Upload successful:', uploadData);
+
         // Get public URL
         const { data: { publicUrl } } = supabase.storage
           .from('resident-photos')
@@ -50,11 +55,16 @@ export const useResidentPhotos = () => {
 
         console.log('Generated public URL:', publicUrl);
 
+        // Add timestamp to URL to prevent caching issues
+        const timestampedUrl = `${publicUrl}?t=${timestamp}`;
+        console.log('Timestamped URL:', timestampedUrl);
+
         // Update resident record with photo URL
-        const { error: updateError } = await supabase
+        const { data: updateData, error: updateError } = await supabase
           .from('residents')
-          .update({ photo_url: publicUrl })
-          .eq('id', residentId);
+          .update({ photo_url: timestampedUrl })
+          .eq('id', residentId)
+          .select();
 
         if (updateError) {
           console.error('Database update error:', updateError);
@@ -65,7 +75,9 @@ export const useResidentPhotos = () => {
           throw new Error(`Database update failed: ${updateError.message}`);
         }
 
-        return { publicUrl, filePath };
+        console.log('Database updated successfully:', updateData);
+
+        return { publicUrl: timestampedUrl, filePath };
       } catch (error: any) {
         console.error('Upload process error:', error);
         if (onError) {
@@ -74,12 +86,16 @@ export const useResidentPhotos = () => {
         throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('Upload mutation successful, invalidating queries');
       toast({
         title: "Photo Uploaded",
         description: "Photo has been uploaded successfully.",
       });
+      // Force refresh of residents data
       queryClient.invalidateQueries({ queryKey: ['residents'] });
+      // Also refetch immediately to ensure UI updates
+      queryClient.refetchQueries({ queryKey: ['residents'] });
     },
     onError: (error: any) => {
       console.error('Upload mutation error:', error);
@@ -105,11 +121,15 @@ export const useResidentPhotos = () => {
       onError?: (error: string) => void;
     }) => {
       try {
-        // Extract file path from URL
-        const urlParts = photoUrl.split('/');
+        console.log('Starting photo deletion for resident:', residentId);
+        console.log('Photo URL to delete:', photoUrl);
+
+        // Extract file path from URL (remove query params first)
+        const cleanUrl = photoUrl.split('?')[0];
+        const urlParts = cleanUrl.split('/');
         const filePath = urlParts.slice(-2).join('/');
 
-        console.log('Deleting file:', filePath);
+        console.log('Deleting file at path:', filePath);
 
         // Delete from storage
         const { error: deleteError } = await supabase.storage
@@ -131,6 +151,8 @@ export const useResidentPhotos = () => {
           console.error('Database update error:', updateError);
           throw new Error(`Failed to update database: ${updateError.message}`);
         }
+
+        console.log('Photo deletion completed successfully');
       } catch (error: any) {
         console.error('Delete process error:', error);
         if (onError) {
@@ -145,6 +167,7 @@ export const useResidentPhotos = () => {
         description: "Photo has been removed successfully.",
       });
       queryClient.invalidateQueries({ queryKey: ['residents'] });
+      queryClient.refetchQueries({ queryKey: ['residents'] });
     },
     onError: (error: any) => {
       console.error('Delete mutation error:', error);
