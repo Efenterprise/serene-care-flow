@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -155,6 +154,39 @@ export class IntegrationService {
               census_pro_id: "CP2024001",
               facility_preference: "private_room",
               family_contact: "555-0123"
+            }
+          }
+        ];
+
+      case "careport":
+        return [
+          {
+            external_id: `careport_${Date.now()}_1`,
+            platform_id: platform.id,
+            source: "careport",
+            patient_name: "James Wilson",
+            patient_dob: "1962-04-18",
+            patient_gender: "Male",
+            mrn: "CRP987654",
+            referring_hospital: "Memorial Healthcare",
+            referring_physician: "Dr. Anderson",
+            diagnosis: "Cardiac Rehabilitation",
+            diagnosis_codes: ["Z51.89"],
+            acuity_level: 3,
+            primary_insurance: "medicare_b",
+            estimated_los: 18,
+            estimated_daily_rate: 355.00,
+            status: "pending",
+            priority: "high",
+            ai_score: 89,
+            clinical_notes: "Post-cardiac surgery, requires specialized monitoring",
+            ready_date: new Date(Date.now() + 86400000).toISOString().split('T')[0], // Tomorrow
+            raw_data: {
+              careport_id: "CP2024002",
+              wellsky_tracking: "WS789456",
+              care_coordinator: "Lisa Thompson",
+              discharge_planner: "Michael Davis",
+              environment: "production"
             }
           }
         ];

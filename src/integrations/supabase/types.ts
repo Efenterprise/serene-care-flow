@@ -1101,7 +1101,7 @@ export type Database = {
           is_active: boolean | null
           last_sync_at: string | null
           name: string
-          platform_type: Database["public"]["Enums"]["referral_source"]
+          platform_type: Database["public"]["Enums"]["platform_type"]
           rate_limit_per_hour: number | null
           updated_at: string | null
           webhook_url: string | null
@@ -1114,7 +1114,7 @@ export type Database = {
           is_active?: boolean | null
           last_sync_at?: string | null
           name: string
-          platform_type: Database["public"]["Enums"]["referral_source"]
+          platform_type: Database["public"]["Enums"]["platform_type"]
           rate_limit_per_hour?: number | null
           updated_at?: string | null
           webhook_url?: string | null
@@ -1127,7 +1127,7 @@ export type Database = {
           is_active?: boolean | null
           last_sync_at?: string | null
           name?: string
-          platform_type?: Database["public"]["Enums"]["referral_source"]
+          platform_type?: Database["public"]["Enums"]["platform_type"]
           rate_limit_per_hour?: number | null
           updated_at?: string | null
           webhook_url?: string | null
@@ -1672,6 +1672,7 @@ export type Database = {
         | "private_pay"
         | "commercial"
         | "other"
+      platform_type: "profility" | "reside" | "census_pro" | "careport"
       priority_level: "low" | "medium" | "high" | "urgent"
       referral_source:
         | "profility"
@@ -1822,6 +1823,7 @@ export const Constants = {
         "commercial",
         "other",
       ],
+      platform_type: ["profility", "reside", "census_pro", "careport"],
       priority_level: ["low", "medium", "high", "urgent"],
       referral_source: [
         "profility",

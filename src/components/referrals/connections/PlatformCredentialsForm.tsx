@@ -2,12 +2,14 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, EyeOff } from "lucide-react";
 
 interface CredentialField {
   key: string;
   label: string;
   type: string;
+  options?: string[];
 }
 
 interface PlatformCredentialsFormProps {
@@ -46,6 +48,13 @@ const PlatformCredentialsForm = ({
           { key: 'password', label: 'Password', type: 'password' },
           { key: 'companyId', label: 'Company ID', type: 'text' }
         ];
+      case 'careport':
+        return [
+          { key: 'username', label: 'Username', type: 'text' },
+          { key: 'password', label: 'Password', type: 'password' },
+          { key: 'facilityId', label: 'Facility ID', type: 'text' },
+          { key: 'environment', label: 'Environment', type: 'select', options: ['production', 'staging', 'sandbox'] }
+        ];
       default:
         return [
           { key: 'username', label: 'Username', type: 'text' },
@@ -80,14 +89,32 @@ const PlatformCredentialsForm = ({
               <Label htmlFor={`${platformId}-${field.key}`} className="text-xs">
                 {field.label}
               </Label>
-              <Input
-                id={`${platformId}-${field.key}`}
-                type={field.type}
-                placeholder={field.label}
-                value={credentials?.[field.key] || ''}
-                onChange={(e) => onCredentialChange(field.key, e.target.value)}
-                className="h-8 text-sm"
-              />
+              {field.type === 'select' ? (
+                <Select
+                  value={credentials?.[field.key] || ''}
+                  onValueChange={(value) => onCredentialChange(field.key, value)}
+                >
+                  <SelectTrigger className="h-8 text-sm">
+                    <SelectValue placeholder={`Select ${field.label}`} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {field.options?.map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option.charAt(0).toUpperCase() + option.slice(1)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : (
+                <Input
+                  id={`${platformId}-${field.key}`}
+                  type={field.type}
+                  placeholder={field.label}
+                  value={credentials?.[field.key] || ''}
+                  onChange={(e) => onCredentialChange(field.key, e.target.value)}
+                  className="h-8 text-sm"
+                />
+              )}
             </div>
           ))}
         </div>

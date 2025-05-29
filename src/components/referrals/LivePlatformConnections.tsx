@@ -83,6 +83,20 @@ const LivePlatformConnections = () => {
     }));
   };
 
+  const handleAddCareport = () => {
+    toast({
+      title: "WellSky Careport Integration",
+      description: "Contact your administrator to configure WellSky Careport integration",
+    });
+  };
+
+  const handleAddProfility = () => {
+    toast({
+      title: "Profility Integration",
+      description: "Contact your administrator to configure Profility integration",
+    });
+  };
+
   if (isLoading) {
     return <div>Loading platforms...</div>;
   }
@@ -116,9 +130,12 @@ const LivePlatformConnections = () => {
             />
           );
         })}
-      </div>
 
-      <AddPlatformCard />
+        <AddPlatformCard 
+          onAddCareport={handleAddCareport}
+          onAddProfility={handleAddProfility}
+        />
+      </div>
     </div>
   );
 };
