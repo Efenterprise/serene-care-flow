@@ -1,9 +1,11 @@
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Shield, Activity, Settings, Plug } from 'lucide-react';
+import { Users, Shield, Activity, Settings, Plug, Building } from 'lucide-react';
 import UserManagement from './UserManagement';
 import AuditTrailReport from './AuditTrailReport';
 import IntegrationsManager from './IntegrationsManager';
+import ConfigurationDashboard from './configurations/ConfigurationDashboard';
 import { useAuth } from '@/hooks/useAuth';
 
 const AdminContent = () => {
@@ -21,8 +23,12 @@ const AdminContent = () => {
         )}
       </div>
 
-      <Tabs defaultValue="users" className="space-y-6">
-        <TabsList className="grid grid-cols-5 w-full max-w-3xl">
+      <Tabs defaultValue="configuration" className="space-y-6">
+        <TabsList className="grid grid-cols-6 w-full max-w-4xl">
+          <TabsTrigger value="configuration" className="flex items-center space-x-2">
+            <Building className="w-4 h-4" />
+            <span>Configuration</span>
+          </TabsTrigger>
           <TabsTrigger value="users" className="flex items-center space-x-2">
             <Users className="w-4 h-4" />
             <span>Users</span>
@@ -44,6 +50,10 @@ const AdminContent = () => {
             <span>Settings</span>
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="configuration">
+          <ConfigurationDashboard />
+        </TabsContent>
 
         <TabsContent value="users">
           <UserManagement />

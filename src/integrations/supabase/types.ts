@@ -111,6 +111,45 @@ export type Database = {
         }
         Relationships: []
       }
+      clinical_configurations: {
+        Row: {
+          configuration_key: string
+          configuration_type: string
+          configuration_value: string
+          created_at: string
+          description: string | null
+          display_order: number | null
+          id: string
+          is_active: boolean
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          configuration_key: string
+          configuration_type: string
+          configuration_value: string
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          configuration_key?: string
+          configuration_type?: string
+          configuration_value?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          is_active?: boolean
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       communication_log: {
         Row: {
           communication_type: string
@@ -355,6 +394,117 @@ export type Database = {
           id?: string
           ip_address?: unknown
           is_active?: boolean | null
+        }
+        Relationships: []
+      }
+      facility_settings: {
+        Row: {
+          administrator_email: string | null
+          administrator_name: string | null
+          administrator_phone: string | null
+          created_at: string
+          facility_address: Json | null
+          facility_name: string
+          federal_tax_id: string | null
+          id: string
+          medicaid_provider_number: string | null
+          medical_director_email: string | null
+          medical_director_name: string | null
+          medical_director_npi: string | null
+          medical_director_phone: string | null
+          medicare_provider_number: string | null
+          npi_number: string | null
+          state_license_number: string | null
+          total_licensed_beds: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          administrator_email?: string | null
+          administrator_name?: string | null
+          administrator_phone?: string | null
+          created_at?: string
+          facility_address?: Json | null
+          facility_name: string
+          federal_tax_id?: string | null
+          id?: string
+          medicaid_provider_number?: string | null
+          medical_director_email?: string | null
+          medical_director_name?: string | null
+          medical_director_npi?: string | null
+          medical_director_phone?: string | null
+          medicare_provider_number?: string | null
+          npi_number?: string | null
+          state_license_number?: string | null
+          total_licensed_beds?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          administrator_email?: string | null
+          administrator_name?: string | null
+          administrator_phone?: string | null
+          created_at?: string
+          facility_address?: Json | null
+          facility_name?: string
+          federal_tax_id?: string | null
+          id?: string
+          medicaid_provider_number?: string | null
+          medical_director_email?: string | null
+          medical_director_name?: string | null
+          medical_director_npi?: string | null
+          medical_director_phone?: string | null
+          medicare_provider_number?: string | null
+          npi_number?: string | null
+          state_license_number?: string | null
+          total_licensed_beds?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      facility_units: {
+        Row: {
+          care_levels: string[] | null
+          created_at: string
+          description: string | null
+          floor_number: number | null
+          id: string
+          is_active: boolean
+          total_beds: number
+          unit_code: string
+          unit_name: string
+          unit_type: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          care_levels?: string[] | null
+          created_at?: string
+          description?: string | null
+          floor_number?: number | null
+          id?: string
+          is_active?: boolean
+          total_beds?: number
+          unit_code: string
+          unit_name: string
+          unit_type?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          care_levels?: string[] | null
+          created_at?: string
+          description?: string | null
+          floor_number?: number | null
+          id?: string
+          is_active?: boolean
+          total_beds?: number
+          unit_code?: string
+          unit_name?: string
+          unit_type?: string
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -727,6 +877,126 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      payor_configurations: {
+        Row: {
+          authorization_required: boolean | null
+          billing_address: Json | null
+          billing_frequency: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          copay_amount: number | null
+          created_at: string
+          daily_rate: number | null
+          deductible_amount: number | null
+          id: string
+          is_active: boolean
+          payor_code: string | null
+          payor_name: string
+          payor_type: string
+          prior_auth_days: number | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          authorization_required?: boolean | null
+          billing_address?: Json | null
+          billing_frequency?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          copay_amount?: number | null
+          created_at?: string
+          daily_rate?: number | null
+          deductible_amount?: number | null
+          id?: string
+          is_active?: boolean
+          payor_code?: string | null
+          payor_name: string
+          payor_type: string
+          prior_auth_days?: number | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          authorization_required?: boolean | null
+          billing_address?: Json | null
+          billing_frequency?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          copay_amount?: number | null
+          created_at?: string
+          daily_rate?: number | null
+          deductible_amount?: number | null
+          id?: string
+          is_active?: boolean
+          payor_code?: string | null
+          payor_name?: string
+          payor_type?: string
+          prior_auth_days?: number | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      provider_configurations: {
+        Row: {
+          created_at: string
+          dea_number: string | null
+          email: string | null
+          id: string
+          is_active: boolean
+          is_medical_director: boolean | null
+          is_primary_care: boolean | null
+          license_number: string | null
+          license_state: string | null
+          npi_number: string | null
+          phone: string | null
+          provider_name: string
+          provider_type: string
+          specialty: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          dea_number?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          is_medical_director?: boolean | null
+          is_primary_care?: boolean | null
+          license_number?: string | null
+          license_state?: string | null
+          npi_number?: string | null
+          phone?: string | null
+          provider_name: string
+          provider_type: string
+          specialty?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          dea_number?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          is_medical_director?: boolean | null
+          is_primary_care?: boolean | null
+          license_number?: string | null
+          license_state?: string | null
+          npi_number?: string | null
+          phone?: string | null
+          provider_name?: string
+          provider_type?: string
+          specialty?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       quality_metrics: {
         Row: {
@@ -1236,6 +1506,42 @@ export type Database = {
           status?: string
           unit?: string | null
           updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      role_configurations: {
+        Row: {
+          created_at: string
+          dashboard_access: string[] | null
+          id: string
+          is_active: boolean
+          permissions: Json
+          role_description: string | null
+          role_name: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          dashboard_access?: string[] | null
+          id?: string
+          is_active?: boolean
+          permissions?: Json
+          role_description?: string | null
+          role_name: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          dashboard_access?: string[] | null
+          id?: string
+          is_active?: boolean
+          permissions?: Json
+          role_description?: string | null
+          role_name?: string
+          updated_at?: string
           updated_by?: string | null
         }
         Relationships: []
