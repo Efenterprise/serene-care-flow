@@ -9,6 +9,146 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      admissions_agreements: {
+        Row: {
+          agreement_content: Json
+          agreement_type: string
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          notes: string | null
+          resident_id: string
+          status: string
+          template_version: string
+          updated_at: string
+        }
+        Insert: {
+          agreement_content: Json
+          agreement_type?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          resident_id: string
+          status?: string
+          template_version?: string
+          updated_at?: string
+        }
+        Update: {
+          agreement_content?: Json
+          agreement_type?: string
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          notes?: string | null
+          resident_id?: string
+          status?: string
+          template_version?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admissions_agreements_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agreement_signatures: {
+        Row: {
+          agreement_id: string
+          id: string
+          ip_address: unknown | null
+          signature_data: string
+          signature_method: string
+          signed_at: string
+          signer_contact_id: string | null
+          signer_name: string
+          signer_type: string
+          user_agent: string | null
+        }
+        Insert: {
+          agreement_id: string
+          id?: string
+          ip_address?: unknown | null
+          signature_data: string
+          signature_method?: string
+          signed_at?: string
+          signer_contact_id?: string | null
+          signer_name: string
+          signer_type: string
+          user_agent?: string | null
+        }
+        Update: {
+          agreement_id?: string
+          id?: string
+          ip_address?: unknown | null
+          signature_data?: string
+          signature_method?: string
+          signed_at?: string
+          signer_contact_id?: string | null
+          signer_name?: string
+          signer_type?: string
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agreement_signatures_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "admissions_agreements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agreement_signatures_signer_contact_id_fkey"
+            columns: ["signer_contact_id"]
+            isOneToOne: false
+            referencedRelation: "resident_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      agreement_templates: {
+        Row: {
+          content: Json
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          template_name: string
+          template_type: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          content: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          template_name: string
+          template_type?: string
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          template_name?: string
+          template_type?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
       audit_trail: {
         Row: {
           action: string
