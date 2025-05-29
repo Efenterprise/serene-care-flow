@@ -1,62 +1,7 @@
 
-// MDS 3.0 Data Types and Interfaces
+// MDS 3.0 Section Interfaces
 
-export type AssessmentType = 
-  | 'admission' 
-  | 'annual' 
-  | 'significant_change' 
-  | 'quarterly' 
-  | 'discharge' 
-  | 'death';
-
-export type AssessmentStatus = 
-  | 'not_started' 
-  | 'in_progress' 
-  | 'completed' 
-  | 'submitted' 
-  | 'locked';
-
-export interface MdsAssessment {
-  id: string;
-  resident_id: string;
-  assessment_type: AssessmentType;
-  status: AssessmentStatus;
-  target_date: string;
-  completion_date?: string;
-  submitted_date?: string;
-  created_by: string;
-  updated_by?: string;
-  sections_completed: string[];
-  total_sections: number;
-  completion_percentage: number;
-  data: MdsData;
-  caa_triggers: CaaTrigger[];
-  created_at: string;
-  updated_at: string;
-}
-
-export interface MdsData {
-  section_a: SectionA;
-  section_b: SectionB;
-  section_c: SectionC;
-  section_d: SectionD;
-  section_e: SectionE;
-  section_f: SectionF;
-  section_g: SectionG;
-  section_h: SectionH;
-  section_i: SectionI;
-  section_j: SectionJ;
-  section_k: SectionK;
-  section_l: SectionL;
-  section_m: SectionM;
-  section_n: SectionN;
-  section_o: SectionO;
-  section_p: SectionP;
-  section_q: SectionQ;
-  section_v: SectionV;
-  section_x: SectionX;
-  section_z: SectionZ;
-}
+import type { AssessmentType } from './core';
 
 // Section A: Identification Information
 export interface SectionA {
@@ -178,9 +123,7 @@ export interface SectionI {
   completed: boolean;
 }
 
-// Additional sections would continue similarly...
-// For brevity, I'm showing the pattern with key sections
-
+// Remaining sections with basic structure
 export interface SectionJ {
   // Health Conditions
   completed: boolean;
@@ -234,55 +177,4 @@ export interface SectionX {
 export interface SectionZ {
   // Assessment Administration
   completed: boolean;
-}
-
-// CAA (Care Area Assessment) Types
-export type CaaType = 
-  | 'delirium'
-  | 'cognitive_loss'
-  | 'visual_function'
-  | 'communication'
-  | 'adl_functional_rehab'
-  | 'urinary_incontinence'
-  | 'psychosocial_wellbeing'
-  | 'mood_state'
-  | 'behavioral_symptoms'
-  | 'activities'
-  | 'falls'
-  | 'nutritional_status'
-  | 'feeding_tube'
-  | 'dehydration'
-  | 'dental_care'
-  | 'pressure_ulcer'
-  | 'psychotropic_drug_use'
-  | 'physical_restraints'
-  | 'pain';
-
-export interface CaaTrigger {
-  caa_type: CaaType;
-  triggered: boolean;
-  trigger_items: string[];
-  investigation_required: boolean;
-  investigation_completed: boolean;
-  proceed_to_care_planning: boolean;
-  rationale: string;
-  completed_by?: string;
-  completed_date?: string;
-}
-
-export interface CaaInvestigation {
-  id: string;
-  assessment_id: string;
-  caa_type: CaaType;
-  triggered_items: string[];
-  investigation_notes: string;
-  clinical_findings: string;
-  proceed_to_care_planning: boolean;
-  rationale: string;
-  interventions_considered: string[];
-  care_plan_problems: string[];
-  completed_by: string;
-  completed_date: string;
-  reviewed_by?: string;
-  reviewed_date?: string;
 }
