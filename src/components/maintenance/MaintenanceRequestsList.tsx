@@ -75,7 +75,7 @@ const MaintenanceRequestsList = ({ requests = [], isLoading }: MaintenanceReques
         updateData.completed_at = new Date().toISOString();
       }
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('maintenance_requests')
         .update(updateData)
         .eq('id', requestId);

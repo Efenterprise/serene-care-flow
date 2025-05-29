@@ -53,7 +53,7 @@ const MaintenanceRequestForm = ({ isOpen, onClose }: MaintenanceRequestFormProps
 
     setLoading(true);
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('maintenance_requests')
         .insert({
           title: formData.title,

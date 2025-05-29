@@ -26,7 +26,7 @@ export const useMaintenanceRequests = () => {
     queryFn: async (): Promise<MaintenanceRequest[]> => {
       console.log('Fetching maintenance requests...');
       
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('maintenance_requests')
         .select(`
           *,
@@ -53,7 +53,7 @@ export const useCreateMaintenanceRequest = () => {
   
   return {
     mutate: async (requestData: Partial<MaintenanceRequest>) => {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('maintenance_requests')
         .insert(requestData);
 

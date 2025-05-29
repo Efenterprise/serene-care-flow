@@ -590,6 +590,63 @@ export type Database = {
         }
         Relationships: []
       }
+      maintenance_requests: {
+        Row: {
+          assigned_to: string | null
+          category: string
+          completed_at: string | null
+          created_at: string
+          description: string
+          id: string
+          location: string
+          priority: string
+          requested_by: string
+          status: string
+          title: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          category: string
+          completed_at?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          location: string
+          priority: string
+          requested_by: string
+          status?: string
+          title: string
+        }
+        Update: {
+          assigned_to?: string | null
+          category?: string
+          completed_at?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          location?: string
+          priority?: string
+          requested_by?: string
+          status?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_requests_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "maintenance_requests_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "user_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       patient_tracking: {
         Row: {
           admission_date: string | null
@@ -1278,6 +1335,7 @@ export type Database = {
         | "social_worker"
         | "administrator"
         | "read_only"
+        | "maintenance"
       work_location: "facility_only" | "remote_allowed" | "hybrid"
     }
     CompositeTypes: {
@@ -1429,6 +1487,7 @@ export const Constants = {
         "social_worker",
         "administrator",
         "read_only",
+        "maintenance",
       ],
       work_location: ["facility_only", "remote_allowed", "hybrid"],
     },
