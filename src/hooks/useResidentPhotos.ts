@@ -42,15 +42,15 @@ export const useResidentPhotos = () => {
     },
     onSuccess: () => {
       toast({
-        title: "Photo Uploaded",
-        description: "Resident photo has been updated successfully.",
+        title: "File Uploaded",
+        description: "File has been uploaded successfully.",
       });
       queryClient.invalidateQueries({ queryKey: ['residents'] });
     },
     onError: (error: any) => {
       toast({
         title: "Upload Failed",
-        description: error.message || "Failed to upload photo. Please try again.",
+        description: error.message || "Failed to upload file. Please try again.",
         variant: "destructive",
       });
     },
@@ -82,15 +82,15 @@ export const useResidentPhotos = () => {
     },
     onSuccess: () => {
       toast({
-        title: "Photo Deleted",
-        description: "Resident photo has been removed successfully.",
+        title: "File Deleted",
+        description: "File has been removed successfully.",
       });
       queryClient.invalidateQueries({ queryKey: ['residents'] });
     },
     onError: (error: any) => {
       toast({
         title: "Delete Failed",
-        description: error.message || "Failed to delete photo. Please try again.",
+        description: error.message || "Failed to delete file. Please try again.",
         variant: "destructive",
       });
     },
