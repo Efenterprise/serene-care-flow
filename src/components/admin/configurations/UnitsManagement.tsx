@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
-import { useFacilityUnits, useCreateFacilityUnit, useUpdateFacilityUnit } from '@/hooks/useConfigurations';
+import { useFacilityUnits, useCreateFacilityUnit, useUpdateFacilityUnit } from '@/hooks/useFacilityUnits';
 import { Plus, Edit, Save, X } from 'lucide-react';
 
 const UnitsManagement = () => {

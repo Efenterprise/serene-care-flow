@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useToast } from '@/components/ui/use-toast';
-import { usePayorConfigurations, useCreatePayorConfiguration } from '@/hooks/useConfigurations';
+import { usePayorConfigurations, useCreatePayorConfiguration } from '@/hooks/usePayorConfigurations';
 import { Plus, Save, X } from 'lucide-react';
 
 const PayorManagement = () => {

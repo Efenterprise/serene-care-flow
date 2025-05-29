@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { useFacilitySettings, useUpdateFacilitySettings } from '@/hooks/useConfigurations';
+import { useFacilitySettings, useUpdateFacilitySettings } from '@/hooks/useFacilitySettings';
 import { Save } from 'lucide-react';
 import BasicInfoSection from './facility/BasicInfoSection';
 import AddressSection from './facility/AddressSection';

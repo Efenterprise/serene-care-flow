@@ -1,8 +1,7 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { useRoleConfigurations } from '@/hooks/useConfigurations';
+import { useRoleConfigurations } from '@/hooks/useRoleConfigurations';
 
 const RoleConfigurationsManagement = () => {
   const { data: roles, isLoading } = useRoleConfigurations();

@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
-import { useClinicalConfigurations, useCreateClinicalConfiguration } from '@/hooks/useConfigurations';
+import { useClinicalConfigurations, useCreateClinicalConfiguration } from '@/hooks/useClinicalConfigurations';
 import { Plus, Save, X } from 'lucide-react';
 
 const ClinicalConfigurationsManagement = () => {
