@@ -75,7 +75,11 @@ const AdmissionsAgreementsPortal = () => {
         updated_at: agreement.updated_at,
         expires_at: agreement.expires_at,
         notes: agreement.notes,
-        resident_name: `${agreement.residents.first_name} ${agreement.residents.last_name}`
+        resident_name: `${agreement.residents.first_name} ${agreement.residents.last_name}`,
+        pandadoc_document_id: (agreement as any).pandadoc_document_id,
+        pandadoc_status: (agreement as any).pandadoc_status,
+        pandadoc_view_url: (agreement as any).pandadoc_view_url,
+        pandadoc_download_url: (agreement as any).pandadoc_download_url,
       }));
     },
   });
@@ -155,7 +159,7 @@ const AdmissionsAgreementsPortal = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -165,6 +169,22 @@ const AdmissionsAgreementsPortal = () => {
               </div>
               <div className="p-3 bg-blue-100 rounded-full">
                 <FileText className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">PandaDoc</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {agreements.filter(a => (a as any).pandadoc_document_id).length}
+                </p>
+              </div>
+              <div className="p-3 bg-purple-100 rounded-full">
+                <FileText className="w-6 h-6 text-purple-600" />
               </div>
             </div>
           </CardContent>
@@ -272,7 +292,14 @@ const AdmissionsAgreementsPortal = () => {
                     <div className="flex items-center space-x-3">
                       {getStatusIcon(agreement.status)}
                       <div>
-                        <h4 className="font-medium">{agreement.resident_name}</h4>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium">{agreement.resident_name}</h4>
+                          {(agreement as any).pandadoc_document_id && (
+                            <Badge variant="outline" className="text-xs bg-purple-50 text-purple-700">
+                              PandaDoc
+                            </Badge>
+                          )}
+                        </div>
                         <div className="flex items-center space-x-2 text-sm text-gray-500">
                           <span>{agreement.agreement_type.replace('_', ' ').toUpperCase()}</span>
                           <span>•</span>
@@ -286,6 +313,11 @@ const AdmissionsAgreementsPortal = () => {
                             </>
                           )}
                         </div>
+                        {(agreement as any).pandadoc_status && (
+                          <p className="text-xs text-purple-600 mt-1">
+                            PandaDoc: {(agreement as any).pandadoc_status.replace('document.', '')}
+                          </p>
+                        )}
                         {agreement.notes && (
                           <p className="text-sm text-gray-600 mt-1">{agreement.notes}</p>
                         )}
@@ -294,6 +326,17 @@ const AdmissionsAgreementsPortal = () => {
 
                     <div className="flex items-center space-x-3">
                       {getStatusBadge(agreement.status)}
+                      
+                      {(agreement as any).pandadoc_view_url && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => window.open((agreement as any).pandadoc_view_url, '_blank')}
+                          title="View in PandaDoc"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      )}
                       
                       <Button
                         size="sm"

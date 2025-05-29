@@ -18,6 +18,13 @@ export type Database = {
           expires_at: string | null
           id: string
           notes: string | null
+          pandadoc_completed_at: string | null
+          pandadoc_created_at: string | null
+          pandadoc_document_id: string | null
+          pandadoc_download_url: string | null
+          pandadoc_status: string | null
+          pandadoc_template_id: string | null
+          pandadoc_view_url: string | null
           resident_id: string
           status: string
           template_version: string
@@ -31,6 +38,13 @@ export type Database = {
           expires_at?: string | null
           id?: string
           notes?: string | null
+          pandadoc_completed_at?: string | null
+          pandadoc_created_at?: string | null
+          pandadoc_document_id?: string | null
+          pandadoc_download_url?: string | null
+          pandadoc_status?: string | null
+          pandadoc_template_id?: string | null
+          pandadoc_view_url?: string | null
           resident_id: string
           status?: string
           template_version?: string
@@ -44,6 +58,13 @@ export type Database = {
           expires_at?: string | null
           id?: string
           notes?: string | null
+          pandadoc_completed_at?: string | null
+          pandadoc_created_at?: string | null
+          pandadoc_document_id?: string | null
+          pandadoc_download_url?: string | null
+          pandadoc_status?: string | null
+          pandadoc_template_id?: string | null
+          pandadoc_view_url?: string | null
           resident_id?: string
           status?: string
           template_version?: string
@@ -934,6 +955,80 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "user_profiles"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      pandadoc_templates: {
+        Row: {
+          agreement_type: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          pandadoc_template_id: string
+          template_name: string
+          updated_at: string
+        }
+        Insert: {
+          agreement_type: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          pandadoc_template_id: string
+          template_name: string
+          updated_at?: string
+        }
+        Update: {
+          agreement_type?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          pandadoc_template_id?: string
+          template_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pandadoc_webhooks: {
+        Row: {
+          agreement_id: string | null
+          created_at: string
+          document_id: string
+          event_type: string
+          id: string
+          processed_at: string | null
+          webhook_data: Json
+        }
+        Insert: {
+          agreement_id?: string | null
+          created_at?: string
+          document_id: string
+          event_type: string
+          id?: string
+          processed_at?: string | null
+          webhook_data: Json
+        }
+        Update: {
+          agreement_id?: string | null
+          created_at?: string
+          document_id?: string
+          event_type?: string
+          id?: string
+          processed_at?: string | null
+          webhook_data?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pandadoc_webhooks_agreement_id_fkey"
+            columns: ["agreement_id"]
+            isOneToOne: false
+            referencedRelation: "admissions_agreements"
+            referencedColumns: ["id"]
           },
         ]
       }
