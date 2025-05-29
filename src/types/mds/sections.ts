@@ -1,5 +1,5 @@
 
-// MDS 3.0 Section Interfaces
+// MDS 3.0 Section Interfaces - Complete Implementation
 
 import type { AssessmentType } from './core';
 
@@ -14,6 +14,10 @@ export interface SectionA {
   a1010: string; // Admission Date
   a1700: string; // Medicaid Number
   a1800: string; // Medicare Number
+  a2000: string; // Type of Provider
+  a2100: string; // Medical Record Number
+  a2300: string; // Medicare Part A Stay
+  a2400: string; // Type of Assessment
   completed: boolean;
 }
 
@@ -120,61 +124,145 @@ export interface SectionI {
   i0700: string[]; // Active Diagnoses - Infections
   i0800: string[]; // Active Diagnoses - Other
   i0900: string[]; // Active Diagnoses - None of Above
+  i1000: string[]; // ICD-10 Codes
+  i1200: string[]; // Other Current or More Detailed Diagnoses
+  i1400: string[]; // Conditions Related to MR/DD Status
+  i1500: string[]; // Drug Regimen Review
+  i1550: string[]; // Irregular Medications
+  i1700: string[]; // Physician Review
+  i2000: string[]; // Participation in Clinical Research
+  i2100: string[]; // DNR Status
+  i2200: string[]; // Advance Directives
+  i2300: string[]; // Physician Orders for Life-Sustaining Treatment
+  i2400: string[]; // Feeding Restrictions
+  i2500: string[]; // Nutritional Approaches
   completed: boolean;
 }
 
-// Remaining sections with basic structure
+// Section J: Health Conditions
 export interface SectionJ {
-  // Health Conditions
+  j0100: '0' | '1' | '2' | '3'; // Problem Conditions
+  j0200: '0' | '1' | '2' | '3'; // Pain Management
+  j0300: '0' | '1' | '2' | '3'; // Problem Conditions
+  j0400: '0' | '1' | '2' | '3'; // Problem Conditions
+  j0500: '0' | '1' | '2' | '3'; // Problem Conditions
+  j0600: '0' | '1' | '2' | '3'; // Stability of Conditions
+  j1100: '0' | '1'; // Shortness of Breath
+  j1400: '0' | '1'; // Problem Conditions - Swallowing Disorder
+  j1550: '0' | '1'; // Problem Conditions - Other
+  j1700: '0' | '1'; // Fall Risk Assessment
+  j1800: '0' | '1'; // Falls
+  j1900: '0' | '1'; // Number of Falls Since Admission
   completed: boolean;
 }
 
+// Section K: Swallowing/Nutritional Status
 export interface SectionK {
-  // Swallowing/Nutritional Status
+  k0100: '0' | '1' | '2' | '3'; // Swallowing Disorder
+  k0200: '0' | '1' | '2' | '3'; // Height and Weight
+  k0300: '0' | '1' | '2' | '3'; // Weight Loss
+  k0510: '0' | '1' | '2' | '3'; // Nutritional Approaches
+  k0520: '0' | '1' | '2' | '3'; // Feeding Tube
+  k0700: '0' | '1' | '2' | '3'; // Appetite
+  k0800: '0' | '1' | '2' | '3'; // Fluid Orders
+  k0900: '0' | '1' | '2' | '3'; // Fluid Input
   completed: boolean;
 }
 
+// Section L: Oral/Dental Status
 export interface SectionL {
-  // Oral/Dental Status
+  l0100: '0' | '1' | '2' | '3'; // Oral Health Problems
+  l0200: '0' | '1' | '2' | '3'; // Dental
   completed: boolean;
 }
 
+// Section M: Skin Conditions
 export interface SectionM {
-  // Skin Conditions
+  m0100: '0' | '1' | '2' | '3'; // Determination of Pressure Ulcer Risk
+  m0150: '0' | '1' | '2' | '3'; // Risk of Developing Pressure Ulcers
+  m0200: '0' | '1' | '2' | '3'; // Pressure Ulcer or Injury
+  m0300: '0' | '1' | '2' | '3' | '4' | '9'; // Current Number of Pressure Ulcers/Injuries
+  m0400: '0' | '1' | '2' | '3' | '4' | '9'; // Highest Stage of Pressure Ulcers/Injuries
+  m0500: '0' | '1' | '2' | '3' | '4' | '9'; // Pressure Ulcer/Injury Healing
+  m0610: '0' | '1' | '2' | '3'; // Other Ulcers, Wounds, and Skin Problems
+  m0700: '0' | '1' | '2' | '3'; // Most Severe Tissue Type
+  m0800: '0' | '1' | '2' | '3'; // Worsening in Ulcer Status
   completed: boolean;
 }
 
+// Section N: Medications
 export interface SectionN {
-  // Medications
+  n0100: '0' | '1' | '2' | '3'; // Number of Medications
+  n0300: '0' | '1'; // Injections
+  n0350: '0' | '1'; // Insulin
+  n0400: '0' | '1'; // Antipsychotic Medications
+  n0410: '0' | '1'; // Antianxiety/Hypnotic Medications
+  n0450: '0' | '1'; // Antidepressant Medications
+  n0500: '0' | '1'; // Anticoagulant Medications
+  n0510: '0' | '1'; // Diuretic Medications
   completed: boolean;
 }
 
+// Section O: Special Treatments and Procedures
 export interface SectionO {
-  // Special Treatments and Procedures
+  o0100: '0' | '1'; // Special Treatments and Procedures
+  o0200: '0' | '1'; // IV Medications
+  o0250: '0' | '1'; // Intake/Output
+  o0300: '0' | '1'; // Enteral/Parenteral Nutrition
+  o0400: string; // Therapy - Speech-Language Pathology
+  o0410: string; // Therapy - Speech-Language Pathology
+  o0420: string; // Therapy - Occupational Therapy
+  o0430: string; // Therapy - Occupational Therapy
+  o0440: string; // Therapy - Physical Therapy
+  o0450: string; // Therapy - Physical Therapy
+  o0500: '0' | '1'; // Respiratory Treatments
+  o0600: '0' | '1'; // Other
   completed: boolean;
 }
 
+// Section P: Restraints
 export interface SectionP {
-  // Restraints
+  p0100: '0' | '1'; // Physical Restraints
+  p0200: '0' | '1'; // Chair Prevents Rising
   completed: boolean;
 }
 
+// Section Q: Participation in Assessment and Goal Setting
 export interface SectionQ {
-  // Participation in Assessment and Goal Setting
+  q0100: '0' | '1' | '2' | '3'; // Participation in Assessment
+  q0200: '0' | '1' | '2' | '3'; // Participation in Current Care Planning
   completed: boolean;
 }
 
+// Section V: Care Area Assessment (CAA)
 export interface SectionV {
-  // Care Area Assessment (CAA)
+  caa_summary: {
+    [key: string]: {
+      triggered: boolean;
+      addressed_in_care_plan: boolean;
+      rationale: string;
+    };
+  };
   completed: boolean;
 }
 
+// Section X: Correction Request
 export interface SectionX {
-  // Correction Request
+  x0100: string; // Correction Request
+  x0150: string; // Medicare Part A Stay
   completed: boolean;
 }
 
+// Section Z: Assessment Administration
 export interface SectionZ {
-  // Assessment Administration
+  z0100: string; // Medicare Part A Billing
+  z0150: string; // Medicare HIPPS Code
+  z0200: string; // Medicare Part A Assessment
+  z0250: string; // Medicare Part A Episode Payment
+  z0300: string; // Medicare Part A HIPPS Code
+  z0350: string; // Medicare Part A Assessment
+  z0400: string; // Medicare Part A Non-Therapy Ancillary Services
+  z0500: string; // Medicare Part A Assessment
+  z0600: string; // Medicare Assessment Completion Date
   completed: boolean;
 }
