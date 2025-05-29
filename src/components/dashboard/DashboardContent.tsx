@@ -8,18 +8,12 @@ import QuickStatsGrid from "./QuickStatsGrid";
 import AlertsPanel from "./AlertsPanel";
 import RecentActivityPanel from "./RecentActivityPanel";
 import ManualAdmissionForm from "@/components/admissions/ManualAdmissionForm";
+import { useFacilityStore } from "@/stores/facilityStore";
 
 const DashboardContent = () => {
   const [currentTime] = useState(new Date().toLocaleString());
   const [isAdmissionFormOpen, setIsAdmissionFormOpen] = useState(false);
-
-  const censusData = {
-    total: 120,
-    occupied: 95,
-    admissions: 3,
-    discharges: 1,
-    occupancyRate: 79.2
-  };
+  const { stats } = useFacilityStore();
 
   const alerts = [
     { id: 1, type: "urgent", message: "Room 105 - Fall incident requires documentation", time: "10 min ago" },
@@ -46,7 +40,7 @@ const DashboardContent = () => {
         </Button>
       </div>
       
-      <QuickStatsGrid censusData={censusData} />
+      <QuickStatsGrid />
 
       <div className="grid lg:grid-cols-3 gap-6">
         <AlertsPanel alerts={alerts} />
@@ -83,11 +77,11 @@ const DashboardContent = () => {
             <div className="text-center py-8">
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-green-600">25</div>
+                  <div className="text-2xl font-bold text-green-600">{stats.availableBeds}</div>
                   <div className="text-sm text-gray-600">Available</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-blue-600">95</div>
+                  <div className="text-2xl font-bold text-blue-600">{stats.occupiedBeds}</div>
                   <div className="text-sm text-gray-600">Occupied</div>
                 </div>
               </div>

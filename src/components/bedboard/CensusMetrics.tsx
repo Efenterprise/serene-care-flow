@@ -12,6 +12,7 @@ import {
   Home,
   Clock
 } from "lucide-react";
+import { useFacilityStore } from "@/stores/facilityStore";
 
 interface Unit {
   id: string;
@@ -25,16 +26,19 @@ interface CensusMetricsProps {
 }
 
 const CensusMetrics = ({ units }: CensusMetricsProps) => {
-  const totalBeds = units.find(u => u.id === "all")?.beds || 0;
-  const totalOccupied = units.find(u => u.id === "all")?.occupied || 0;
-  const occupancyRate = Math.round((totalOccupied / totalBeds) * 100);
+  const { stats } = useFacilityStore();
+  
+  // Use centralized data instead of hardcoded values
+  const totalBeds = stats.totalBeds;
+  const totalOccupied = stats.occupiedBeds;
+  const occupancyRate = stats.occupancyRate;
 
   const todayStats = {
-    admissions: 3,
-    discharges: 1,
+    admissions: stats.todayAdmissions,
+    discharges: stats.todayDischarges,
     transfers: 2,
-    pendingAdmits: 5,
-    revenue: 47250,
+    pendingAdmits: stats.pendingAdmissions,
+    revenue: stats.occupiedBeds * 500, // $500 per occupied bed per day
     avgLOS: 18.5
   };
 

@@ -8,18 +8,34 @@ import {
   Shield,
   CheckCircle
 } from "lucide-react";
+import { useFacilityStore } from "@/stores/facilityStore";
+import { useEffect } from "react";
 
-interface QuickStatsGridProps {
-  censusData: {
-    total: number;
-    occupied: number;
-    admissions: number;
-    discharges: number;
-    occupancyRate: number;
-  };
-}
+const QuickStatsGrid = () => {
+  const { stats, isLoading, fetchFacilityStats } = useFacilityStore();
 
-const QuickStatsGrid = ({ censusData }: QuickStatsGridProps) => {
+  useEffect(() => {
+    fetchFacilityStats();
+  }, [fetchFacilityStats]);
+
+  if (isLoading) {
+    return (
+      <div className="grid md:grid-cols-4 gap-6 mb-8">
+        {[...Array(4)].map((_, i) => (
+          <Card key={i} className="border-0 shadow-sm bg-white/70">
+            <CardContent className="p-6">
+              <div className="animate-pulse">
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-8 bg-gray-200 rounded mb-2"></div>
+                <div className="h-2 bg-gray-200 rounded"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid md:grid-cols-4 gap-6 mb-8">
       <Card className="border-0 shadow-sm bg-white/70">
@@ -30,10 +46,12 @@ const QuickStatsGrid = ({ censusData }: QuickStatsGridProps) => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-gray-900">{censusData.occupied}/{censusData.total}</div>
+          <div className="text-2xl font-bold text-gray-900">
+            {stats.occupiedBeds}/{stats.totalBeds}
+          </div>
           <div className="flex items-center space-x-2 mt-2">
-            <Progress value={censusData.occupancyRate} className="flex-1" />
-            <span className="text-sm text-gray-600">{censusData.occupancyRate}%</span>
+            <Progress value={stats.occupancyRate} className="flex-1" />
+            <span className="text-sm text-gray-600">{stats.occupancyRate}%</span>
           </div>
         </CardContent>
       </Card>
@@ -49,11 +67,11 @@ const QuickStatsGrid = ({ censusData }: QuickStatsGridProps) => {
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span>Admissions</span>
-              <span className="font-semibold text-green-600">+{censusData.admissions}</span>
+              <span className="font-semibold text-green-600">+{stats.todayAdmissions}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span>Discharges</span>
-              <span className="font-semibold text-orange-600">-{censusData.discharges}</span>
+              <span className="font-semibold text-orange-600">-{stats.todayDischarges}</span>
             </div>
           </div>
         </CardContent>

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DropdownNavigation from "@/components/navigation/DropdownNavigation";
 import DashboardContent from "@/components/dashboard/DashboardContent";
 import ResidentsContent from "@/components/residents/ResidentsContent";
@@ -11,6 +11,8 @@ import ClinicalContent from "@/components/clinical/ClinicalContent";
 import MaintenanceContent from "@/components/maintenance/MaintenanceContent";
 import MdsManagement from "@/components/emr/MdsManagement";
 import SurveyContent from "@/components/survey/SurveyContent";
+import TherapyContent from "@/components/therapy/TherapyContent";
+import { useFacilityStore } from "@/stores/facilityStore";
 
 interface DropdownMainLayoutProps {
   children?: React.ReactNode;
@@ -18,12 +20,23 @@ interface DropdownMainLayoutProps {
 
 const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
   const [currentPath, setCurrentPath] = useState("dashboard");
+  const { fetchFacilityStats } = useFacilityStore();
+
+  // Initialize facility data when layout loads
+  useEffect(() => {
+    fetchFacilityStats();
+  }, [fetchFacilityStats]);
 
   const handleNavigate = (path: string) => {
     setCurrentPath(path);
   };
 
   const renderContent = () => {
+    // Handle therapy navigation
+    if (currentPath.startsWith("therapy/")) {
+      return <TherapyContent currentPath={currentPath} />;
+    }
+
     // Handle specific MDS navigation
     if (currentPath === "clinical/mds" || currentPath === "documentation/mds") {
       return <MdsManagement />;
