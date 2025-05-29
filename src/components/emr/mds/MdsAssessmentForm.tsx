@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -24,10 +25,54 @@ const MdsAssessmentForm = ({ assessment, residentId, onSave, onClose }: MdsAsses
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState("section_a");
   const [formData, setFormData] = useState<Partial<MdsData>>({
-    section_a: {},
-    section_b: {},
-    section_g: {},
-    section_d: {}
+    section_a: {
+      a0100: '',
+      a0200: '',
+      a0310: 'admission',
+      a0320: '',
+      a1000: '',
+      a1005: '',
+      a1010: '',
+      a1700: '',
+      a1800: '',
+      completed: false
+    },
+    section_b: {
+      b0100: '0',
+      b0200: '0',
+      b0300: '0',
+      b0600: '0',
+      b0700: '0',
+      b0800: '0',
+      b1000: '0',
+      b1200: '0',
+      completed: false
+    },
+    section_g: {
+      g0110: '0',
+      g0120: '0',
+      g0130: '0',
+      g0140: '0',
+      g0150: '0',
+      g0160: '0',
+      g0170: '0',
+      g0180: '0',
+      g0190: '0',
+      g0200: '0',
+      g0300: '0',
+      g0400: '0',
+      g0600: '0',
+      completed: false
+    },
+    section_d: {
+      d0100: '0',
+      d0200: '0',
+      d0300: '0',
+      d0350: '0',
+      d0500: '0',
+      d0600: '0',
+      completed: false
+    }
   });
 
   const sections = [
