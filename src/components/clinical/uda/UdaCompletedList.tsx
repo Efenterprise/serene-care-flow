@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,8 +21,8 @@ interface CompletedAssessment {
 
 const UdaCompletedList = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [dateRange, setDateRange] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [dateRange, setDateRange] = useState('all');
 
   // Mock data for completed assessments
   const completedAssessments: CompletedAssessment[] = [
@@ -96,7 +95,7 @@ const UdaCompletedList = () => {
   const filteredAssessments = completedAssessments.filter(assessment => {
     return (
       assessment.residentName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (statusFilter === '' || assessment.status === statusFilter)
+      (statusFilter === 'all' || assessment.status === statusFilter)
     );
   });
 
@@ -131,7 +130,7 @@ const UdaCompletedList = () => {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Status</SelectItem>
+              <SelectItem value="all">All Status</SelectItem>
               <SelectItem value="completed">Completed</SelectItem>
               <SelectItem value="submitted">Submitted</SelectItem>
               <SelectItem value="approved">Approved</SelectItem>
@@ -143,7 +142,7 @@ const UdaCompletedList = () => {
               <SelectValue placeholder="Date Range" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Dates</SelectItem>
+              <SelectItem value="all">All Dates</SelectItem>
               <SelectItem value="today">Today</SelectItem>
               <SelectItem value="week">This Week</SelectItem>
               <SelectItem value="month">This Month</SelectItem>
