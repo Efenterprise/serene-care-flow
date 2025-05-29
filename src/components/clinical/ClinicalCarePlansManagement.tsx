@@ -10,11 +10,15 @@ import {
   Users,
   TrendingUp,
   Clock,
-  BookOpen
+  BookOpen,
+  Settings
 } from 'lucide-react';
 import CarePlanLibrary from './CarePlanLibrary';
+import CarePlanConfiguration from './care-plans/CarePlanConfiguration';
 
 const ClinicalCarePlansManagement = () => {
+  const [showConfiguration, setShowConfiguration] = useState(false);
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -23,10 +27,16 @@ const ClinicalCarePlansManagement = () => {
           <h2 className="text-2xl font-bold text-gray-900">Care Plans Management</h2>
           <p className="text-gray-600">Comprehensive care plan management and template library</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700">
-          <Plus className="w-4 h-4 mr-2" />
-          New Care Plan
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" onClick={() => setShowConfiguration(true)}>
+            <Settings className="w-4 h-4 mr-2" />
+            Configuration
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700">
+            <Plus className="w-4 h-4 mr-2" />
+            New Care Plan
+          </Button>
+        </div>
       </div>
 
       {/* Quick Stats */}
@@ -126,6 +136,11 @@ const ClinicalCarePlansManagement = () => {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Configuration Dialog */}
+      {showConfiguration && (
+        <CarePlanConfiguration onClose={() => setShowConfiguration(false)} />
+      )}
     </div>
   );
 };
