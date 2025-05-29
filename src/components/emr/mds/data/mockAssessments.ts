@@ -1,4 +1,3 @@
-
 import { MockMdsAssessment } from "../types/mockData";
 
 export const mockMdsAssessments: MockMdsAssessment[] = [
@@ -22,8 +21,29 @@ export const mockMdsAssessments: MockMdsAssessment[] = [
     created_at: "2024-01-10T10:00:00Z",
     updated_at: "2024-01-14T15:30:00Z",
     data: {
-      section_a: { completed: true },
-      section_b: { completed: true }, 
+      section_a: { 
+        a0100: 'FAC001',
+        a0200: 'SNF',
+        a0310: 'admission',
+        a0320: '',
+        a1000: '01',
+        a1005: '1',
+        a1010: '2024-01-10',
+        a1700: 'MCD12345',
+        a1800: 'MCR12345',
+        completed: true 
+      },
+      section_b: { 
+        b0100: '0',
+        b0200: '1',
+        b0300: '0',
+        b0600: '1',
+        b0700: '1',
+        b0800: '1',
+        b1000: '1',
+        b1200: '0',
+        completed: true 
+      }, 
       section_c: { completed: true },
       section_d: { completed: false },
       section_e: { completed: false },
@@ -64,8 +84,29 @@ export const mockMdsAssessments: MockMdsAssessment[] = [
     created_at: "2024-01-08T09:00:00Z",
     updated_at: "2024-01-12T14:20:00Z",
     data: {
-      section_a: { completed: true },
-      section_b: { completed: true },
+      section_a: { 
+        a0100: 'FAC001',
+        a0200: 'SNF',
+        a0310: 'quarterly',
+        a0320: '',
+        a1000: '02',
+        a1005: '1',
+        a1010: '2023-07-15',
+        a1700: 'MCD12346',
+        a1800: 'MCR12346',
+        completed: true 
+      },
+      section_b: { 
+        b0100: '0',
+        b0200: '0',
+        b0300: '1',
+        b0600: '2',
+        b0700: '2',
+        b0800: '1',
+        b1000: '0',
+        b1200: '1',
+        completed: true 
+      },
       section_c: { completed: false },
       section_d: { completed: false },
       section_e: { completed: false },
@@ -105,28 +146,7 @@ export const mockMdsAssessments: MockMdsAssessment[] = [
     created_by: "user-003",
     created_at: "2024-01-05T11:00:00Z",
     updated_at: "2024-01-10T16:45:00Z",
-    data: {
-      section_a: { completed: false },
-      section_b: { completed: false },
-      section_c: { completed: false },
-      section_d: { completed: false },
-      section_e: { completed: false },
-      section_f: { completed: false },
-      section_g: { completed: false },
-      section_h: { completed: false },
-      section_i: { completed: false },
-      section_j: { completed: false },
-      section_k: { completed: false },
-      section_l: { completed: false },
-      section_m: { completed: false },
-      section_n: { completed: false },
-      section_o: { completed: false },
-      section_p: { completed: false },
-      section_q: { completed: false },
-      section_v: { completed: false },
-      section_x: { completed: false },
-      section_z: { completed: false }
-    }
+    data: {}
   },
   {
     id: "4",
@@ -147,27 +167,6 @@ export const mockMdsAssessments: MockMdsAssessment[] = [
     created_by: "user-004",
     created_at: "2024-01-02T14:30:00Z",
     updated_at: "2024-01-13T09:15:00Z",
-    data: {
-      section_a: { completed: false },
-      section_b: { completed: false },
-      section_c: { completed: false },
-      section_d: { completed: false },
-      section_e: { completed: false },
-      section_f: { completed: false },
-      section_g: { completed: false },
-      section_h: { completed: false },
-      section_i: { completed: false },
-      section_j: { completed: false },
-      section_k: { completed: false },
-      section_l: { completed: false },
-      section_m: { completed: false },
-      section_n: { completed: false },
-      section_o: { completed: false },
-      section_p: { completed: false },
-      section_q: { completed: false },
-      section_v: { completed: false },
-      section_x: { completed: false },
-      section_z: { completed: false }
-    }
+    data: {}
   }
 ];

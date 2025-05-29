@@ -1,5 +1,5 @@
 
-import { AssessmentType } from "@/types/mds";
+import { AssessmentType, MdsData } from "@/types/mds";
 
 export interface MockMdsAssessment {
   id: string;
@@ -20,7 +20,5 @@ export interface MockMdsAssessment {
   created_by: string;
   created_at: string;
   updated_at: string;
-  data: {
-    [key: string]: { completed: boolean };
-  };
+  data: Partial<MdsData>;
 }
