@@ -207,7 +207,7 @@ const ReferralWorkflow = () => {
                 </div>
                 <div className="p-3 bg-green-50 rounded-lg">
                   <div className="text-sm font-medium text-green-900">Auto-Approval</div>
-                  <div className="text-xs text-green-700">Enable for AI scores >90 with verified insurance</div>
+                  <div className="text-xs text-green-700">Enable for AI scores &gt; 90 with verified insurance</div>
                 </div>
               </div>
             </div>

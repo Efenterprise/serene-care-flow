@@ -14,7 +14,9 @@ import {
   CheckCircle,
   Filter,
   Download,
-  RefreshCw
+  RefreshCw,
+  Wifi,
+  Zap
 } from "lucide-react";
 import ReferralMetricsCards from "./ReferralMetricsCards";
 import ReferralAnalyticsCharts from "./ReferralAnalyticsCharts";
@@ -22,10 +24,13 @@ import AdmissionsQueue from "../admissions/AdmissionsQueue";
 import ReferralWorkflow from "./ReferralWorkflow";
 import AIInsightsPanel from "./AIInsightsPanel";
 import RevenueProjections from "./RevenueProjections";
+import LivePlatformConnections from "./LivePlatformConnections";
+import { useRealTimeReferrals } from "@/hooks/useRealTimeReferrals";
 
 const ReferralDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [refreshing, setRefreshing] = useState(false);
+  const { isConnected, connectionStatus, activePlatforms } = useRealTimeReferrals();
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -39,7 +44,15 @@ const ReferralDashboard = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Referral Management Hub</h1>
-          <p className="text-gray-600">Advanced analytics and AI-powered referral processing</p>
+          <div className="flex items-center space-x-4 mt-1">
+            <p className="text-gray-600">Advanced analytics and AI-powered referral processing</p>
+            <div className="flex items-center space-x-2">
+              <Wifi className={`w-4 h-4 ${isConnected ? 'text-green-600' : 'text-gray-400'}`} />
+              <span className={`text-sm ${isConnected ? 'text-green-600' : 'text-gray-400'}`}>
+                {isConnected ? `Live (${activePlatforms.length} platforms)` : 'Offline'}
+              </span>
+            </div>
+          </div>
         </div>
         <div className="flex items-center space-x-3">
           <Button 
@@ -58,6 +71,12 @@ const ReferralDashboard = () => {
             <Download className="w-4 h-4 mr-2" />
             Export
           </Button>
+          {isConnected && (
+            <Badge variant="secondary" className="bg-green-100 text-green-800">
+              <Zap className="w-3 h-3 mr-1" />
+              Real-time Active
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -66,8 +85,9 @@ const ReferralDashboard = () => {
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="live-connections">Live Connections</TabsTrigger>
           <TabsTrigger value="queue">Admissions Queue</TabsTrigger>
           <TabsTrigger value="workflow">Workflow</TabsTrigger>
           <TabsTrigger value="ai-insights">AI Insights</TabsTrigger>
@@ -76,6 +96,10 @@ const ReferralDashboard = () => {
 
         <TabsContent value="overview" className="space-y-6">
           <ReferralAnalyticsCharts />
+        </TabsContent>
+
+        <TabsContent value="live-connections">
+          <LivePlatformConnections />
         </TabsContent>
 
         <TabsContent value="queue">
