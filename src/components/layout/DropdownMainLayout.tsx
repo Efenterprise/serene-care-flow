@@ -108,6 +108,11 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
       return <MaintenanceContent />;
     }
 
+    // Handle CRM paths
+    if (currentPath.startsWith("crm/")) {
+      return <MaintenanceContent />; // Placeholder for now
+    }
+
     // Default to dashboard
     return <DashboardContent />;
   };
@@ -117,11 +122,10 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
     const pathMap: Record<string, string> = {
       'dashboard': 'Home',
       'clinical': 'Clinical',
-      'people': 'People',
+      'admin': 'Admin',
       'documents': 'Document Manager',
       'crm': 'CRM',
-      'reports': 'Reports',
-      'admin': 'Admin'
+      'reports': 'Reports'
     };
 
     const segments = path.split('/');

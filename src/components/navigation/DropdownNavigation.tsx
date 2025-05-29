@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown, LogOut } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,84 +35,149 @@ const DropdownNavigation = ({ onNavigate, currentPath }: DropdownNavigationProps
       label: "Clinical",
       path: "clinical",
       children: [
-        { label: "Clinical Dashboard", path: "clinical/dashboard" },
-        { label: "MDS Assessments", path: "clinical/mds" },
-        { label: "Care Plans", path: "clinical/care-plans" },
-        { label: "Quality Metrics", path: "clinical/quality" },
-        { label: "Therapy Dashboard", path: "therapy/dashboard" },
-        { label: "Therapy Productivity", path: "therapy/productivity" },
-        { label: "Therapy Outcomes", path: "therapy/outcomes" },
-        { label: "Therapy Quality", path: "therapy/quality" }
-      ]
-    },
-    {
-      label: "People",
-      path: "people",
-      children: [
-        { label: "All Residents", path: "residents/all" },
-        { label: "Admissions Queue", path: "residents/admissions" },
-        { label: "Discharges", path: "residents/discharges" },
-        { label: "Temporary Leave", path: "residents/temporary-leave" },
-        { label: "Staff Management", path: "admin/users" },
-        { label: "Communications", path: "communication/dashboard" }
-      ]
-    },
-    {
-      label: "Document Manager",
-      path: "documents",
-      children: [
-        { label: "Admissions Agreements", path: "documentation/admissions-agreements" },
-        { label: "MDS Documentation", path: "documentation/mds" },
-        { label: "Care Plans", path: "documentation/care-plans" },
-        { label: "Progress Notes", path: "documentation/progress-notes" },
-        { label: "Policy Management", path: "survey/policies" },
-        { label: "Document Archive", path: "documentation/overview" }
-      ]
-    },
-    {
-      label: "CRM",
-      path: "crm",
-      children: [
-        { label: "Live Referrals", path: "referrals/live" },
-        { label: "Platform Connections", path: "referrals/connections" },
-        { label: "Analytics", path: "referrals/analytics" },
-        { label: "Performance", path: "referrals/performance" },
-        { label: "Mass Communication", path: "communication/mass" },
-        { label: "Individual Messaging", path: "communication/individual" },
-        { label: "Message Templates", path: "communication/templates" }
-      ]
-    },
-    {
-      label: "Reports",
-      path: "reports",
-      children: [
-        { label: "Census Reports", path: "reports/census" },
-        { label: "Quality Metrics", path: "reports/quality" },
-        { label: "Financial Reports", path: "reports/financial" },
-        { label: "Compliance Reports", path: "reports/compliance" },
-        { label: "Survey Readiness", path: "survey/readiness" },
-        { label: "Compliance Tracking", path: "survey/compliance" },
-        { label: "Mock Surveys", path: "survey/mock" },
-        { label: "Facility Assessment", path: "survey/assessment" }
+        // People group
+        { label: "All Residents", path: "residents/all", group: "People" },
+        { label: "Staff on Duty", path: "admin/users", group: "People" },
+        
+        // Care Management group
+        { label: "Clinical Dashboard", path: "clinical/dashboard", group: "Care Management" },
+        { label: "MDS Assessments", path: "clinical/mds", group: "Care Management" },
+        { label: "Care Plans", path: "clinical/care-plans", group: "Care Management" },
+        { label: "Quality Metrics", path: "clinical/quality", group: "Care Management" },
+        
+        // Therapy group
+        { label: "Therapy Dashboard", path: "therapy/dashboard", group: "Therapy" },
+        { label: "Therapy Productivity", path: "therapy/productivity", group: "Therapy" },
+        { label: "Therapy Outcomes", path: "therapy/outcomes", group: "Therapy" },
+        { label: "Therapy Quality", path: "therapy/quality", group: "Therapy" },
+        
+        // Quick Entry group
+        { label: "Progress Notes", path: "documentation/progress-notes", group: "Quick Entry" },
+        { label: "Clinical Documentation", path: "clinical/documentation", group: "Quick Entry" }
       ]
     },
     {
       label: "Admin",
       path: "admin",
       children: [
-        { label: "User Management", path: "admin/users" },
-        { label: "Facility Settings", path: "admin/facility" },
-        { label: "Integrations", path: "admin/integrations" },
-        { label: "EMR Integration", path: "emr" },
-        { label: "AI Insights", path: "insights/ai-proact" },
-        { label: "Audit Trail", path: "admin/audit" },
-        { label: "Configurations", path: "admin/configurations" },
-        { label: "Work Orders", path: "maintenance/work-orders" },
-        { label: "Preventive Maintenance", path: "maintenance/preventive" },
-        { label: "Asset Management", path: "maintenance/assets" }
+        // People group
+        { label: "All Residents", path: "residents/all", group: "People" },
+        { label: "Staff Management", path: "admin/users", group: "People" },
+        { label: "Medical Professionals", path: "admin/providers", group: "People" },
+        
+        // Actions group
+        { label: "Admissions Queue", path: "residents/admissions", group: "Actions" },
+        { label: "Discharges", path: "residents/discharges", group: "Actions" },
+        { label: "Temporary Leave", path: "residents/temporary-leave", group: "Actions" },
+        
+        // System Management group
+        { label: "Facility Settings", path: "admin/facility", group: "System Management" },
+        { label: "Configurations", path: "admin/configurations", group: "System Management" },
+        { label: "Integrations", path: "admin/integrations", group: "System Management" },
+        { label: "EMR Integration", path: "emr", group: "System Management" },
+        
+        // Maintenance group
+        { label: "Work Orders", path: "maintenance/work-orders", group: "Maintenance" },
+        { label: "Preventive Maintenance", path: "maintenance/preventive", group: "Maintenance" },
+        { label: "Asset Management", path: "maintenance/assets", group: "Maintenance" },
+        
+        // Other group
+        { label: "Audit Trail", path: "admin/audit", group: "Other" },
+        { label: "AI Insights", path: "insights/ai-proact", group: "Other" }
+      ]
+    },
+    {
+      label: "Document Manager",
+      path: "documents",
+      children: [
+        // Admissions group
+        { label: "Admissions Agreements", path: "documentation/admissions-agreements", group: "Admissions" },
+        { label: "Admission Forms", path: "documentation/admission-forms", group: "Admissions" },
+        
+        // Clinical group
+        { label: "MDS Documentation", path: "documentation/mds", group: "Clinical" },
+        { label: "Care Plans", path: "documentation/care-plans", group: "Clinical" },
+        { label: "Progress Notes", path: "documentation/progress-notes", group: "Clinical" },
+        
+        // Regulatory group
+        { label: "Policy Management", path: "survey/policies", group: "Regulatory" },
+        { label: "Compliance Documents", path: "survey/compliance", group: "Regulatory" },
+        
+        // Archive group
+        { label: "Document Archive", path: "documentation/overview", group: "Archive" },
+        { label: "Document Templates", path: "documentation/templates", group: "Archive" }
+      ]
+    },
+    {
+      label: "CRM",
+      path: "crm",
+      children: [
+        // Referrals group
+        { label: "Live Referrals", path: "referrals/live", group: "Referrals" },
+        { label: "Platform Connections", path: "referrals/connections", group: "Referrals" },
+        { label: "Referral Analytics", path: "referrals/analytics", group: "Referrals" },
+        
+        // Communications group
+        { label: "Mass Communication", path: "communication/mass", group: "Communications" },
+        { label: "Individual Messaging", path: "communication/individual", group: "Communications" },
+        { label: "Message Templates", path: "communication/templates", group: "Communications" },
+        
+        // Performance group
+        { label: "Performance Metrics", path: "referrals/performance", group: "Performance" },
+        { label: "CRM Analytics", path: "crm/analytics", group: "Performance" }
+      ]
+    },
+    {
+      label: "Reports",
+      path: "reports",
+      children: [
+        // Census group
+        { label: "Daily Census", path: "reports/census", group: "Census" },
+        { label: "Occupancy Reports", path: "reports/occupancy", group: "Census" },
+        
+        // Clinical group
+        { label: "Quality Metrics", path: "reports/quality", group: "Clinical" },
+        { label: "Clinical Outcomes", path: "reports/clinical-outcomes", group: "Clinical" },
+        
+        // Financial group
+        { label: "Revenue Reports", path: "reports/financial", group: "Financial" },
+        { label: "Collections", path: "reports/collections", group: "Financial" },
+        
+        // Regulatory group
+        { label: "Survey Readiness", path: "survey/readiness", group: "Regulatory" },
+        { label: "Compliance Tracking", path: "survey/compliance", group: "Regulatory" },
+        { label: "Mock Surveys", path: "survey/mock", group: "Regulatory" },
+        { label: "Facility Assessment", path: "survey/assessment", group: "Regulatory" }
       ]
     }
   ];
+
+  const renderGroupedMenuItems = (items: any[]) => {
+    const groupedItems = items.reduce((acc, item) => {
+      const group = item.group || 'Other';
+      if (!acc[group]) {
+        acc[group] = [];
+      }
+      acc[group].push(item);
+      return acc;
+    }, {} as Record<string, any[]>);
+
+    const groups = Object.keys(groupedItems);
+    
+    return groups.map((groupName, groupIndex) => (
+      <div key={groupName}>
+        {groupIndex > 0 && <DropdownMenuSeparator />}
+        <DropdownMenuLabel className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 py-1">
+          {groupName}
+        </DropdownMenuLabel>
+        {groupedItems[groupName].map((item) => (
+          <DropdownMenuItem key={item.path} onClick={() => onNavigate(item.path)}>
+            {item.label}
+          </DropdownMenuItem>
+        ))}
+      </div>
+    ));
+  };
 
   return (
     <nav className="bg-white border-b">
@@ -132,12 +197,8 @@ const DropdownNavigation = ({ onNavigate, currentPath }: DropdownNavigationProps
                       <ChevronDown className="w-4 h-4 ml-1" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56">
-                    {item.children.map((child) => (
-                      <DropdownMenuItem key={child.path} onClick={() => onNavigate(child.path)}>
-                        {child.label}
-                      </DropdownMenuItem>
-                    ))}
+                  <DropdownMenuContent className="w-56 max-h-96 overflow-y-auto">
+                    {renderGroupedMenuItems(item.children)}
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
