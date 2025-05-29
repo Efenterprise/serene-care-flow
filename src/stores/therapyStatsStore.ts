@@ -13,6 +13,7 @@ interface TherapyStats {
 
 interface TherapyStatsStore {
   therapyStats: TherapyStats;
+  isUpdating: boolean;
   
   // Actions
   fetchTherapyStats: (currentResidents?: number) => void;
@@ -29,8 +30,17 @@ export const useTherapyStatsStore = create<TherapyStatsStore>((set, get) => ({
     monthlyRevenue: 284000,
     lastUpdated: new Date(),
   },
+  isUpdating: false,
 
   fetchTherapyStats: (currentResidents = 95) => {
+    const currentState = get();
+    if (currentState.isUpdating) {
+      console.log('Therapy stats update already in progress, skipping...');
+      return;
+    }
+
+    set({ isUpdating: true });
+
     console.log('Updating therapy stats based on facility data...', { currentResidents });
     
     // Therapy stats should be based on current residents
@@ -59,6 +69,7 @@ export const useTherapyStatsStore = create<TherapyStatsStore>((set, get) => ({
 
     set({
       therapyStats: newTherapyStats,
+      isUpdating: false,
     });
   },
 

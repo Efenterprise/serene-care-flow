@@ -5,7 +5,7 @@ import {
   Video
 } from "lucide-react";
 import { useFacilityStore } from "@/stores/facilityStore";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import TherapyMetricsCards from "./TherapyMetricsCards";
 import TherapyPriorityActions from "./TherapyPriorityActions";
 import TherapistProductivity from "./TherapistProductivity";
@@ -15,9 +15,14 @@ import TherapyQualityMetrics from "./TherapyQualityMetrics";
 const TherapyDashboard = () => {
   const { fetchTherapyStats } = useFacilityStore();
 
-  useEffect(() => {
+  // Use useCallback to prevent infinite loops
+  const handleFetchTherapyStats = useCallback(() => {
     fetchTherapyStats();
-  }, [fetchTherapyStats]);
+  }, []);
+
+  useEffect(() => {
+    handleFetchTherapyStats();
+  }, [handleFetchTherapyStats]);
 
   return (
     <div className="space-y-6">

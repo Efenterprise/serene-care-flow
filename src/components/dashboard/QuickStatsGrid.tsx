@@ -9,14 +9,19 @@ import {
   CheckCircle
 } from "lucide-react";
 import { useFacilityStore } from "@/stores/facilityStore";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 const QuickStatsGrid = () => {
   const { stats, isLoading, fetchFacilityStats } = useFacilityStore();
 
-  useEffect(() => {
+  // Use useCallback to prevent infinite loops
+  const handleFetchStats = useCallback(() => {
     fetchFacilityStats();
-  }, [fetchFacilityStats]);
+  }, []);
+
+  useEffect(() => {
+    handleFetchStats();
+  }, [handleFetchStats]);
 
   if (isLoading) {
     return (

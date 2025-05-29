@@ -46,6 +46,12 @@ export const useFacilityStatsStore = create<FacilityStatsStore>((set, get) => ({
   error: null,
 
   fetchFacilityStats: async () => {
+    const currentState = get();
+    if (currentState.isLoading) {
+      console.log('Facility stats fetch already in progress, skipping...');
+      return;
+    }
+
     set({ isLoading: true, error: null });
     
     try {
