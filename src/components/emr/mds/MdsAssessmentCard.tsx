@@ -2,7 +2,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, CheckCircle2, AlertTriangle, Clock } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { FileText, CheckCircle2, AlertTriangle, Clock, Brain, Edit } from "lucide-react";
 
 interface MdsAssessment {
   id: string;
@@ -13,13 +14,16 @@ interface MdsAssessment {
   status: string;
   completedBy: string;
   lastModified: string;
+  completion_percentage?: number;
+  caa_triggers?: any[];
 }
 
 interface MdsAssessmentCardProps {
   assessment: MdsAssessment;
+  onEditAssessment?: (assessment: MdsAssessment) => void;
 }
 
-const MdsAssessmentCard = ({ assessment }: MdsAssessmentCardProps) => {
+const MdsAssessmentCard = ({ assessment, onEditAssessment }: MdsAssessmentCardProps) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
@@ -45,6 +49,9 @@ const MdsAssessmentCard = ({ assessment }: MdsAssessmentCardProps) => {
         return <Clock className="w-4 h-4 text-blue-600" />;
     }
   };
+
+  const completionPercentage = assessment.completion_percentage || 0;
+  const caaTriggersCount = assessment.caa_triggers?.length || 0;
 
   return (
     <Card className="hover:shadow-md transition-shadow">
@@ -73,10 +80,37 @@ const MdsAssessmentCard = ({ assessment }: MdsAssessmentCardProps) => {
               </Badge>
             </div>
             
-            <Button size="sm" variant="outline">
-              View
-            </Button>
+            <div className="flex space-x-2">
+              <Button size="sm" variant="outline" onClick={() => onEditAssessment?.(assessment)}>
+                <Edit className="w-4 h-4 mr-1" />
+                Edit
+              </Button>
+              <Button size="sm" variant="outline">
+                View
+              </Button>
+            </div>
           </div>
+        </div>
+        
+        {/* Progress and CAA Info */}
+        <div className="mt-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-gray-700">Completion Progress</span>
+            <span className="text-sm text-gray-600">{completionPercentage}%</span>
+          </div>
+          <Progress value={completionPercentage} className="h-2" />
+          
+          {caaTriggersCount > 0 && (
+            <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+              <div className="flex items-center space-x-2">
+                <Brain className="w-4 h-4 text-purple-600" />
+                <span className="text-sm font-medium text-purple-900">CAA Triggers</span>
+              </div>
+              <Badge className="bg-purple-100 text-purple-800">
+                {caaTriggersCount} triggered
+              </Badge>
+            </div>
+          )}
         </div>
         
         {assessment.completedBy && (
