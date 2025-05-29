@@ -56,7 +56,7 @@ export const useAdmissionsAgreements = (residentId: string) => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as AdmissionsAgreement[];
     },
   });
 
@@ -70,7 +70,7 @@ export const useAdmissionsAgreements = (residentId: string) => {
         .order('template_name');
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as AgreementTemplate[];
     },
   });
 
@@ -162,7 +162,7 @@ export const useAgreementSignatures = (agreementId: string) => {
         .order('signed_at', { ascending: false });
 
       if (error) throw error;
-      return data || [];
+      return (data || []) as AgreementSignature[];
     },
     enabled: !!agreementId,
   });

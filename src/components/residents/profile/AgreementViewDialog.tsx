@@ -56,15 +56,15 @@ const AgreementViewDialog = ({ agreementId, open, onOpenChange }: AgreementViewD
     );
   }
 
-  const content = agreement.agreement_content;
-  const signatureRequirements = content.signature_requirements || [];
+  const content = agreement.agreement_content as any;
+  const signatureRequirements = content?.signature_requirements || [];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-4xl max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between">
-            <span>{content.title || 'Admissions Agreement'}</span>
+            <span>{content?.title || 'Admissions Agreement'}</span>
             <Badge>Version {agreement.template_version}</Badge>
           </DialogTitle>
         </DialogHeader>
@@ -73,7 +73,7 @@ const AgreementViewDialog = ({ agreementId, open, onOpenChange }: AgreementViewD
           <div className="space-y-6 pr-4">
             {/* Agreement Content */}
             <div className="space-y-4">
-              {content.sections?.map((section: any, index: number) => (
+              {content?.sections?.map((section: any, index: number) => (
                 <div key={index} className="border-l-4 border-blue-200 pl-4">
                   <h3 className="font-semibold text-lg mb-2">{section.title}</h3>
                   <p className="text-gray-700 leading-relaxed">{section.content}</p>
@@ -110,7 +110,7 @@ const AgreementViewDialog = ({ agreementId, open, onOpenChange }: AgreementViewD
                         )}
                         <span className="font-medium">{req.label}</span>
                         {req.required && (
-                          <Badge variant="outline" size="sm">Required</Badge>
+                          <Badge variant="outline">Required</Badge>
                         )}
                       </div>
                       

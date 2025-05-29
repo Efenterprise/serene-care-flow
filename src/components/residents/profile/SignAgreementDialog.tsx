@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAgreementSignatures } from "@/hooks/useAdmissionsAgreements";
-import { useContacts } from "@/hooks/useContacts";
+import { useResidentContacts } from "@/hooks/useContacts";
 import { Resident } from "@/hooks/useResidents";
 
 interface SignAgreementDialogProps {
@@ -26,7 +26,7 @@ const SignAgreementDialog = ({ agreementId, resident, open, onOpenChange }: Sign
   const [selectedContactId, setSelectedContactId] = useState("");
   
   const { addSignature, isAdding } = useAgreementSignatures(agreementId || "");
-  const { data: contacts } = useContacts(resident.id);
+  const { data: contacts } = useResidentContacts(resident.id);
 
   const { data: agreement } = useQuery({
     queryKey: ['agreement', agreementId],
@@ -127,7 +127,8 @@ const SignAgreementDialog = ({ agreementId, resident, open, onOpenChange }: Sign
     });
   };
 
-  const signatureRequirements = agreement?.agreement_content?.signature_requirements || [];
+  const content = agreement?.agreement_content as any;
+  const signatureRequirements = content?.signature_requirements || [];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

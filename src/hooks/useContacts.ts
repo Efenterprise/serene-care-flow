@@ -104,6 +104,9 @@ export const useResidentContacts = (residentId: string) => {
   });
 };
 
+// Export alias for backward compatibility
+export const useContacts = useResidentContacts;
+
 export const useCreateContact = () => {
   const queryClient = useQueryClient();
 
