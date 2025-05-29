@@ -4,29 +4,12 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import { 
-  Menu, 
-  LayoutDashboard, 
-  Users, 
-  Activity,
-  FileText, 
-  MessageSquare, 
-  Settings, 
-  Brain,
-  Stethoscope,
-  Building2,
-  ClipboardList,
-  Search,
-  BarChart3,
-  Wrench,
-  Shield,
-  ChevronDown,
-  UserPlus
-} from "lucide-react";
+import { ChevronDown, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface DropdownNavigationProps {
   onNavigate: (path: string) => void;
@@ -34,249 +17,182 @@ interface DropdownNavigationProps {
 }
 
 const DropdownNavigation = ({ onNavigate, currentPath }: DropdownNavigationProps) => {
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { signOut } = useAuth();
 
-  const handleNavigate = (path: string) => {
-    onNavigate(path);
-    setOpenDropdown(null);
+  const handleSignOut = async () => {
+    await signOut();
   };
 
-  const isActive = (path: string) => currentPath === path || currentPath.startsWith(path + "/");
-
-  const navigationItems = [
+  const menuItems = [
     {
-      key: "dashboard",
       label: "Dashboard",
-      icon: LayoutDashboard,
       path: "dashboard",
-      items: []
+      children: []
     },
     {
-      key: "residents",
       label: "Residents",
-      icon: Users,
       path: "residents",
-      items: [
+      children: [
         { label: "All Residents", path: "residents/all" },
         { label: "Admissions Queue", path: "residents/admissions" },
-        { label: "Bed Board", path: "residents/beds" },
-        { label: "Census Report", path: "residents/census" }
+        { label: "Discharges", path: "residents/discharges" },
+        { label: "Temporary Leave", path: "residents/temporary-leave" }
       ]
     },
     {
-      key: "referrals",
       label: "Referrals & CRM",
-      icon: UserPlus,
       path: "referrals",
-      badge: "CRM",
-      items: [
-        { label: "Referral Dashboard", path: "referrals/dashboard" },
-        { label: "Live Connections", path: "referrals/connections" },
-        { label: "Platform Management", path: "referrals/platforms" },
-        { label: "Admissions Queue", path: "referrals/admissions" },
-        { label: "Analytics", path: "referrals/analytics" }
+      children: [
+        { label: "Live Referrals", path: "referrals/live" },
+        { label: "Platform Connections", path: "referrals/connections" },
+        { label: "Analytics", path: "referrals/analytics" },
+        { label: "Performance", path: "referrals/performance" }
       ]
     },
     {
-      key: "therapy",
       label: "Therapy",
-      icon: Activity,
       path: "therapy",
-      badge: "NEW",
-      items: [
+      children: [
         { label: "Dashboard", path: "therapy/dashboard" },
-        { label: "Patient Management", path: "therapy/patients" },
-        { label: "Scheduling", path: "therapy/scheduling" },
-        { label: "Documentation", path: "therapy/documentation" },
+        { label: "Productivity", path: "therapy/productivity" },
         { label: "Outcomes", path: "therapy/outcomes" },
-        { label: "Telehealth", path: "therapy/telehealth" }
+        { label: "Quality Metrics", path: "therapy/quality" }
       ]
     },
     {
-      key: "clinical",
       label: "Clinical",
-      icon: Stethoscope,
       path: "clinical",
-      items: [
+      children: [
+        { label: "MDS Assessments", path: "clinical/mds" },
         { label: "Care Plans", path: "clinical/care-plans" },
-        { label: "Assessments", path: "clinical/assessments" },
-        { label: "MDS Management", path: "clinical/mds" },
         { label: "Quality Metrics", path: "clinical/quality" },
-        { label: "Clinical Alerts", path: "clinical/alerts" }
+        { label: "Clinical Dashboard", path: "clinical/dashboard" }
       ]
     },
     {
-      key: "communication",
       label: "Communication",
-      icon: MessageSquare,
       path: "communication",
-      items: [
-        { label: "Family Portal", path: "communication/family" },
-        { label: "Staff Messages", path: "communication/staff" },
+      children: [
         { label: "Mass Communication", path: "communication/mass" },
+        { label: "Individual Messaging", path: "communication/individual" },
         { label: "Templates", path: "communication/templates" }
       ]
     },
     {
-      key: "documentation",
       label: "Documentation",
-      icon: FileText,
       path: "documentation",
-      items: [
+      children: [
+        { label: "Documentation Overview", path: "documentation/overview" },
         { label: "MDS Assessments", path: "documentation/mds" },
         { label: "Care Plans", path: "documentation/care-plans" },
-        { label: "Progress Notes", path: "documentation/notes" },
+        { label: "Progress Notes", path: "documentation/progress-notes" },
+        { label: "Admissions Agreements", path: "documentation/admissions-agreements" },
         { label: "Reports", path: "documentation/reports" }
       ]
     },
     {
-      key: "survey",
       label: "Survey & Regulatory",
-      icon: Shield,
       path: "survey",
-      items: [
+      children: [
         { label: "Survey Readiness", path: "survey/readiness" },
         { label: "Compliance Tracking", path: "survey/compliance" },
         { label: "Policy Management", path: "survey/policies" },
-        { label: "Mock Surveys", path: "survey/mock" }
+        { label: "Mock Surveys", path: "survey/mock" },
+        { label: "Document Management", path: "survey/documents" },
+        { label: "Facility Assessment", path: "survey/assessment" }
       ]
     },
     {
-      key: "reports",
       label: "Reports & Analytics",
-      icon: BarChart3,
       path: "reports",
-      items: [
+      children: [
         { label: "Census Reports", path: "reports/census" },
+        { label: "Quality Metrics", path: "reports/quality" },
         { label: "Financial Reports", path: "reports/financial" },
-        { label: "Quality Reports", path: "reports/quality" },
-        { label: "Custom Reports", path: "reports/custom" }
+        { label: "Compliance Reports", path: "reports/compliance" }
       ]
     },
     {
-      key: "maintenance",
       label: "Maintenance",
-      icon: Wrench,
       path: "maintenance",
-      items: [
-        { label: "Work Orders", path: "maintenance/orders" },
+      children: [
+        { label: "Work Orders", path: "maintenance/work-orders" },
         { label: "Preventive Maintenance", path: "maintenance/preventive" },
         { label: "Asset Management", path: "maintenance/assets" }
       ]
     },
     {
-      key: "admin",
-      label: "Administration",
-      icon: Settings,
+      label: "Admin",
       path: "admin",
-      items: [
+      children: [
         { label: "User Management", path: "admin/users" },
         { label: "Facility Settings", path: "admin/facility" },
-        { label: "Integration Hub", path: "admin/integrations" },
-        { label: "Audit Trail", path: "admin/audit" }
+        { label: "Integrations", path: "admin/integrations" },
+        { label: "Audit Trail", path: "admin/audit" },
+        { label: "Configurations", path: "admin/configurations" }
       ]
-    },
-    {
-      key: "ai-insights",
-      label: "AI Insights",
-      icon: Brain,
-      path: "insights/ai-proact",
-      badge: "AI",
-      items: []
     }
   ];
 
   return (
-    <header className="bg-white border-b shadow-sm">
-      <div className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-3">
-            <Building2 className="w-8 h-8 text-blue-600" />
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">CareConnect Pro</h1>
-              <p className="text-xs text-gray-600">Integrated Care Management</p>
-            </div>
+    <nav className="bg-white border-b">
+      <div className="container mx-auto px-6 py-3">
+        <div className="flex items-center justify-between">
+          <div className="text-xl font-semibold text-gray-800">
+            LTC Ally
           </div>
-        </div>
-
-        <nav className="flex items-center space-x-1">
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            const hasItems = item.items.length > 0;
-            
-            if (!hasItems) {
-              return (
-                <Button
-                  key={item.key}
-                  variant={isActive(item.path) ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => handleNavigate(item.path)}
-                  className="relative"
-                >
-                  <Icon className="w-4 h-4 mr-2" />
+          <div className="space-x-4 flex items-center">
+            {/* Navigation Links */}
+            {menuItems.map((item) => (
+              item.children && item.children.length > 0 ? (
+                <DropdownMenu key={item.label}>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="text-sm">
+                      {item.label}
+                      <ChevronDown className="w-4 h-4 ml-1" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56">
+                    {item.children.map((child) => (
+                      <DropdownMenuItem key={child.path} onClick={() => onNavigate(child.path)}>
+                        {child.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button variant="ghost" key={item.label} onClick={() => onNavigate(item.path)} className="text-sm">
                   {item.label}
-                  {item.badge && (
-                    <Badge variant="secondary" className="ml-2 text-xs">
-                      {item.badge}
-                    </Badge>
-                  )}
                 </Button>
-              );
-            }
+              )
+            ))}
 
-            return (
-              <DropdownMenu 
-                key={item.key} 
-                open={openDropdown === item.key}
-                onOpenChange={(open) => setOpenDropdown(open ? item.key : null)}
-              >
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant={isActive(item.path) ? "default" : "ghost"}
-                    size="sm"
-                    className="relative"
-                  >
-                    <Icon className="w-4 h-4 mr-2" />
-                    {item.label}
-                    {item.badge && (
-                      <Badge variant="secondary" className="ml-2 text-xs">
-                        {item.badge}
-                      </Badge>
-                    )}
-                    <ChevronDown className="w-3 h-3 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-56">
-                  <DropdownMenuItem onClick={() => handleNavigate(item.path)}>
-                    <Icon className="w-4 h-4 mr-2" />
-                    {item.label} Overview
-                  </DropdownMenuItem>
-                  {item.items.length > 0 && <DropdownMenuSeparator />}
-                  {item.items.map((subItem) => (
-                    <DropdownMenuItem 
-                      key={subItem.path}
-                      onClick={() => handleNavigate(subItem.path)}
-                    >
-                      {subItem.label}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            );
-          })}
-        </nav>
-
-        <div className="flex items-center space-x-4">
-          <Button variant="outline" size="sm">
-            <Search className="w-4 h-4 mr-2" />
-            Search
-          </Button>
-          <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-            <span className="text-white text-sm font-medium">JD</span>
+            {/* User Dropdown */}
+            <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="text-sm">
+                  Account <ChevronDown className="w-4 h-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => onNavigate('admin/users')}>
+                  Manage Users
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onNavigate('admin/facility')}>
+                  Facility Settings
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
-    </header>
+    </nav>
   );
 };
 

@@ -13,6 +13,7 @@ import MdsManagement from "@/components/emr/MdsManagement";
 import SurveyContent from "@/components/survey/SurveyContent";
 import TherapyContent from "@/components/therapy/TherapyContent";
 import ReferralContent from "@/components/referrals/ReferralContent";
+import AdmissionsAgreementsPortal from "@/components/documentation/AdmissionsAgreementsPortal";
 import { useFacilityStore } from "@/stores/facilityStore";
 
 interface DropdownMainLayoutProps {
@@ -36,6 +37,11 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
 
   const renderContent = () => {
     console.log('Current path:', currentPath); // Debug log
+    
+    // Handle documentation paths
+    if (currentPath === "documentation/admissions-agreements") {
+      return <AdmissionsAgreementsPortal />;
+    }
     
     // Handle referrals navigation - new referral/CRM system
     if (currentPath === "referrals" || currentPath.startsWith("referrals/")) {
