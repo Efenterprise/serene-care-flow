@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,100 +27,73 @@ const DropdownNavigation = ({ onNavigate, currentPath }: DropdownNavigationProps
 
   const menuItems = [
     {
-      label: "Dashboard",
+      label: "Home",
       path: "dashboard",
       children: []
-    },
-    {
-      label: "Residents",
-      path: "residents",
-      children: [
-        { label: "All Residents", path: "residents/all" },
-        { label: "Admissions Queue", path: "residents/admissions" },
-        { label: "Discharges", path: "residents/discharges" },
-        { label: "Temporary Leave", path: "residents/temporary-leave" }
-      ]
-    },
-    {
-      label: "Referrals & CRM",
-      path: "referrals",
-      children: [
-        { label: "Live Referrals", path: "referrals/live" },
-        { label: "Platform Connections", path: "referrals/connections" },
-        { label: "Analytics", path: "referrals/analytics" },
-        { label: "Performance", path: "referrals/performance" }
-      ]
-    },
-    {
-      label: "Therapy",
-      path: "therapy",
-      children: [
-        { label: "Dashboard", path: "therapy/dashboard" },
-        { label: "Productivity", path: "therapy/productivity" },
-        { label: "Outcomes", path: "therapy/outcomes" },
-        { label: "Quality Metrics", path: "therapy/quality" }
-      ]
     },
     {
       label: "Clinical",
       path: "clinical",
       children: [
+        { label: "Clinical Dashboard", path: "clinical/dashboard" },
         { label: "MDS Assessments", path: "clinical/mds" },
         { label: "Care Plans", path: "clinical/care-plans" },
         { label: "Quality Metrics", path: "clinical/quality" },
-        { label: "Clinical Dashboard", path: "clinical/dashboard" }
+        { label: "Therapy Dashboard", path: "therapy/dashboard" },
+        { label: "Therapy Productivity", path: "therapy/productivity" },
+        { label: "Therapy Outcomes", path: "therapy/outcomes" },
+        { label: "Therapy Quality", path: "therapy/quality" }
       ]
     },
     {
-      label: "Communication",
-      path: "communication",
+      label: "People",
+      path: "people",
       children: [
-        { label: "Mass Communication", path: "communication/mass" },
-        { label: "Individual Messaging", path: "communication/individual" },
-        { label: "Templates", path: "communication/templates" }
+        { label: "All Residents", path: "residents/all" },
+        { label: "Admissions Queue", path: "residents/admissions" },
+        { label: "Discharges", path: "residents/discharges" },
+        { label: "Temporary Leave", path: "residents/temporary-leave" },
+        { label: "Staff Management", path: "admin/users" },
+        { label: "Communications", path: "communication/dashboard" }
       ]
     },
     {
-      label: "Documentation",
-      path: "documentation",
+      label: "Document Manager",
+      path: "documents",
       children: [
-        { label: "Documentation Overview", path: "documentation/overview" },
-        { label: "MDS Assessments", path: "documentation/mds" },
+        { label: "Admissions Agreements", path: "documentation/admissions-agreements" },
+        { label: "MDS Documentation", path: "documentation/mds" },
         { label: "Care Plans", path: "documentation/care-plans" },
         { label: "Progress Notes", path: "documentation/progress-notes" },
-        { label: "Admissions Agreements", path: "documentation/admissions-agreements" },
-        { label: "Reports", path: "documentation/reports" }
-      ]
-    },
-    {
-      label: "Survey & Regulatory",
-      path: "survey",
-      children: [
-        { label: "Survey Readiness", path: "survey/readiness" },
-        { label: "Compliance Tracking", path: "survey/compliance" },
         { label: "Policy Management", path: "survey/policies" },
-        { label: "Mock Surveys", path: "survey/mock" },
-        { label: "Document Management", path: "survey/documents" },
-        { label: "Facility Assessment", path: "survey/assessment" }
+        { label: "Document Archive", path: "documentation/overview" }
       ]
     },
     {
-      label: "Reports & Analytics",
+      label: "CRM",
+      path: "crm",
+      children: [
+        { label: "Live Referrals", path: "referrals/live" },
+        { label: "Platform Connections", path: "referrals/connections" },
+        { label: "Analytics", path: "referrals/analytics" },
+        { label: "Performance", path: "referrals/performance" },
+        { label: "Mass Communication", path: "communication/mass" },
+        { label: "Individual Messaging", path: "communication/individual" },
+        { label: "Message Templates", path: "communication/templates" }
+      ]
+    },
+    {
+      label: "Reports",
       path: "reports",
       children: [
         { label: "Census Reports", path: "reports/census" },
         { label: "Quality Metrics", path: "reports/quality" },
         { label: "Financial Reports", path: "reports/financial" },
-        { label: "Compliance Reports", path: "reports/compliance" }
-      ]
-    },
-    {
-      label: "Maintenance",
-      path: "maintenance",
-      children: [
-        { label: "Work Orders", path: "maintenance/work-orders" },
-        { label: "Preventive Maintenance", path: "maintenance/preventive" },
-        { label: "Asset Management", path: "maintenance/assets" }
+        { label: "Compliance Reports", path: "reports/compliance" },
+        { label: "Survey Readiness", path: "survey/readiness" },
+        { label: "Compliance Tracking", path: "survey/compliance" },
+        { label: "Mock Surveys", path: "survey/mock" },
+        { label: "Facility Assessment", path: "survey/assessment" }
       ]
     },
     {
@@ -129,8 +103,13 @@ const DropdownNavigation = ({ onNavigate, currentPath }: DropdownNavigationProps
         { label: "User Management", path: "admin/users" },
         { label: "Facility Settings", path: "admin/facility" },
         { label: "Integrations", path: "admin/integrations" },
+        { label: "EMR Integration", path: "emr" },
+        { label: "AI Insights", path: "insights/ai-proact" },
         { label: "Audit Trail", path: "admin/audit" },
-        { label: "Configurations", path: "admin/configurations" }
+        { label: "Configurations", path: "admin/configurations" },
+        { label: "Work Orders", path: "maintenance/work-orders" },
+        { label: "Preventive Maintenance", path: "maintenance/preventive" },
+        { label: "Asset Management", path: "maintenance/assets" }
       ]
     }
   ];

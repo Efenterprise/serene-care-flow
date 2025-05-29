@@ -43,12 +43,17 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
       return <AdmissionsAgreementsPortal />;
     }
     
-    // Handle referrals navigation - new referral/CRM system
+    // Handle other documentation paths
+    if (currentPath.startsWith("documentation/")) {
+      return <MaintenanceContent />; // Placeholder for now
+    }
+    
+    // Handle referrals navigation - CRM section
     if (currentPath === "referrals" || currentPath.startsWith("referrals/")) {
       return <ReferralContent currentPath={currentPath} />;
     }
 
-    // Handle therapy navigation - this is the key fix
+    // Handle therapy navigation under Clinical
     if (currentPath === "therapy" || currentPath.startsWith("therapy/")) {
       return <TherapyContent currentPath={currentPath} />;
     }
@@ -58,7 +63,7 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
       return <MdsManagement />;
     }
 
-    // Handle survey and regulatory paths
+    // Handle survey and regulatory paths (now under Reports)
     if (currentPath.startsWith("survey/")) {
       return <SurveyContent currentPath={currentPath} />;
     }
@@ -68,12 +73,12 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
       return <ClinicalContent />;
     }
 
-    // Handle residents paths
-    if (currentPath.startsWith("residents/")) {
+    // Handle people/residents paths
+    if (currentPath.startsWith("residents/") || currentPath.startsWith("people/")) {
       return <ResidentsContent />;
     }
 
-    // Handle communication paths
+    // Handle communication paths (now under CRM)
     if (currentPath.startsWith("communication/")) {
       return <CommunicationContent />;
     }
@@ -84,21 +89,21 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
     }
 
     // Handle EMR integration paths
-    if (currentPath.startsWith("emr/") || currentPath === "admin/integrations") {
+    if (currentPath.startsWith("emr/") || currentPath === "emr") {
       return <EmrContent />;
     }
 
-    // Handle AI insights
+    // Handle AI insights (now under Admin)
     if (currentPath === "insights/ai-proact") {
       return <AiInsightsContent />;
     }
 
-    // Handle reports and documentation paths
-    if (currentPath.startsWith("reports/") || currentPath.startsWith("documentation/")) {
+    // Handle reports paths
+    if (currentPath.startsWith("reports/")) {
       return <MaintenanceContent />; // Placeholder for now
     }
 
-    // Handle maintenance paths
+    // Handle maintenance paths (now under Admin)
     if (currentPath.startsWith("maintenance/")) {
       return <MaintenanceContent />;
     }
@@ -108,6 +113,31 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
   };
 
   const formatBreadcrumb = (path: string) => {
+    // Map new paths to user-friendly breadcrumbs
+    const pathMap: Record<string, string> = {
+      'dashboard': 'Home',
+      'clinical': 'Clinical',
+      'people': 'People',
+      'documents': 'Document Manager',
+      'crm': 'CRM',
+      'reports': 'Reports',
+      'admin': 'Admin'
+    };
+
+    const segments = path.split('/');
+    const mainSection = segments[0];
+    
+    if (pathMap[mainSection]) {
+      if (segments.length === 1) {
+        return pathMap[mainSection];
+      } else {
+        const subsection = segments.slice(1).join(' / ')
+          .replace(/-/g, ' ')
+          .replace(/\b\w/g, l => l.toUpperCase());
+        return `${pathMap[mainSection]} / ${subsection}`;
+      }
+    }
+
     return path
       .split('/')
       .map(segment => segment.replace('-', ' '))
