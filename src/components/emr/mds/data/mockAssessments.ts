@@ -49,7 +49,7 @@ export const mockMdsAssessments: MockMdsAssessment[] = [
         c0200: '2',
         c0300: '2',
         c0400: '1',
-        c0500: '5',
+        c0500: '4',
         c0600: '1',
         c0700: '0',
         c0800: '0',
