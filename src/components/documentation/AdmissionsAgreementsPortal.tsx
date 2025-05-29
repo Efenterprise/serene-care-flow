@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +21,28 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdmissionsAgreement } from "@/types/admissions";
 import AgreementViewDialog from "../residents/profile/AgreementViewDialog";
 
+// Define the raw Supabase result type
+interface SupabaseAgreementResult {
+  id: string;
+  resident_id: string;
+  agreement_type: string;
+  template_version: string;
+  agreement_content: any;
+  status: string;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+  expires_at: string | null;
+  notes: string | null;
+  residents: {
+    first_name: string;
+    last_name: string;
+  };
+}
+
+// Define our processed agreement type
+type AgreementWithResident = AdmissionsAgreement & { resident_name?: string };
+
 const AdmissionsAgreementsPortal = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -31,7 +52,7 @@ const AdmissionsAgreementsPortal = () => {
 
   const { data: agreements = [], isLoading } = useQuery({
     queryKey: ['all-admissions-agreements'],
-    queryFn: async (): Promise<(AdmissionsAgreement & { resident_name?: string })[]> => {
+    queryFn: async (): Promise<AgreementWithResident[]> => {
       const { data, error } = await supabase
         .from('admissions_agreements')
         .select(`
@@ -42,8 +63,18 @@ const AdmissionsAgreementsPortal = () => {
 
       if (error) throw error;
       
-      return (data || []).map(agreement => ({
-        ...agreement,
+      return (data as SupabaseAgreementResult[] || []).map(agreement => ({
+        id: agreement.id,
+        resident_id: agreement.resident_id,
+        agreement_type: agreement.agreement_type,
+        template_version: agreement.template_version,
+        agreement_content: agreement.agreement_content,
+        status: agreement.status as AdmissionsAgreement['status'],
+        created_by: agreement.created_by,
+        created_at: agreement.created_at,
+        updated_at: agreement.updated_at,
+        expires_at: agreement.expires_at,
+        notes: agreement.notes,
         resident_name: `${agreement.residents.first_name} ${agreement.residents.last_name}`
       }));
     },
