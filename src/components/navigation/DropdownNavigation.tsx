@@ -44,6 +44,17 @@ const navigationConfig: NavigationItem[] = [
     ]
   },
   {
+    label: "Survey & Regulatory",
+    items: [
+      { label: "Survey Readiness", path: "survey/readiness", description: "Annual survey preparation dashboard" },
+      { label: "Facility Assessment", path: "survey/facility-assessment", description: "Comprehensive facility assessment tool" },
+      { label: "Document Management", path: "survey/documents", description: "Survey-required documentation" },
+      { label: "Compliance Tracking", path: "survey/compliance", description: "Regulatory compliance monitoring" },
+      { label: "Policy Management", path: "survey/policies", description: "Policy and procedure tracking" },
+      { label: "Mock Surveys", path: "survey/mock-surveys", description: "Internal audit and preparation tools" },
+    ]
+  },
+  {
     label: "Documentation",
     items: [
       { label: "MDS Forms", path: "documentation/mds", description: "MDS form management" },

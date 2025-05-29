@@ -10,6 +10,7 @@ import AiInsightsContent from "@/components/ai/AiInsightsContent";
 import ClinicalContent from "@/components/clinical/ClinicalContent";
 import MaintenanceContent from "@/components/maintenance/MaintenanceContent";
 import MdsManagement from "@/components/emr/MdsManagement";
+import SurveyContent from "@/components/survey/SurveyContent";
 
 interface DropdownMainLayoutProps {
   children?: React.ReactNode;
@@ -26,6 +27,11 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
     // Handle specific MDS navigation
     if (currentPath === "clinical/mds" || currentPath === "documentation/mds") {
       return <MdsManagement />;
+    }
+
+    // Handle survey and regulatory paths
+    if (currentPath.startsWith("survey/")) {
+      return <SurveyContent currentPath={currentPath} />;
     }
 
     // Handle other clinical paths
