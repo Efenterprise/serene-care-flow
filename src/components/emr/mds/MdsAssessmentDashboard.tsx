@@ -24,6 +24,7 @@ import { mockMdsAssessments } from "./data/mockAssessments";
 import MdsAssessmentCard from "./MdsAssessmentCard";
 import MdsAssessmentForm from "./MdsAssessmentForm";
 import MdsScheduler from "./MdsScheduler";
+import { AssessmentType } from "@/types/mds";
 
 interface MdsAssessmentDashboardProps {
   facilityId?: string;
@@ -75,6 +76,11 @@ const MdsAssessmentDashboard = ({ facilityId }: MdsAssessmentDashboardProps) => 
   const handleCloseForm = () => {
     setShowAssessmentForm(false);
     setSelectedAssessment(null);
+  };
+
+  const handleCreateAssessment = (residentId: string, assessmentType: AssessmentType) => {
+    console.log('Creating assessment:', { residentId, assessmentType });
+    setShowAssessmentForm(true);
   };
 
   return (
@@ -351,7 +357,7 @@ const MdsAssessmentDashboard = ({ facilityId }: MdsAssessmentDashboardProps) => 
         </TabsContent>
 
         <TabsContent value="scheduler">
-          <MdsScheduler />
+          <MdsScheduler onCreateAssessment={handleCreateAssessment} />
         </TabsContent>
 
         <TabsContent value="quality">

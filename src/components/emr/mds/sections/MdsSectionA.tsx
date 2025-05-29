@@ -21,6 +21,10 @@ const MdsSectionA = ({ data, onChange }: MdsSectionAProps) => {
     a1010: '',
     a1700: '',
     a1800: '',
+    a2000: '',
+    a2100: '',
+    a2300: '',
+    a2400: '',
     completed: false,
     ...data
   });

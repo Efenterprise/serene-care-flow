@@ -15,6 +15,10 @@ export const convertToMdsAssessment = (assessment: MockMdsAssessment): MdsAssess
       a1010: '',
       a1700: '',
       a1800: '',
+      a2000: '',
+      a2100: '',
+      a2300: '',
+      a2400: '',
       completed: false 
     },
     section_b: { 
@@ -105,19 +109,120 @@ export const convertToMdsAssessment = (assessment: MockMdsAssessment): MdsAssess
       i0700: [],
       i0800: [],
       i0900: [],
+      i1000: [],
+      i1200: [],
+      i1400: [],
+      i1500: [],
+      i1550: [],
+      i1700: [],
+      i2000: [],
+      i2100: [],
+      i2200: [],
+      i2300: [],
+      i2400: [],
+      i2500: [],
       completed: false 
     },
-    section_j: { completed: false },
-    section_k: { completed: false },
-    section_l: { completed: false },
-    section_m: { completed: false },
-    section_n: { completed: false },
-    section_o: { completed: false },
-    section_p: { completed: false },
-    section_q: { completed: false },
-    section_v: { completed: false },
-    section_x: { completed: false },
-    section_z: { completed: false }
+    section_j: { 
+      j0100: '0',
+      j0200: '0',
+      j0300: '0',
+      j0400: '0',
+      j0500: '0',
+      j0600: '0',
+      j1100: '0',
+      j1400: '0',
+      j1550: '0',
+      j1700: '0',
+      j1800: '0',
+      j1900: '0',
+      completed: false 
+    },
+    section_k: { 
+      k0100: '0',
+      k0200: '0',
+      k0300: '0',
+      k0510: '0',
+      k0520: '0',
+      k0700: '0',
+      k0800: '0',
+      k0900: '0',
+      completed: false 
+    },
+    section_l: { 
+      l0100: '0',
+      l0200: '0',
+      completed: false 
+    },
+    section_m: { 
+      m0100: '0',
+      m0150: '0',
+      m0200: '0',
+      m0300: '0',
+      m0400: '0',
+      m0500: '0',
+      m0610: '0',
+      m0700: '0',
+      m0800: '0',
+      completed: false 
+    },
+    section_n: { 
+      n0100: '0',
+      n0300: '0',
+      n0350: '0',
+      n0400: '0',
+      n0410: '0',
+      n0450: '0',
+      n0500: '0',
+      n0510: '0',
+      completed: false 
+    },
+    section_o: { 
+      o0100: '0',
+      o0200: '0',
+      o0250: '0',
+      o0300: '0',
+      o0400: '',
+      o0410: '',
+      o0420: '',
+      o0430: '',
+      o0440: '',
+      o0450: '',
+      o0500: '0',
+      o0600: '0',
+      completed: false 
+    },
+    section_p: { 
+      p0100: '0',
+      p0200: '0',
+      completed: false 
+    },
+    section_q: { 
+      q0100: '0',
+      q0200: '0',
+      completed: false 
+    },
+    section_v: { 
+      caa_summary: {},
+      completed: false 
+    },
+    section_x: { 
+      x0100: '',
+      x0150: '',
+      completed: false 
+    },
+    section_z: { 
+      z0100: '',
+      z0150: '',
+      z0200: '',
+      z0250: '',
+      z0300: '',
+      z0350: '',
+      z0400: '',
+      z0500: '',
+      z0600: '',
+      completed: false 
+    }
   };
 
   // Merge assessment data with defaults
