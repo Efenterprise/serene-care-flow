@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -163,7 +164,7 @@ export class IntegrationService {
           {
             external_id: `careport_${Date.now()}_1`,
             platform_id: platform.id,
-            source: "careport",
+            source: "manual", // Use 'manual' as source since 'careport' is not in referral_source enum
             patient_name: "James Wilson",
             patient_dob: "1962-04-18",
             patient_gender: "Male",
@@ -173,7 +174,7 @@ export class IntegrationService {
             diagnosis: "Cardiac Rehabilitation",
             diagnosis_codes: ["Z51.89"],
             acuity_level: 3,
-            primary_insurance: "medicare_b",
+            primary_insurance: "medicare_a", // Use 'medicare_a' instead of 'medicare_b'
             estimated_los: 18,
             estimated_daily_rate: 355.00,
             status: "pending",
