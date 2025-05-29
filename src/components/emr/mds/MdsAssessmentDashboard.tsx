@@ -1,4 +1,3 @@
-
 // Enhanced MDS Assessment Dashboard with PCC-style interface
 
 import { useState, useEffect } from "react";
@@ -80,6 +79,8 @@ const MdsAssessmentDashboard = ({ facilityId }: MdsAssessmentDashboardProps) => 
 
   const handleCreateAssessment = (residentId: string, assessmentType: AssessmentType) => {
     console.log('Creating assessment:', { residentId, assessmentType });
+    // For scheduled assessments, we can pass the resident ID
+    setSelectedAssessment({ residentId, assessmentType });
     setShowAssessmentForm(true);
   };
 
@@ -387,7 +388,7 @@ const MdsAssessmentDashboard = ({ facilityId }: MdsAssessmentDashboardProps) => 
       {showAssessmentForm && (
         <MdsAssessmentForm
           assessment={selectedAssessment}
-          residentId={selectedAssessment?.mrn || "new-resident"}
+          residentId={selectedAssessment?.residentId}
           onSave={(assessment) => {
             console.log('Saving assessment:', assessment);
             handleCloseForm();

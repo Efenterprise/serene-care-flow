@@ -1,8 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { CheckCircle } from "lucide-react";
 import { SectionA, AssessmentType } from "@/types/mds";
 
 interface MdsSectionAProps {
@@ -40,8 +41,34 @@ const MdsSectionA = ({ data, onChange }: MdsSectionAProps) => {
     }));
   };
 
+  const markSectionComplete = () => {
+    const isComplete = formData.a0100 && formData.a0200 && formData.a0310 && formData.a1010;
+    setFormData(prev => ({
+      ...prev,
+      completed: !!isComplete
+    }));
+  };
+
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h3 className="text-lg font-semibold">Section A: Identification Information</h3>
+        <Button 
+          onClick={markSectionComplete}
+          variant={formData.completed ? "default" : "outline"}
+          size="sm"
+        >
+          {formData.completed ? (
+            <>
+              <CheckCircle className="w-4 h-4 mr-1" />
+              Completed
+            </>
+          ) : (
+            "Mark Complete"
+          )}
+        </Button>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <Label htmlFor="a0100">A0100. Facility Provider Number</Label>
