@@ -24,7 +24,7 @@ import AdmissionsQueue from "../admissions/AdmissionsQueue";
 import ReferralWorkflow from "./ReferralWorkflow";
 import AIInsightsPanel from "./AIInsightsPanel";
 import RevenueProjections from "./RevenueProjections";
-import LivePlatformConnections from "./LivePlatformConnections";
+import EnhancedLivePlatformConnections from "./EnhancedLivePlatformConnections";
 import { useRealTimeReferrals } from "@/hooks/useRealTimeReferrals";
 
 const ReferralDashboard = () => {
@@ -99,7 +99,7 @@ const ReferralDashboard = () => {
         </TabsContent>
 
         <TabsContent value="live-connections">
-          <LivePlatformConnections />
+          <EnhancedLivePlatformConnections />
         </TabsContent>
 
         <TabsContent value="queue">
