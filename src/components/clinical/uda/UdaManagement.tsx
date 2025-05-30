@@ -17,27 +17,60 @@ import UdaScheduledList from './UdaScheduledList';
 import UdaInProgressList from './UdaInProgressList';
 import UdaCompletedList from './UdaCompletedList';
 import CreateUdaDialog from './CreateUdaDialog';
+import FacilitySelector from './FacilitySelector';
 
 const UdaManagement = () => {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [activeTab, setActiveTab] = useState('scheduled');
+  const [selectedFacility, setSelectedFacility] = useState('facility-1'); // Default to first facility
 
-  // Mock summary data - would come from API
-  const summaryStats = {
-    scheduled: 15,
-    inProgress: 8,
-    completed: 142,
-    overdue: 5,
-    dueSoon: 7
+  // Mock summary data - would come from API based on selected facility
+  const getSummaryStats = (facilityId: string) => {
+    if (facilityId === 'all') {
+      // Corporate view - aggregated data
+      return {
+        scheduled: 45,
+        inProgress: 28,
+        completed: 687,
+        overdue: 12,
+        dueSoon: 23
+      };
+    } else {
+      // Individual facility data
+      return {
+        scheduled: 15,
+        inProgress: 8,
+        completed: 142,
+        overdue: 5,
+        dueSoon: 7
+      };
+    }
+  };
+
+  const summaryStats = getSummaryStats(selectedFacility);
+
+  const handleFacilityChange = (facilityId: string) => {
+    console.log('Facility changed to:', facilityId);
+    setSelectedFacility(facilityId);
+    // Here you would typically refresh data for the selected facility
   };
 
   return (
     <div className="space-y-6">
+      {/* Facility Selector */}
+      <FacilitySelector 
+        selectedFacility={selectedFacility}
+        onFacilityChange={handleFacilityChange}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">UDA Schedules</h2>
-          <p className="text-gray-600">Uniform Data Assessment scheduling and management</p>
+          <p className="text-gray-600">
+            Uniform Data Assessment scheduling and management
+            {selectedFacility === 'all' ? ' - Corporate View' : ''}
+          </p>
         </div>
         <div className="flex items-center space-x-2">
           <Button variant="outline" size="sm">
@@ -128,21 +161,24 @@ const UdaManagement = () => {
         </TabsList>
 
         <TabsContent value="scheduled">
-          <UdaScheduledList />
+          <UdaScheduledList selectedFacility={selectedFacility} />
         </TabsContent>
 
         <TabsContent value="inProgress">
-          <UdaInProgressList />
+          <UdaInProgressList selectedFacility={selectedFacility} />
         </TabsContent>
 
         <TabsContent value="completed">
-          <UdaCompletedList />
+          <UdaCompletedList selectedFacility={selectedFacility} />
         </TabsContent>
       </Tabs>
 
       {/* Create UDA Dialog */}
       {showCreateDialog && (
-        <CreateUdaDialog onClose={() => setShowCreateDialog(false)} />
+        <CreateUdaDialog 
+          onClose={() => setShowCreateDialog(false)}
+          selectedFacility={selectedFacility}
+        />
       )}
     </div>
   );

@@ -17,15 +17,20 @@ interface CompletedAssessment {
   status: 'completed' | 'submitted' | 'approved';
   findings: string;
   nextDueDate?: string;
+  facilityId?: string;
 }
 
-const UdaCompletedList = () => {
+interface UdaCompletedListProps {
+  selectedFacility: string;
+}
+
+const UdaCompletedList = ({ selectedFacility }: UdaCompletedListProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateRange, setDateRange] = useState('all');
 
-  // Mock data for completed assessments
-  const completedAssessments: CompletedAssessment[] = [
+  // Mock data for completed assessments - filtered by facility
+  const getAllCompletedAssessments = (): CompletedAssessment[] => [
     {
       id: '1',
       residentName: 'Anderson, Patricia',
@@ -35,7 +40,8 @@ const UdaCompletedList = () => {
       submittedDate: '05/25/2025 15:45',
       status: 'approved',
       findings: 'Stable condition, continue current care plan',
-      nextDueDate: '08/25/2025'
+      nextDueDate: '08/25/2025',
+      facilityId: 'facility-1'
     },
     {
       id: '2',
@@ -46,7 +52,8 @@ const UdaCompletedList = () => {
       submittedDate: '05/24/2025 10:30',
       status: 'submitted',
       findings: 'No skin integrity issues identified',
-      nextDueDate: '05/31/2025'
+      nextDueDate: '05/31/2025',
+      facilityId: 'facility-1'
     },
     {
       id: '3',
@@ -80,8 +87,51 @@ const UdaCompletedList = () => {
       status: 'approved',
       findings: 'Requires assistance with bathing and dressing',
       nextDueDate: '08/21/2025'
+    },
+    {
+      id: '6',
+      residentName: 'Rodriguez, Maria',
+      assessmentType: 'MDS 3.0 Quarterly Assessment',
+      completedBy: 'Jennifer Adams, RN',
+      completedDate: '05/25/2025 11:20',
+      submittedDate: '05/25/2025 12:00',
+      status: 'approved',
+      findings: 'Improvement in mobility noted',
+      nextDueDate: '08/25/2025',
+      facilityId: 'facility-2'
+    },
+    {
+      id: '7',
+      residentName: 'Chen, William',
+      assessmentType: 'Fall Risk Assessment',
+      completedBy: 'Robert Kim, PT',
+      completedDate: '05/24/2025 14:45',
+      submittedDate: '05/24/2025 15:15',
+      status: 'submitted',
+      findings: 'Low fall risk, continue current interventions',
+      nextDueDate: '06/24/2025',
+      facilityId: 'facility-3'
     }
   ];
+
+  const getFilteredAssessments = () => {
+    const allAssessments = getAllCompletedAssessments();
+    
+    // Filter by facility first
+    const facilityFiltered = selectedFacility === 'all' 
+      ? allAssessments 
+      : allAssessments.filter(assessment => assessment.facilityId === selectedFacility);
+
+    // Then apply other filters
+    return facilityFiltered.filter(assessment => {
+      return (
+        assessment.residentName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (statusFilter === 'all' || assessment.status === statusFilter)
+      );
+    });
+  };
+
+  const filteredAssessments = getFilteredAssessments();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -92,13 +142,6 @@ const UdaCompletedList = () => {
     }
   };
 
-  const filteredAssessments = completedAssessments.filter(assessment => {
-    return (
-      assessment.residentName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (statusFilter === 'all' || assessment.status === statusFilter)
-    );
-  });
-
   return (
     <Card>
       <CardHeader>
@@ -108,6 +151,7 @@ const UdaCompletedList = () => {
             <CheckCircle2 className="w-5 h-5 text-green-600" />
             <span className="text-sm font-normal text-gray-600">
               {filteredAssessments.length} completed assessments
+              {selectedFacility !== 'all' && ' (Current Facility)'}
             </span>
           </div>
         </CardTitle>
