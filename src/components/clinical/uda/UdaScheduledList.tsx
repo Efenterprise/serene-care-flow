@@ -6,134 +6,125 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, Edit, Calendar, AlertTriangle } from "lucide-react";
+import { Calendar, User, Clock, Search, AlertTriangle } from "lucide-react";
 
-interface UdaAssessment {
+interface ScheduledAssessment {
   id: string;
   residentName: string;
-  status: string;
-  unit: string;
-  floor: string;
-  scheduleDescription: string;
   assessmentType: string;
   dueDate: string;
-  daysUntilDue: number;
+  assignedTo: string;
   priority: 'low' | 'medium' | 'high';
+  status: 'scheduled' | 'overdue' | 'due_today';
+  roomNumber: string;
+  facilityId?: string;
 }
 
-const UdaScheduledList = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [unitFilter, setUnitFilter] = useState('');
-  const [floorFilter, setFloorFilter] = useState('');
-  const [assessmentTypeFilter, setAssessmentTypeFilter] = useState('');
+interface UdaScheduledListProps {
+  selectedFacility: string;
+}
 
-  // Mock data similar to PCC screenshot
-  const scheduledAssessments: UdaAssessment[] = [
+const UdaScheduledList = ({ selectedFacility }: UdaScheduledListProps) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [priorityFilter, setPriorityFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  // Mock data for scheduled assessments - filtered by facility
+  const getAllScheduledAssessments = (): ScheduledAssessment[] => [
     {
       id: '1',
-      residentName: 'Alfonso, Sandra',
-      status: 'Current',
-      unit: 'East Wing',
-      floor: 'First Floor',
-      scheduleDescription: 'Weekly Skin Observation',
-      assessmentType: 'SKIN OBSERVATION TOOL (Licensed Nurse)',
-      dueDate: '05/17/2025 22:31',
-      daysUntilDue: -12,
-      priority: 'high'
+      residentName: 'Anderson, Patricia',
+      assessmentType: 'MDS 3.0 Quarterly Assessment',
+      dueDate: '05/30/2025',
+      assignedTo: 'Sarah Wilson, RN',
+      priority: 'high',
+      status: 'due_today',
+      roomNumber: '105',
+      facilityId: 'facility-1'
     },
     {
       id: '2',
-      residentName: 'Alpalhao, Florence',
-      status: 'Current',
-      unit: 'East Wing',
-      floor: 'First Floor',
-      scheduleDescription: 'Weekly Skin Observation',
-      assessmentType: 'SKIN OBSERVATION TOOL (Licensed Nurse)',
-      dueDate: '05/31/2025 10:55',
-      daysUntilDue: 2,
-      priority: 'medium'
+      residentName: 'Thompson, James',
+      assessmentType: 'Skin Observation Assessment',
+      dueDate: '05/28/2025',
+      assignedTo: 'Mike Chen, LPN',
+      priority: 'medium',
+      status: 'overdue',
+      roomNumber: '203',
+      facilityId: 'facility-1'
     },
     {
       id: '3',
-      residentName: 'Alpalhao, Florence',
-      status: 'Current',
-      unit: 'East Wing',
-      floor: 'First Floor',
-      scheduleDescription: 'ReAdmission',
-      assessmentType: 'Social Services Quarterly Assessment',
-      dueDate: '06/04/2025 08:48',
-      daysUntilDue: 6,
-      priority: 'medium'
+      residentName: 'Wilson, Margaret',
+      assessmentType: 'Nutrition Evaluation',
+      dueDate: '06/02/2025',
+      assignedTo: 'Lisa Rodriguez, RD',
+      priority: 'medium',
+      status: 'scheduled',
+      roomNumber: '308',
+      facilityId: 'facility-2'
     },
     {
       id: '4',
-      residentName: 'Amaral, Robert',
-      status: 'Current',
-      unit: 'East Wing',
-      floor: 'First Floor',
-      scheduleDescription: 'Weekly Skin Observation',
-      assessmentType: 'SKIN OBSERVATION TOOL (Licensed Nurse)',
-      dueDate: '04/29/2025 21:43',
-      daysUntilDue: -30,
-      priority: 'high'
-    },
-    {
-      id: '5',
-      residentName: 'Amaral, Robert',
-      status: 'Current',
-      unit: 'East Wing',
-      floor: 'First Floor',
-      scheduleDescription: 'Nutrition Qtrly/Annual Trigger',
-      assessmentType: 'Nutrition Evaluation - V 2',
-      dueDate: '05/13/2025 12:17',
-      daysUntilDue: -16,
-      priority: 'high'
+      residentName: 'Garcia, Carlos',
+      assessmentType: 'Fall Risk Assessment',
+      dueDate: '06/01/2025',
+      assignedTo: 'Jennifer Park, RN',
+      priority: 'high',
+      status: 'scheduled',
+      roomNumber: '112',
+      facilityId: 'facility-3'
     }
   ];
 
-  const getDueDateColor = (daysUntilDue: number) => {
-    if (daysUntilDue < 0) return 'text-red-600 font-semibold';
-    if (daysUntilDue <= 7) return 'text-orange-600 font-semibold';
-    return 'text-gray-900';
+  const getFilteredAssessments = () => {
+    const allAssessments = getAllScheduledAssessments();
+    
+    // Filter by facility first
+    const facilityFiltered = selectedFacility === 'all' 
+      ? allAssessments 
+      : allAssessments.filter(assessment => assessment.facilityId === selectedFacility);
+
+    // Then apply other filters
+    return facilityFiltered.filter(assessment => {
+      return (
+        assessment.residentName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        (priorityFilter === 'all' || assessment.priority === priorityFilter) &&
+        (statusFilter === 'all' || assessment.status === statusFilter)
+      );
+    });
   };
 
-  const getDueDateBadge = (daysUntilDue: number) => {
-    if (daysUntilDue < 0) {
-      return (
-        <Badge variant="destructive" className="ml-2">
-          {Math.abs(daysUntilDue)} days overdue
-        </Badge>
-      );
+  const filteredAssessments = getFilteredAssessments();
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high': return 'bg-red-100 text-red-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'low': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
-    if (daysUntilDue <= 7) {
-      return (
-        <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-          {daysUntilDue} days
-        </Badge>
-      );
-    }
-    return null;
   };
 
-  const filteredAssessments = scheduledAssessments.filter(assessment => {
-    return (
-      assessment.residentName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (statusFilter === '' || assessment.status === statusFilter) &&
-      (unitFilter === '' || assessment.unit === unitFilter) &&
-      (floorFilter === '' || assessment.floor === floorFilter) &&
-      (assessmentTypeFilter === '' || assessment.assessmentType.includes(assessmentTypeFilter))
-    );
-  });
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'overdue': return 'bg-red-100 text-red-800';
+      case 'due_today': return 'bg-orange-100 text-orange-800';
+      case 'scheduled': return 'bg-blue-100 text-blue-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>Scheduled List</span>
+          <span>Scheduled Assessments</span>
           <div className="flex items-center space-x-2">
+            <Calendar className="w-5 h-5 text-blue-600" />
             <span className="text-sm font-normal text-gray-600">
-              {filteredAssessments.length} results
+              {filteredAssessments.length} scheduled assessments
+              {selectedFacility !== 'all' && ' (Current Facility)'}
             </span>
           </div>
         </CardTitle>
@@ -144,116 +135,97 @@ const UdaScheduledList = () => {
           <div className="flex items-center space-x-2">
             <Search className="w-4 h-4 text-gray-500" />
             <Input
-              placeholder="Search by name..."
+              placeholder="Search by resident name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-48"
+              className="w-64"
             />
           </div>
           
+          <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+            <SelectTrigger className="w-36">
+              <SelectValue placeholder="Priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Priority</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="medium">Medium</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
+            </SelectContent>
+          </Select>
+
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-36">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Status</SelectItem>
-              <SelectItem value="Current">Current</SelectItem>
-              <SelectItem value="Discharged">Discharged</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={unitFilter} onValueChange={setUnitFilter}>
-            <SelectTrigger className="w-36">
-              <SelectValue placeholder="Unit" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All Units</SelectItem>
-              <SelectItem value="East Wing">East Wing</SelectItem>
-              <SelectItem value="West Wing">West Wing</SelectItem>
-              <SelectItem value="North Wing">North Wing</SelectItem>
-              <SelectItem value="South Wing">South Wing</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={floorFilter} onValueChange={setFloorFilter}>
-            <SelectTrigger className="w-36">
-              <SelectValue placeholder="Floor" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All Floors</SelectItem>
-              <SelectItem value="First Floor">First Floor</SelectItem>
-              <SelectItem value="Second Floor">Second Floor</SelectItem>
-              <SelectItem value="Third Floor">Third Floor</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={assessmentTypeFilter} onValueChange={setAssessmentTypeFilter}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Assessment Type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">All Types</SelectItem>
-              <SelectItem value="SKIN OBSERVATION">Skin Observation</SelectItem>
-              <SelectItem value="Nutrition">Nutrition</SelectItem>
-              <SelectItem value="Social Services">Social Services</SelectItem>
-              <SelectItem value="BRADEN">Braden Scale</SelectItem>
-              <SelectItem value="FALL SCALE">Fall Scale</SelectItem>
+              <SelectItem value="all">All Status</SelectItem>
+              <SelectItem value="scheduled">Scheduled</SelectItem>
+              <SelectItem value="due_today">Due Today</SelectItem>
+              <SelectItem value="overdue">Overdue</SelectItem>
             </SelectContent>
           </Select>
 
           <Button variant="outline" size="sm">
-            <Filter className="w-4 h-4 mr-2" />
-            Clear
+            Clear Filters
           </Button>
         </div>
 
-        {/* Assessment Table */}
+        {/* Scheduled Assessments Table */}
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-8"></TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Unit</TableHead>
-                <TableHead>Floor</TableHead>
-                <TableHead>Schedule Description</TableHead>
+                <TableHead>Resident Name</TableHead>
+                <TableHead>Room</TableHead>
                 <TableHead>Assessment Type</TableHead>
                 <TableHead>Due Date</TableHead>
-                <TableHead className="w-16">Edit</TableHead>
+                <TableHead>Assigned To</TableHead>
+                <TableHead>Priority</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredAssessments.map((assessment) => (
                 <TableRow key={assessment.id} className="hover:bg-gray-50">
-                  <TableCell>
-                    <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-800">
-                      clear
-                    </Button>
-                  </TableCell>
                   <TableCell className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer">
                     {assessment.residentName}
                   </TableCell>
-                  <TableCell>{assessment.status}</TableCell>
-                  <TableCell>{assessment.unit}</TableCell>
-                  <TableCell>{assessment.floor}</TableCell>
-                  <TableCell>{assessment.scheduleDescription}</TableCell>
-                  <TableCell className="max-w-xs">
-                    <div className="truncate" title={assessment.assessmentType}>
-                      {assessment.assessmentType}
+                  <TableCell>{assessment.roomNumber}</TableCell>
+                  <TableCell>{assessment.assessmentType}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center">
+                      <Calendar className="w-4 h-4 mr-2 text-gray-500" />
+                      {assessment.dueDate}
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className={`flex items-center ${getDueDateColor(assessment.daysUntilDue)}`}>
-                      {assessment.daysUntilDue < 0 && <AlertTriangle className="w-4 h-4 mr-1 text-red-600" />}
-                      <span>{assessment.dueDate}</span>
-                      {getDueDateBadge(assessment.daysUntilDue)}
+                    <div className="flex items-center">
+                      <User className="w-4 h-4 mr-2 text-gray-500" />
+                      {assessment.assignedTo}
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm">
-                      <Edit className="w-4 h-4" />
-                    </Button>
+                    <Badge className={getPriorityColor(assessment.priority)}>
+                      {assessment.priority}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={getStatusColor(assessment.status)}>
+                      {assessment.status === 'due_today' ? 'Due Today' : 
+                       assessment.status === 'overdue' ? 'Overdue' : 'Scheduled'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <Button size="sm" variant="outline">
+                        Start
+                      </Button>
+                      <Button size="sm" variant="ghost">
+                        Reschedule
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
@@ -261,39 +233,28 @@ const UdaScheduledList = () => {
           </Table>
         </div>
 
-        {/* Pagination */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t">
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <span>{filteredAssessments.length} results</span>
-            <span>Page</span>
-            <Select defaultValue="1">
-              <SelectTrigger className="w-16 h-8">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">1</SelectItem>
-              </SelectContent>
-            </Select>
-            <span>of 1</span>
-            <Select defaultValue="20">
-              <SelectTrigger className="w-16 h-8">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="20">20</SelectItem>
-                <SelectItem value="50">50</SelectItem>
-              </SelectContent>
-            </Select>
-            <span>Per page</span>
+        {filteredAssessments.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+            <p>No scheduled assessments found</p>
           </div>
-          
-          <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm" disabled>First</Button>
-            <Button variant="outline" size="sm" disabled>Prev</Button>
-            <Button variant="outline" size="sm" className="bg-blue-600 text-white">1</Button>
-            <Button variant="outline" size="sm" disabled>Next</Button>
-            <Button variant="outline" size="sm" disabled>Last</Button>
+        )}
+
+        {/* Summary Stats */}
+        <div className="flex items-center justify-between mt-4 pt-4 border-t">
+          <div className="flex items-center space-x-6 text-sm text-gray-600">
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+              <span>Overdue: {filteredAssessments.filter(a => a.status === 'overdue').length}</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+              <span>Due Today: {filteredAssessments.filter(a => a.status === 'due_today').length}</span>
+            </div>
+            <div className="flex items-center space-x-1">
+              <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+              <span>Scheduled: {filteredAssessments.filter(a => a.status === 'scheduled').length}</span>
+            </div>
           </div>
         </div>
       </CardContent>

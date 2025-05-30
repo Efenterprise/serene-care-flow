@@ -18,10 +18,22 @@ import { useCarePlanStats } from '@/hooks/useCarePlans';
 import { useResidentStats } from '@/hooks/useResidents';
 import ClinicalCarePlansManagement from './ClinicalCarePlansManagement';
 import UdaManagement from './uda/UdaManagement';
+import IncidentManagement from '../incidents/IncidentManagement';
+import { useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 const ClinicalContent = () => {
   const { data: carePlanStats } = useCarePlanStats();
   const { data: residentStats } = useResidentStats();
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    // Check if we're navigating to a specific tab from alerts
+    if (location.state?.tab) {
+      setActiveTab(location.state.tab);
+    }
+  }, [location.state]);
 
   return (
     <div className="space-y-6">
@@ -30,9 +42,10 @@ const ClinicalContent = () => {
         <p className="text-gray-600">Comprehensive clinical oversight and care coordination</p>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="incidents">Incidents</TabsTrigger>
           <TabsTrigger value="assessments">Assessments</TabsTrigger>
           <TabsTrigger value="uda">UDA</TabsTrigger>
           <TabsTrigger value="careplans">Care Plans</TabsTrigger>
@@ -150,6 +163,10 @@ const ClinicalContent = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="incidents">
+          <IncidentManagement />
         </TabsContent>
 
         <TabsContent value="assessments">

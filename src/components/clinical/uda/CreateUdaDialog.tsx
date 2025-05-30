@@ -1,108 +1,144 @@
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { X, Calendar, User } from 'lucide-react';
-import { useResidents } from '@/hooks/useResidents';
-import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon, Users, Clock, User } from "lucide-react";
+import { format } from "date-fns";
 
 interface CreateUdaDialogProps {
   onClose: () => void;
+  selectedFacility: string;
 }
 
-const CreateUdaDialog = ({ onClose }: CreateUdaDialogProps) => {
-  const { data: residents } = useResidents();
-  
+const CreateUdaDialog = ({ onClose, selectedFacility }: CreateUdaDialogProps) => {
+  const [selectedDate, setSelectedDate] = useState<Date>();
   const [formData, setFormData] = useState({
-    resident_id: '',
-    assessment_type: '',
-    schedule_type: '',
-    priority: 'medium',
-    due_date: '',
-    assigned_to: '',
-    notes: '',
-    recurring: false,
-    frequency: ''
+    residentName: '',
+    assessmentType: '',
+    assignedTo: '',
+    priority: '',
+    notes: ''
   });
+
+  // Mock residents based on selected facility
+  const getResidents = () => {
+    if (selectedFacility === 'all') {
+      return [
+        'Anderson, Patricia (Room 105)',
+        'Thompson, James (Room 203)', 
+        'Wilson, Margaret (Room 308)',
+        'Garcia, Carlos (Room 112)',
+        'Johnson, Mary (Room 205)',
+        'Smith, Robert (Room 110)',
+        'Davis, Helen (Room 308)'
+      ];
+    } else {
+      // Return residents for specific facility
+      return [
+        'Anderson, Patricia (Room 105)',
+        'Thompson, James (Room 203)',
+        'Johnson, Mary (Room 205)',
+        'Smith, Robert (Room 110)'
+      ];
+    }
+  };
 
   const assessmentTypes = [
     'MDS 3.0 Quarterly Assessment',
     'MDS 3.0 Annual Assessment',
-    'MDS 3.0 Significant Change',
-    'MDS 3.0 Discharge Assessment',
-    'Skin Observation Tool',
+    'Care Area Assessment - Falls',
+    'Care Area Assessment - ADL',
+    'Skin Observation Assessment',
     'Nutrition Evaluation',
     'Fall Risk Assessment',
-    'Care Area Assessment - ADL',
-    'Care Area Assessment - Behavioral',
-    'Care Area Assessment - Cognitive',
-    'Braden Scale Assessment',
-    'Pain Assessment',
-    'Social Services Assessment'
+    'Cognitive Assessment',
+    'Pain Assessment'
   ];
 
-  const scheduleTypes = [
-    'Admission',
-    'Quarterly',
-    'Annual',
-    'Significant Change',
-    'Discharge',
-    'Weekly',
-    'Monthly',
-    'As Needed'
-  ];
-
-  const staffMembers = [
+  const assignedStaff = [
     'Sarah Wilson, RN',
     'Mike Chen, LPN',
     'Lisa Rodriguez, RD',
     'Jennifer Park, RN',
-    'David Martinez, MSW',
-    'Amy Thompson, OTR'
+    'David Thompson, RN',
+    'Maria Santos, LPN'
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.resident_id || !formData.assessment_type || !formData.due_date) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-
-    // Here you would typically send the data to your API
-    console.log('Creating UDA schedule:', formData);
-    toast.success('Assessment scheduled successfully');
+    console.log('Creating UDA assessment:', {
+      ...formData,
+      scheduledDate: selectedDate,
+      facility: selectedFacility
+    });
     onClose();
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-        <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold">Schedule New Assessment</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center space-x-2">
+            <Users className="w-5 h-5 text-blue-600" />
+            <span>Schedule New UDA Assessment</span>
+          </DialogTitle>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6 overflow-y-auto max-h-[calc(90vh-140px)]">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="resident">Resident *</Label>
-              <Select
-                value={formData.resident_id}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, resident_id: value }))}
-              >
+              <Label htmlFor="resident">Resident</Label>
+              <Select value={formData.residentName} onValueChange={(value) => setFormData({...formData, residentName: value})}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select resident" />
                 </SelectTrigger>
                 <SelectContent>
-                  {residents?.map((resident) => (
-                    <SelectItem key={resident.id} value={resident.id}>
-                      {resident.first_name} {resident.last_name} - Room {resident.room_number}
+                  {getResidents().map((resident) => (
+                    <SelectItem key={resident} value={resident}>
+                      {resident}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="assessmentType">Assessment Type</Label>
+              <Select value={formData.assessmentType} onValueChange={(value) => setFormData({...formData, assessmentType: value})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select assessment type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {assessmentTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="assignedTo">Assigned To</Label>
+              <Select value={formData.assignedTo} onValueChange={(value) => setFormData({...formData, assignedTo: value})}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select staff member" />
+                </SelectTrigger>
+                <SelectContent>
+                  {assignedStaff.map((staff) => (
+                    <SelectItem key={staff} value={staff}>
+                      <div className="flex items-center space-x-2">
+                        <User className="w-4 h-4" />
+                        <span>{staff}</span>
+                      </div>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -111,154 +147,75 @@ const CreateUdaDialog = ({ onClose }: CreateUdaDialogProps) => {
 
             <div className="space-y-2">
               <Label htmlFor="priority">Priority</Label>
-              <Select
-                value={formData.priority}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
-              >
+              <Select value={formData.priority} onValueChange={(value) => setFormData({...formData, priority: value})}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Select priority" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="low">Low</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="high">High Priority</SelectItem>
+                  <SelectItem value="medium">Medium Priority</SelectItem>
+                  <SelectItem value="low">Low Priority</SelectItem>
                 </SelectContent>
               </Select>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="assessment_type">Assessment Type *</Label>
-            <Select
-              value={formData.assessment_type}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, assessment_type: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select assessment type" />
-              </SelectTrigger>
-              <SelectContent>
-                {assessmentTypes.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="schedule_type">Schedule Type</Label>
-              <Select
-                value={formData.schedule_type}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, schedule_type: value }))}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select schedule type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {scheduleTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="due_date">Due Date *</Label>
-              <div className="relative">
-                <Input
-                  id="due_date"
-                  type="date"
-                  value={formData.due_date}
-                  onChange={(e) => setFormData(prev => ({ ...prev, due_date: e.target.value }))}
-                  required
+            <Label>Scheduled Date</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start text-left font-normal"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {selectedDate ? format(selectedDate, "PPP") : "Select date"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  initialFocus
                 />
-                <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="assigned_to">Assigned To</Label>
-            <Select
-              value={formData.assigned_to}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, assigned_to: value }))}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select staff member" />
-              </SelectTrigger>
-              <SelectContent>
-                {staffMembers.map((staff) => (
-                  <SelectItem key={staff} value={staff}>
-                    <div className="flex items-center">
-                      <User className="w-4 h-4 mr-2" />
-                      {staff}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="notes">Notes</Label>
             <Textarea
               id="notes"
+              placeholder="Add any special instructions or notes..."
               value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-              placeholder="Additional notes or special instructions"
+              onChange={(e) => setFormData({...formData, notes: e.target.value})}
               rows={3}
             />
           </div>
 
-          {/* Recurring Options */}
-          <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="recurring"
-                checked={formData.recurring}
-                onChange={(e) => setFormData(prev => ({ ...prev, recurring: e.target.checked }))}
-                className="rounded border-gray-300"
-              />
-              <Label htmlFor="recurring">Recurring Assessment</Label>
+          {selectedFacility !== 'all' && (
+            <div className="p-3 bg-blue-50 rounded-lg">
+              <p className="text-sm text-blue-700">
+                <strong>Facility:</strong> {selectedFacility === 'facility-1' ? 'Sunnydale Care Center' : 
+                                           selectedFacility === 'facility-2' ? 'Riverside Manor' : 
+                                           'Selected Facility'}
+              </p>
             </div>
+          )}
 
-            {formData.recurring && (
-              <div className="space-y-2">
-                <Label htmlFor="frequency">Frequency</Label>
-                <Select
-                  value={formData.frequency}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, frequency: value }))}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select frequency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="weekly">Weekly</SelectItem>
-                    <SelectItem value="monthly">Monthly</SelectItem>
-                    <SelectItem value="quarterly">Quarterly</SelectItem>
-                    <SelectItem value="annually">Annually</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
-
-          <div className="flex justify-end space-x-2 pt-4 border-t">
+          <div className="flex justify-end space-x-3">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
             <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+              <Clock className="w-4 h-4 mr-2" />
               Schedule Assessment
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

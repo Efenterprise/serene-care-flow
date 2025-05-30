@@ -14,11 +14,16 @@ interface InProgressAssessment {
   percentComplete: number;
   estimatedCompletion: string;
   priority: 'low' | 'medium' | 'high';
+  facilityId?: string;
 }
 
-const UdaInProgressList = () => {
-  // Mock data for in-progress assessments
-  const inProgressAssessments: InProgressAssessment[] = [
+interface UdaInProgressListProps {
+  selectedFacility: string;
+}
+
+const UdaInProgressList = ({ selectedFacility }: UdaInProgressListProps) => {
+  // Mock data for in-progress assessments - filtered by facility
+  const getAllInProgressAssessments = (): InProgressAssessment[] => [
     {
       id: '1',
       residentName: 'Johnson, Mary',
@@ -27,7 +32,8 @@ const UdaInProgressList = () => {
       startedDate: '05/28/2025 09:15',
       percentComplete: 65,
       estimatedCompletion: '05/29/2025',
-      priority: 'high'
+      priority: 'high',
+      facilityId: 'facility-1'
     },
     {
       id: '2',
@@ -37,7 +43,8 @@ const UdaInProgressList = () => {
       startedDate: '05/28/2025 14:30',
       percentComplete: 30,
       estimatedCompletion: '05/30/2025',
-      priority: 'medium'
+      priority: 'medium',
+      facilityId: 'facility-1'
     },
     {
       id: '3',
@@ -47,7 +54,8 @@ const UdaInProgressList = () => {
       startedDate: '05/27/2025 11:20',
       percentComplete: 85,
       estimatedCompletion: '05/29/2025',
-      priority: 'medium'
+      priority: 'medium',
+      facilityId: 'facility-2'
     },
     {
       id: '4',
@@ -57,9 +65,20 @@ const UdaInProgressList = () => {
       startedDate: '05/28/2025 16:45',
       percentComplete: 50,
       estimatedCompletion: '05/29/2025',
-      priority: 'low'
+      priority: 'low',
+      facilityId: 'facility-3'
     }
   ];
+
+  const getFilteredAssessments = () => {
+    const allAssessments = getAllInProgressAssessments();
+    
+    return selectedFacility === 'all' 
+      ? allAssessments 
+      : allAssessments.filter(assessment => assessment.facilityId === selectedFacility);
+  };
+
+  const filteredAssessments = getFilteredAssessments();
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -84,7 +103,8 @@ const UdaInProgressList = () => {
           <div className="flex items-center space-x-2">
             <Clock className="w-5 h-5 text-orange-600" />
             <span className="text-sm font-normal text-gray-600">
-              {inProgressAssessments.length} active assessments
+              {filteredAssessments.length} active assessments
+              {selectedFacility !== 'all' && ' (Current Facility)'}
             </span>
           </div>
         </CardTitle>
@@ -105,7 +125,7 @@ const UdaInProgressList = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {inProgressAssessments.map((assessment) => (
+              {filteredAssessments.map((assessment) => (
                 <TableRow key={assessment.id} className="hover:bg-gray-50">
                   <TableCell className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer">
                     {assessment.residentName}
@@ -156,7 +176,7 @@ const UdaInProgressList = () => {
           </Table>
         </div>
 
-        {inProgressAssessments.length === 0 && (
+        {filteredAssessments.length === 0 && (
           <div className="text-center py-8 text-gray-500">
             <Clock className="w-12 h-12 mx-auto mb-4 text-gray-300" />
             <p>No assessments currently in progress</p>

@@ -16,9 +16,27 @@ const DashboardContent = () => {
   const { stats } = useFacilityStore();
 
   const alerts = [
-    { id: 1, type: "urgent", message: "Room 105 - Fall incident requires documentation", time: "10 min ago" },
-    { id: 2, type: "warning", message: "MDS due for 3 residents this week", time: "1 hour ago" },
-    { id: 3, type: "info", message: "Medication reconciliation complete - Unit A", time: "2 hours ago" }
+    { 
+      id: 1, 
+      type: "urgent", 
+      message: "Room 105 - Fall incident requires documentation", 
+      time: "10 min ago",
+      drilldownType: "incident" as const,
+      drilldownId: "INC-001"
+    },
+    { 
+      id: 2, 
+      type: "warning", 
+      message: "MDS due for 3 residents this week", 
+      time: "1 hour ago",
+      drilldownType: "assessment" as const
+    },
+    { 
+      id: 3, 
+      type: "info", 
+      message: "Medication reconciliation complete - Unit A", 
+      time: "2 hours ago" 
+    }
   ];
 
   const recentActivities = [
