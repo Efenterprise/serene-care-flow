@@ -10,12 +10,18 @@ import {
   TrendingUp,
   Clock,
   ArrowRight,
-  Activity
+  Activity,
+  Plus
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const ClinicalOverview = () => {
   const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
+
+  const handleNavigateToTab = (tab: string) => {
+    setSearchParams({ tab });
+  };
 
   const clinicalAreas = [
     {
@@ -24,7 +30,7 @@ const ClinicalOverview = () => {
       icon: Target,
       stats: { active: 42, total: 65, urgent: 3 },
       color: "blue",
-      action: () => navigate('/clinical?tab=care-plans')
+      action: () => handleNavigateToTab('care-plans')
     },
     {
       title: "Incident Management",
@@ -32,7 +38,7 @@ const ClinicalOverview = () => {
       icon: AlertTriangle,
       stats: { active: 5, total: 23, urgent: 2 },
       color: "red",
-      action: () => navigate('/clinical?tab=incidents')
+      action: () => handleNavigateToTab('incidents')
     },
     {
       title: "Grievances",
@@ -40,7 +46,7 @@ const ClinicalOverview = () => {
       icon: FileText,
       stats: { active: 3, total: 12, urgent: 1 },
       color: "orange",
-      action: () => navigate('/clinical?tab=grievances')
+      action: () => handleNavigateToTab('grievances')
     },
     {
       title: "UDA Management",
@@ -48,7 +54,7 @@ const ClinicalOverview = () => {
       icon: Users,
       stats: { active: 8, total: 28, urgent: 0 },
       color: "green",
-      action: () => navigate('/clinical?tab=uda')
+      action: () => handleNavigateToTab('uda')
     }
   ];
 
@@ -74,7 +80,7 @@ const ClinicalOverview = () => {
 
       {/* Quick Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleNavigateToTab('care-plans')}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -86,7 +92,7 @@ const ClinicalOverview = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleNavigateToTab('incidents')}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -98,7 +104,7 @@ const ClinicalOverview = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleNavigateToTab('uda')}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -110,7 +116,7 @@ const ClinicalOverview = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/admin')}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -176,25 +182,41 @@ const ClinicalOverview = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button variant="outline" className="justify-start h-auto p-4">
+            <Button 
+              variant="outline" 
+              className="justify-start h-auto p-4"
+              onClick={() => handleNavigateToTab('incidents')}
+            >
               <div className="text-left">
                 <div className="font-medium">Report Incident</div>
                 <div className="text-sm text-gray-500">Log a new safety incident</div>
               </div>
             </Button>
-            <Button variant="outline" className="justify-start h-auto p-4">
+            <Button 
+              variant="outline" 
+              className="justify-start h-auto p-4"
+              onClick={() => handleNavigateToTab('care-plans')}
+            >
               <div className="text-left">
                 <div className="font-medium">Create Care Plan</div>
                 <div className="text-sm text-gray-500">Start a new care plan</div>
               </div>
             </Button>
-            <Button variant="outline" className="justify-start h-auto p-4">
+            <Button 
+              variant="outline" 
+              className="justify-start h-auto p-4"
+              onClick={() => handleNavigateToTab('grievances')}
+            >
               <div className="text-left">
                 <div className="font-medium">File Grievance</div>
                 <div className="text-sm text-gray-500">Report a grievance</div>
               </div>
             </Button>
-            <Button variant="outline" className="justify-start h-auto p-4">
+            <Button 
+              variant="outline" 
+              className="justify-start h-auto p-4"
+              onClick={() => handleNavigateToTab('uda')}
+            >
               <div className="text-left">
                 <div className="font-medium">Schedule UDA</div>
                 <div className="text-sm text-gray-500">Plan UDA assessment</div>
