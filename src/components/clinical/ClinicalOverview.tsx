@@ -11,7 +11,8 @@ import {
   Clock,
   ArrowRight,
   Activity,
-  Plus
+  Plus,
+  ClipboardList
 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -23,6 +24,15 @@ const ClinicalOverview = () => {
     setSearchParams({ tab });
   };
 
+  const handleNavigateToMds = () => {
+    // Navigate directly to MDS management
+    window.location.href = '/dashboard'; // This will trigger the layout to show MDS
+    setTimeout(() => {
+      const event = new CustomEvent('navigate', { detail: 'emr/mds' });
+      window.dispatchEvent(event);
+    }, 100);
+  };
+
   const clinicalAreas = [
     {
       title: "Care Plans",
@@ -31,6 +41,14 @@ const ClinicalOverview = () => {
       stats: { active: 42, total: 65, urgent: 3 },
       color: "blue",
       action: () => handleNavigateToTab('care-plans')
+    },
+    {
+      title: "MDS Assessments",
+      description: "Complete MDS 3.0 assessments and CAA triggers",
+      icon: ClipboardList,
+      stats: { active: 8, total: 28, urgent: 2 },
+      color: "purple",
+      action: handleNavigateToMds
     },
     {
       title: "Incident Management",
@@ -61,6 +79,7 @@ const ClinicalOverview = () => {
   const getColorClasses = (color: string) => {
     switch (color) {
       case 'blue': return { bg: 'bg-blue-100', text: 'text-blue-800', icon: 'text-blue-600' };
+      case 'purple': return { bg: 'bg-purple-100', text: 'text-purple-800', icon: 'text-purple-600' };
       case 'red': return { bg: 'bg-red-100', text: 'text-red-800', icon: 'text-red-600' };
       case 'orange': return { bg: 'bg-orange-100', text: 'text-orange-800', icon: 'text-orange-600' };
       case 'green': return { bg: 'bg-green-100', text: 'text-green-800', icon: 'text-green-600' };
@@ -85,9 +104,21 @@ const ClinicalOverview = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Total Active Items</p>
-                <p className="text-2xl font-bold text-blue-600">58</p>
+                <p className="text-2xl font-bold text-blue-600">66</p>
               </div>
               <Activity className="w-8 h-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={handleNavigateToMds}>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">MDS Due Soon</p>
+                <p className="text-2xl font-bold text-purple-600">8</p>
+              </div>
+              <ClipboardList className="w-8 h-8 text-purple-600" />
             </div>
           </CardContent>
         </Card>
@@ -104,26 +135,14 @@ const ClinicalOverview = () => {
           </CardContent>
         </Card>
 
-        <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => handleNavigateToTab('uda')}>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Completed Today</p>
-                <p className="text-2xl font-bold text-green-600">12</p>
-              </div>
-              <TrendingUp className="w-8 h-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-
         <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => navigate('/admin')}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">Compliance Rate</p>
-                <p className="text-2xl font-bold text-purple-600">94%</p>
+                <p className="text-2xl font-bold text-green-600">94%</p>
               </div>
-              <Target className="w-8 h-8 text-purple-600" />
+              <Target className="w-8 h-8 text-green-600" />
             </div>
           </CardContent>
         </Card>
@@ -185,6 +204,16 @@ const ClinicalOverview = () => {
             <Button 
               variant="outline" 
               className="justify-start h-auto p-4"
+              onClick={handleNavigateToMds}
+            >
+              <div className="text-left">
+                <div className="font-medium">Start MDS Assessment</div>
+                <div className="text-sm text-gray-500">Begin new MDS 3.0 assessment</div>
+              </div>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="justify-start h-auto p-4"
               onClick={() => handleNavigateToTab('incidents')}
             >
               <div className="text-left">
@@ -210,16 +239,6 @@ const ClinicalOverview = () => {
               <div className="text-left">
                 <div className="font-medium">File Grievance</div>
                 <div className="text-sm text-gray-500">Report a grievance</div>
-              </div>
-            </Button>
-            <Button 
-              variant="outline" 
-              className="justify-start h-auto p-4"
-              onClick={() => handleNavigateToTab('uda')}
-            >
-              <div className="text-left">
-                <div className="font-medium">Schedule UDA</div>
-                <div className="text-sm text-gray-500">Plan UDA assessment</div>
               </div>
             </Button>
           </div>

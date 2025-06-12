@@ -15,7 +15,8 @@ import {
   ArrowRight,
   Activity,
   Clock,
-  Shield
+  Shield,
+  ClipboardList
 } from "lucide-react";
 import WelcomeSection from "./WelcomeSection";
 import { useFacilityStore } from "@/stores/facilityStore";
@@ -41,7 +42,7 @@ const DashboardContent = ({ onNavigate }: DashboardContentProps) => {
       type: "warning", 
       message: "MDS due for 3 residents this week", 
       time: "1 hour ago",
-      action: () => onNavigate('clinical')
+      action: () => onNavigate('emr/mds')
     }
   ];
 
@@ -56,11 +57,11 @@ const DashboardContent = ({ onNavigate }: DashboardContentProps) => {
     },
     { 
       id: 2, 
-      action: "Care plan updated", 
+      action: "MDS Assessment completed", 
       resident: "Robert Smith", 
-      user: "LPN Mike", 
+      user: "RN Lisa", 
       time: "15 min ago",
-      onClick: () => onNavigate('clinical')
+      onClick: () => onNavigate('emr/mds')
     }
   ];
 
@@ -229,17 +230,17 @@ const DashboardContent = ({ onNavigate }: DashboardContentProps) => {
 
         <Card 
           className="border-0 shadow-md bg-gradient-to-br from-purple-50 to-purple-100 hover:shadow-lg transition-all cursor-pointer group"
-          onClick={() => onNavigate('emr')}
+          onClick={() => onNavigate('emr/mds')}
         >
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="p-3 bg-purple-200 rounded-lg">
-                  <FileText className="w-6 h-6 text-purple-700" />
+                  <ClipboardList className="w-6 h-6 text-purple-700" />
                 </div>
                 <div>
-                  <CardTitle className="text-lg">Documentation</CardTitle>
-                  <CardDescription>EMR, MDS, assessments</CardDescription>
+                  <CardTitle className="text-lg">MDS Assessments</CardTitle>
+                  <CardDescription>MDS 3.0, CAA triggers, HIPPS</CardDescription>
                 </div>
               </div>
               <ArrowRight className="w-5 h-5 text-purple-600 group-hover:translate-x-1 transition-transform" />
@@ -253,7 +254,7 @@ const DashboardContent = ({ onNavigate }: DashboardContentProps) => {
               </div>
               <div className="text-center">
                 <div className="text-xl font-bold text-purple-700">156</div>
-                <div className="text-purple-600">Records Updated</div>
+                <div className="text-purple-600">Completed</div>
               </div>
             </div>
           </CardContent>

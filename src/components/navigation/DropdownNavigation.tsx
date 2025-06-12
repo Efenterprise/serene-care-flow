@@ -41,7 +41,7 @@ const DropdownNavigation = ({ onNavigate, currentPath }: DropdownNavigationProps
         
         // Care Management group
         { label: "Clinical Dashboard", path: "clinical/dashboard", group: "Care Management" },
-        { label: "MDS Assessments", path: "clinical/mds", group: "Care Management" },
+        { label: "MDS Assessments", path: "emr/mds", group: "Care Management" },
         { label: "Care Plans", path: "clinical/care-plans", group: "Care Management" },
         { label: "Quality Metrics", path: "clinical/quality", group: "Care Management" },
         
@@ -95,7 +95,7 @@ const DropdownNavigation = ({ onNavigate, currentPath }: DropdownNavigationProps
         { label: "Admission Forms", path: "documentation/admission-forms", group: "Admissions" },
         
         // Clinical group
-        { label: "MDS Documentation", path: "documentation/mds", group: "Clinical" },
+        { label: "MDS Documentation", path: "emr/mds", group: "Clinical" },
         { label: "Care Plans", path: "documentation/care-plans", group: "Clinical" },
         { label: "Progress Notes", path: "documentation/progress-notes", group: "Clinical" },
         

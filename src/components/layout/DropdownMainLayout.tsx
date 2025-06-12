@@ -79,8 +79,8 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
       return <TherapyContent currentPath={currentPath} />;
     }
 
-    // Handle specific MDS navigation
-    if (currentPath === "clinical/mds" || currentPath === "documentation/mds") {
+    // Handle specific MDS navigation - this is the key fix
+    if (currentPath === "emr/mds" || currentPath === "clinical/mds" || currentPath === "documentation/mds") {
       return <MdsManagement />;
     }
 
@@ -150,11 +150,19 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
       'admin': 'Admin',
       'documents': 'Document Manager',
       'crm': 'CRM',
-      'reports': 'Reports'
+      'reports': 'Reports',
+      'emr/mds': 'MDS Assessments',
+      'clinical/mds': 'MDS Assessments',
+      'documentation/mds': 'MDS Documentation'
     };
 
     const segments = path.split('/');
     const mainSection = segments[0];
+    
+    // Handle specific MDS paths
+    if (path === 'emr/mds' || path === 'clinical/mds' || path === 'documentation/mds') {
+      return pathMap[path];
+    }
     
     if (pathMap[mainSection]) {
       if (segments.length === 1) {
