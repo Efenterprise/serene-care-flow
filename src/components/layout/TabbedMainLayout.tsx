@@ -42,10 +42,35 @@ const TabbedMainLayout = () => {
     }
   }, []);
 
-  // Add navigation handler for dashboard drilldown
+  // Add navigation handler for dashboard drilldown that maps paths to available tabs
   const handleNavigate = (path: string) => {
-    setActiveTab(path);
-    console.log('TabbedMainLayout: Navigating to:', path);
+    console.log('TabbedMainLayout: Navigating to path:', path);
+    
+    // Map complex dashboard paths to available tabs
+    let targetTab = "dashboard"; // default fallback
+    
+    if (path.startsWith("residents") || path.startsWith("people")) {
+      targetTab = "residents";
+    } else if (path.startsWith("clinical") || path === "clinical") {
+      targetTab = "clinical";
+    } else if (path.startsWith("communication")) {
+      targetTab = "communication";
+    } else if (path.startsWith("maintenance")) {
+      targetTab = "maintenance";
+    } else if (path.startsWith("emr") || path === "emr") {
+      targetTab = "emr";
+    } else if (path.startsWith("insights") || path.startsWith("admin")) {
+      if (profile?.role === 'admin') {
+        targetTab = "admin";
+      } else {
+        targetTab = "insights";
+      }
+    } else if (path === "dashboard") {
+      targetTab = "dashboard";
+    }
+    
+    console.log('TabbedMainLayout: Mapped to tab:', targetTab);
+    setActiveTab(targetTab);
   };
 
   const mainTabs = [
