@@ -30,8 +30,30 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
   }, []); // Empty dependency array to call only once on mount
 
   const handleNavigate = (path: string) => {
-    setCurrentPath(path);
-    console.log('Navigating to:', path); // Debug log
+    console.log('DropdownMainLayout: Navigating to path:', path);
+    
+    // Map complex dashboard paths to available routes, similar to TabbedMainLayout
+    let targetPath = path;
+    
+    // Handle simple path mapping for dashboard drilldowns
+    if (path === "residents" || path.startsWith("residents/") || path.startsWith("people/")) {
+      targetPath = "residents";
+    } else if (path === "clinical" || path.startsWith("clinical/")) {
+      targetPath = "clinical";
+    } else if (path === "communication" || path.startsWith("communication/")) {
+      targetPath = "communication";
+    } else if (path === "emr" || path.startsWith("emr/")) {
+      targetPath = "emr";
+    } else if (path === "admin" || path.startsWith("admin/")) {
+      targetPath = "admin";
+    } else if (path === "maintenance" || path.startsWith("maintenance/")) {
+      targetPath = "maintenance";
+    } else if (path === "insights" || path.startsWith("insights/")) {
+      targetPath = "insights/ai-proact";
+    }
+    
+    console.log('DropdownMainLayout: Mapped to path:', targetPath);
+    setCurrentPath(targetPath);
   };
 
   const renderContent = () => {
@@ -68,22 +90,22 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
     }
 
     // Handle other clinical paths
-    if (currentPath.startsWith("clinical/")) {
+    if (currentPath.startsWith("clinical/") || currentPath === "clinical") {
       return <ClinicalContent />;
     }
 
     // Handle people/residents paths
-    if (currentPath.startsWith("residents/") || currentPath.startsWith("people/")) {
+    if (currentPath.startsWith("residents/") || currentPath.startsWith("people/") || currentPath === "residents") {
       return <ResidentsContent />;
     }
 
     // Handle communication paths (now under CRM)
-    if (currentPath.startsWith("communication/")) {
+    if (currentPath.startsWith("communication/") || currentPath === "communication") {
       return <CommunicationContent />;
     }
 
     // Handle admin paths
-    if (currentPath.startsWith("admin/")) {
+    if (currentPath.startsWith("admin/") || currentPath === "admin") {
       return <AdminContent />;
     }
 
@@ -103,7 +125,7 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
     }
 
     // Handle maintenance paths (now under Admin)
-    if (currentPath.startsWith("maintenance/")) {
+    if (currentPath.startsWith("maintenance/") || currentPath === "maintenance") {
       return <MaintenanceContent />;
     }
 
