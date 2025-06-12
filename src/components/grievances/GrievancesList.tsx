@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -108,7 +107,7 @@ const GrievancesList = ({ grievances, onSelectGrievance, title, emptyMessage }: 
                           {grievance.grievance_number}
                         </span>
                         {grievance.regulatory_reportable && (
-                          <AlertTriangle className="w-4 h-4 text-red-500" title="Regulatory Reportable" />
+                          <AlertTriangle className="w-4 h-4 text-red-500" />
                         )}
                       </div>
                     </TableCell>
