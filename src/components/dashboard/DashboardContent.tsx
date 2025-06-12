@@ -7,12 +7,10 @@ import WelcomeSection from "./WelcomeSection";
 import QuickStatsGrid from "./QuickStatsGrid";
 import AlertsPanel from "./AlertsPanel";
 import RecentActivityPanel from "./RecentActivityPanel";
-import ManualAdmissionForm from "@/components/admissions/ManualAdmissionForm";
 import { useFacilityStore } from "@/stores/facilityStore";
 
 const DashboardContent = () => {
   const [currentTime] = useState(new Date().toLocaleString());
-  const [isAdmissionFormOpen, setIsAdmissionFormOpen] = useState(false);
   const { stats } = useFacilityStore();
 
   const alerts = [
@@ -47,16 +45,7 @@ const DashboardContent = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <WelcomeSection currentTime={currentTime} />
-        <Button 
-          onClick={() => setIsAdmissionFormOpen(true)}
-          className="bg-green-600 hover:bg-green-700"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Quick Admit Patient
-        </Button>
-      </div>
+      <WelcomeSection currentTime={currentTime} />
       
       <QuickStatsGrid />
 
@@ -130,11 +119,6 @@ const DashboardContent = () => {
           </CardContent>
         </Card>
       </div>
-
-      <ManualAdmissionForm 
-        isOpen={isAdmissionFormOpen}
-        onClose={() => setIsAdmissionFormOpen(false)}
-      />
     </div>
   );
 };
