@@ -42,13 +42,19 @@ const TabbedMainLayout = () => {
     }
   }, []);
 
+  // Add navigation handler for dashboard drilldown
+  const handleNavigate = (path: string) => {
+    setActiveTab(path);
+    console.log('TabbedMainLayout: Navigating to:', path);
+  };
+
   const mainTabs = [
     {
       id: "dashboard",
       label: "Dashboard",
       shortLabel: "Dashboard",
       icon: LayoutDashboard,
-      component: DashboardContent
+      component: (props: any) => <DashboardContent onNavigate={handleNavigate} {...props} />
     },
     {
       id: "residents",
