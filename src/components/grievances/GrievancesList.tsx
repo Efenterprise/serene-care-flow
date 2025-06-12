@@ -11,13 +11,21 @@ interface Grievance {
   complainant_relationship?: string;
   is_anonymous: boolean;
   category: string;
+  subcategory?: string;
   priority: 'low' | 'medium' | 'high' | 'critical';
-  status: string;
+  status: 'received' | 'acknowledged' | 'under_review' | 'investigating' | 'resolved' | 'closed' | 'appealed';
   title: string;
+  description: string;
+  date_occurred?: string;
+  location?: string;
+  assigned_to?: string;
+  department?: string;
   created_at: string;
+  updated_at: string;
   due_date?: string;
   resident_name?: string;
   regulatory_reportable: boolean;
+  appeal_requested: boolean;
 }
 
 interface GrievancesListProps {
