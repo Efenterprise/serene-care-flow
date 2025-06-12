@@ -796,6 +796,287 @@ export type Database = {
         }
         Relationships: []
       }
+      grievance_communications: {
+        Row: {
+          attachments: Json | null
+          communication_method: string | null
+          communication_type: string
+          created_at: string
+          grievance_id: string
+          id: string
+          is_internal: boolean | null
+          message: string
+          read_at: string | null
+          recipient_info: Json | null
+          sender_id: string | null
+          sender_name: string | null
+          sent_at: string | null
+          subject: string | null
+        }
+        Insert: {
+          attachments?: Json | null
+          communication_method?: string | null
+          communication_type: string
+          created_at?: string
+          grievance_id: string
+          id?: string
+          is_internal?: boolean | null
+          message: string
+          read_at?: string | null
+          recipient_info?: Json | null
+          sender_id?: string | null
+          sender_name?: string | null
+          sent_at?: string | null
+          subject?: string | null
+        }
+        Update: {
+          attachments?: Json | null
+          communication_method?: string | null
+          communication_type?: string
+          created_at?: string
+          grievance_id?: string
+          id?: string
+          is_internal?: boolean | null
+          message?: string
+          read_at?: string | null
+          recipient_info?: Json | null
+          sender_id?: string | null
+          sender_name?: string | null
+          sent_at?: string | null
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grievance_communications_grievance_id_fkey"
+            columns: ["grievance_id"]
+            isOneToOne: false
+            referencedRelation: "grievances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grievance_documents: {
+        Row: {
+          created_at: string
+          description: string | null
+          document_type: string | null
+          file_name: string
+          file_size: number
+          grievance_id: string
+          id: string
+          mime_type: string
+          original_file_name: string
+          storage_path: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          document_type?: string | null
+          file_name: string
+          file_size: number
+          grievance_id: string
+          id?: string
+          mime_type: string
+          original_file_name: string
+          storage_path: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          document_type?: string | null
+          file_name?: string
+          file_size?: number
+          grievance_id?: string
+          id?: string
+          mime_type?: string
+          original_file_name?: string
+          storage_path?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grievance_documents_grievance_id_fkey"
+            columns: ["grievance_id"]
+            isOneToOne: false
+            referencedRelation: "grievances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grievance_status_history: {
+        Row: {
+          change_reason: string | null
+          changed_at: string
+          changed_by: string | null
+          grievance_id: string
+          id: string
+          new_assigned_to: string | null
+          new_status: string
+          previous_assigned_to: string | null
+          previous_status: string | null
+        }
+        Insert: {
+          change_reason?: string | null
+          changed_at?: string
+          changed_by?: string | null
+          grievance_id: string
+          id?: string
+          new_assigned_to?: string | null
+          new_status: string
+          previous_assigned_to?: string | null
+          previous_status?: string | null
+        }
+        Update: {
+          change_reason?: string | null
+          changed_at?: string
+          changed_by?: string | null
+          grievance_id?: string
+          id?: string
+          new_assigned_to?: string | null
+          new_status?: string
+          previous_assigned_to?: string | null
+          previous_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grievance_status_history_grievance_id_fkey"
+            columns: ["grievance_id"]
+            isOneToOne: false
+            referencedRelation: "grievances"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grievances: {
+        Row: {
+          acknowledged_at: string | null
+          appeal_notes: string | null
+          appeal_requested: boolean | null
+          assigned_to: string | null
+          authority_notification_date: string | null
+          category: string
+          closed_at: string | null
+          complainant_contact_info: Json | null
+          complainant_name: string
+          complainant_relationship: string | null
+          complainant_satisfied: boolean | null
+          corrective_actions: Json | null
+          created_at: string
+          created_by: string | null
+          date_occurred: string | null
+          department: string | null
+          description: string
+          due_date: string | null
+          evidence_collected: Json | null
+          grievance_number: string
+          id: string
+          investigation_notes: string | null
+          investigation_started_at: string | null
+          is_anonymous: boolean | null
+          location: string | null
+          priority: string
+          regulatory_reportable: boolean | null
+          reported_to_authorities: boolean | null
+          resident_id: string | null
+          resolution_description: string | null
+          resolved_at: string | null
+          status: string
+          subcategory: string | null
+          title: string
+          updated_at: string
+          updated_by: string | null
+          witnesses: Json | null
+        }
+        Insert: {
+          acknowledged_at?: string | null
+          appeal_notes?: string | null
+          appeal_requested?: boolean | null
+          assigned_to?: string | null
+          authority_notification_date?: string | null
+          category: string
+          closed_at?: string | null
+          complainant_contact_info?: Json | null
+          complainant_name: string
+          complainant_relationship?: string | null
+          complainant_satisfied?: boolean | null
+          corrective_actions?: Json | null
+          created_at?: string
+          created_by?: string | null
+          date_occurred?: string | null
+          department?: string | null
+          description: string
+          due_date?: string | null
+          evidence_collected?: Json | null
+          grievance_number?: string
+          id?: string
+          investigation_notes?: string | null
+          investigation_started_at?: string | null
+          is_anonymous?: boolean | null
+          location?: string | null
+          priority?: string
+          regulatory_reportable?: boolean | null
+          reported_to_authorities?: boolean | null
+          resident_id?: string | null
+          resolution_description?: string | null
+          resolved_at?: string | null
+          status?: string
+          subcategory?: string | null
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+          witnesses?: Json | null
+        }
+        Update: {
+          acknowledged_at?: string | null
+          appeal_notes?: string | null
+          appeal_requested?: boolean | null
+          assigned_to?: string | null
+          authority_notification_date?: string | null
+          category?: string
+          closed_at?: string | null
+          complainant_contact_info?: Json | null
+          complainant_name?: string
+          complainant_relationship?: string | null
+          complainant_satisfied?: boolean | null
+          corrective_actions?: Json | null
+          created_at?: string
+          created_by?: string | null
+          date_occurred?: string | null
+          department?: string | null
+          description?: string
+          due_date?: string | null
+          evidence_collected?: Json | null
+          grievance_number?: string
+          id?: string
+          investigation_notes?: string | null
+          investigation_started_at?: string | null
+          is_anonymous?: boolean | null
+          location?: string | null
+          priority?: string
+          regulatory_reportable?: boolean | null
+          reported_to_authorities?: boolean | null
+          resident_id?: string | null
+          resolution_description?: string | null
+          resolved_at?: string | null
+          status?: string
+          subcategory?: string | null
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+          witnesses?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grievances_resident_id_fkey"
+            columns: ["resident_id"]
+            isOneToOne: false
+            referencedRelation: "residents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hospital_communications: {
         Row: {
           communication_type: string
