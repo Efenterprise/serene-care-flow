@@ -17,14 +17,16 @@ import {
   Clock,
   Shield
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import WelcomeSection from "./WelcomeSection";
 import { useFacilityStore } from "@/stores/facilityStore";
 
-const DashboardContent = () => {
+interface DashboardContentProps {
+  onNavigate: (path: string) => void;
+}
+
+const DashboardContent = ({ onNavigate }: DashboardContentProps) => {
   const [currentTime] = useState(new Date().toLocaleString());
   const { stats } = useFacilityStore();
-  const navigate = useNavigate();
 
   const alerts = [
     { 
@@ -32,14 +34,14 @@ const DashboardContent = () => {
       type: "urgent", 
       message: "Room 105 - Fall incident requires documentation", 
       time: "10 min ago",
-      action: () => navigate('/clinical?tab=incidents')
+      action: () => onNavigate('clinical')
     },
     { 
       id: 2, 
       type: "warning", 
       message: "MDS due for 3 residents this week", 
       time: "1 hour ago",
-      action: () => navigate('/clinical?tab=uda')
+      action: () => onNavigate('clinical')
     }
   ];
 
@@ -50,7 +52,7 @@ const DashboardContent = () => {
       resident: "Mary Johnson", 
       user: "RN Sarah", 
       time: "5 min ago",
-      onClick: () => navigate('/residents')
+      onClick: () => onNavigate('residents')
     },
     { 
       id: 2, 
@@ -58,7 +60,7 @@ const DashboardContent = () => {
       resident: "Robert Smith", 
       user: "LPN Mike", 
       time: "15 min ago",
-      onClick: () => navigate('/clinical?tab=care-plans')
+      onClick: () => onNavigate('clinical')
     }
   ];
 
@@ -70,7 +72,7 @@ const DashboardContent = () => {
       <div className="grid md:grid-cols-4 gap-6">
         <Card 
           className="border-0 shadow-md bg-white hover:shadow-lg transition-all cursor-pointer group"
-          onClick={() => navigate('/residents')}
+          onClick={() => onNavigate('residents')}
         >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -92,7 +94,7 @@ const DashboardContent = () => {
 
         <Card 
           className="border-0 shadow-md bg-white hover:shadow-lg transition-all cursor-pointer group"
-          onClick={() => navigate('/clinical')}
+          onClick={() => onNavigate('clinical')}
         >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -112,7 +114,7 @@ const DashboardContent = () => {
 
         <Card 
           className="border-0 shadow-md bg-white hover:shadow-lg transition-all cursor-pointer group"
-          onClick={() => navigate('/residents')}
+          onClick={() => onNavigate('residents')}
         >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -143,7 +145,7 @@ const DashboardContent = () => {
 
         <Card 
           className="border-0 shadow-md bg-white hover:shadow-lg transition-all cursor-pointer group"
-          onClick={() => navigate('/admin')}
+          onClick={() => onNavigate('admin')}
         >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -163,7 +165,7 @@ const DashboardContent = () => {
       <div className="grid lg:grid-cols-3 gap-6">
         <Card 
           className="border-0 shadow-md bg-gradient-to-br from-blue-50 to-blue-100 hover:shadow-lg transition-all cursor-pointer group"
-          onClick={() => navigate('/clinical')}
+          onClick={() => onNavigate('clinical')}
         >
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -195,7 +197,7 @@ const DashboardContent = () => {
 
         <Card 
           className="border-0 shadow-md bg-gradient-to-br from-green-50 to-green-100 hover:shadow-lg transition-all cursor-pointer group"
-          onClick={() => navigate('/residents')}
+          onClick={() => onNavigate('residents')}
         >
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -227,7 +229,7 @@ const DashboardContent = () => {
 
         <Card 
           className="border-0 shadow-md bg-gradient-to-br from-purple-50 to-purple-100 hover:shadow-lg transition-all cursor-pointer group"
-          onClick={() => navigate('/emr')}
+          onClick={() => onNavigate('emr')}
         >
           <CardHeader>
             <div className="flex items-center justify-between">

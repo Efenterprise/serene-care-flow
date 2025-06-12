@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import DropdownNavigation from "@/components/navigation/DropdownNavigation";
 import DashboardContent from "@/components/dashboard/DashboardContent";
@@ -113,8 +112,12 @@ const DropdownMainLayout = ({ children }: DropdownMainLayoutProps) => {
       return <MaintenanceContent />; // Placeholder for now
     }
 
-    // Default to dashboard
-    return <DashboardContent />;
+    // Default to dashboard - pass the handleNavigate function
+    if (currentPath === "dashboard") {
+      return <DashboardContent onNavigate={handleNavigate} />;
+    }
+
+    return <DashboardContent onNavigate={handleNavigate} />;
   };
 
   const formatBreadcrumb = (path: string) => {
